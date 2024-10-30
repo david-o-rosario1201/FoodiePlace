@@ -110,7 +110,7 @@ private fun AlgoBodyScreen(
                             label = {
                                 Text("Nombre")
                             },
-                            value = uiState.nombre,
+                            value = uiState.nombre ?: "",
                             onValueChange = {
                                 onEvent(AlgoUiEvent.NombreChanged(it))
                             },
@@ -149,7 +149,7 @@ private fun AlgoBodyScreen(
                             label = {
                                 Text("Tipo")
                             },
-                            value = uiState.tipo,
+                            value = uiState.tipo ?: "",
                             onValueChange = {
                                 onEvent(AlgoUiEvent.TipoChanged(it))
                             },
