@@ -1,4 +1,4 @@
-package edu.ucne.proyectofinalaplicada2.data.remote
+package edu.ucne.proyectofinalaplicada2.data.remote.API
 
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
 import retrofit2.http.DELETE
