@@ -1,5 +1,6 @@
-package edu.ucne.proyectofinalaplicada2.data.remote
+package edu.ucne.proyectofinalaplicada2.data.remote.dataSource
 
+import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
 import javax.inject.Inject
 
