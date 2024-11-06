@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProductoDao {
     @Upsert()
-    suspend fun upsertProducto(producto: ProductoEntity)
+    suspend fun addProducto(producto: ProductoEntity)
 
     @Query("""
         SELECT * 
