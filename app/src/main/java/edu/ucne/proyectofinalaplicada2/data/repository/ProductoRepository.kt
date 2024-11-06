@@ -2,8 +2,7 @@ package edu.ucne.proyectofinalaplicada2.data.repository
 
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
-import edu.ucne.proyectofinalaplicada2.data.remote.ProductoRemoteDataSource
-import edu.ucne.proyectofinalaplicada2.data.remote.RemoteDataSource
+import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ProductoRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
 import kotlinx.coroutines.flow.Flow
