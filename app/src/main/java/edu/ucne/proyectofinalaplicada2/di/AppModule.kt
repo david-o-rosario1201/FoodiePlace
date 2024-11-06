@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.ucne.proyectofinalaplicada2.data.remote.FoodiePlaceApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
