@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
-
 
 @HiltViewModel
 class ProductoViewModel @Inject constructor(
@@ -29,9 +32,7 @@ class ProductoViewModel @Inject constructor(
                 when (result) {
                     is Resource.Loading -> {
                         _uiState.update {
-                            it.copy(
-                                isLoading = true
-                            )
+                            it.copy(isLoading = true)
                         }
                     }
                     is Resource.Success -> {
@@ -58,19 +59,25 @@ class ProductoViewModel @Inject constructor(
     fun onEvent(event: ProductoUiEvent) {
         when (event) {
             is ProductoUiEvent.ProductoIdChange -> {
-                _uiState.update {
-                    it.copy(
-                        productoId = event.productoId
-                    )
-                }
+                _uiState.update { it.copy(productoId = event.productoId) }
             }
             is ProductoUiEvent.NombreChange -> {
-                _uiState.update {
-                    it.copy(
-                        nombre = event.nombre,
-                        errorNombre = ""
-                    )
-                }
+                _uiState.update { it.copy(nombre = event.nombre, errorNombre = "") }
+            }
+            is ProductoUiEvent.CategoriaIdChange -> {
+                _uiState.update { it.copy(categoriaId = event.categoriaId) }
+            }
+            is ProductoUiEvent.DescripcionChange -> {
+                _uiState.update { it.copy(descripcion = event.descripcion) }
+            }
+            is ProductoUiEvent.PrecioChange -> {
+                _uiState.update { it.copy(precio = event.precio) }
+            }
+            is ProductoUiEvent.DisponibilidadChange -> {
+                _uiState.update { it.copy(disponibilidad = event.disponibilidad) }
+            }
+            is ProductoUiEvent.ImagenChange -> {
+                _uiState.update { it.copy(imagen = event.imagen) }
             }
             is ProductoUiEvent.SelectedProducto -> {
                 viewModelScope.launch {
@@ -92,21 +99,16 @@ class ProductoViewModel @Inject constructor(
             }
             ProductoUiEvent.Save -> {
                 viewModelScope.launch {
-
                     val nombreBuscado = _uiState.value.productos
                         .find { it.nombre.lowercase() == _uiState.value.nombre?.lowercase() }
 
                     if (_uiState.value.nombre?.isBlank() == true) {
                         _uiState.update {
-                            it.copy(
-                                errorNombre = "El nombre no puede estar vacío"
-                            )
+                            it.copy(errorNombre = "El nombre no puede estar vacío")
                         }
                     } else if (nombreBuscado != null && nombreBuscado.productoId != _uiState.value.productoId) {
                         _uiState.update {
-                            it.copy(
-                                errorNombre = "El nombre ya existe"
-                            )
+                            it.copy(errorNombre = "El nombre ya existe")
                         }
                     }
 
@@ -119,11 +121,7 @@ class ProductoViewModel @Inject constructor(
                                 _uiState.value.toEntity()
                             )
 
-                        _uiState.update {
-                            it.copy(
-                                success = true
-                            )
-                        }
+                        _uiState.update { it.copy(success = true) }
                     }
                 }
             }
@@ -136,7 +134,7 @@ class ProductoViewModel @Inject constructor(
     }
 
     fun ProductoUiState.toEntity() = ProductoDto(
-        productoId = productoId,
+        productoId = productoId ?: 0,
         nombre = nombre ?: "",
         categoriaId = categoriaId ?: 0,
         descripcion = descripcion ?: "",
