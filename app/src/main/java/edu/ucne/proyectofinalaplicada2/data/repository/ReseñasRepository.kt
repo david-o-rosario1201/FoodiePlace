@@ -29,6 +29,11 @@ class ReseñasRepository @Inject constructor(
                     it.toReseñasEntity()
                 )
             }
+
+            reseñasDao.getAll().collect{categoriasLocal ->
+                emit(Resource.Success(categoriasLocal))
+            }
+
         }catch (e: HttpException){
             emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
         }catch (e: Exception){
