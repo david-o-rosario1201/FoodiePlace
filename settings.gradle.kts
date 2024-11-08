@@ -22,4 +22,6 @@ dependencyResolutionManagement {
 rootProject.name = "ProyectoFinalAplicada2"
 include(":app")
 include(":data:Usuario")
+
+include(":data:Usuario")
 include(":feature:Usuario")
