@@ -1,11 +1,15 @@
 package edu.ucne.proyectofinalaplicada2.di
 
+import android.content.Context
+import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
 import retrofit2.Retrofit
@@ -33,6 +37,16 @@ object AppModule {
             .build()
             .create(FoodiePlaceApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun providesFoodiePlaceDb(@ApplicationContext appContext: Context) =
+        Room.databaseBuilder(
+            appContext,
+            FoodiePlaceDb::class.java,
+            "FoodiePlace.db"
+        ).fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton
