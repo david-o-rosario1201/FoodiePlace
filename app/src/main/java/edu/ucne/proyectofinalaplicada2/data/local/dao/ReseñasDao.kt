@@ -1,11 +1,13 @@
 package edu.ucne.proyectofinalaplicada2.data.local.dao
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReseñasEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface ReseñasDao {
     @Upsert
     suspend fun save(reseñas: ReseñasEntity)
@@ -25,7 +27,7 @@ interface ReseñasDao {
 
     @Query(
         """
-            SELECT * FROM RESEÑAS
+            SELECT * FROM Reseñas
             WHERE usuarioId = :usuarioId
             LIMIT 1
         """

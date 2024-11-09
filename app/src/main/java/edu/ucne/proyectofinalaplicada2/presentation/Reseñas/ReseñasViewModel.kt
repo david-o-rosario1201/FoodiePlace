@@ -15,7 +15,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-@HiltViewModel
+
 class ReseñasViewModel @Inject constructor(
     private val repository: ReseñasRepository
 ): ViewModel() {
