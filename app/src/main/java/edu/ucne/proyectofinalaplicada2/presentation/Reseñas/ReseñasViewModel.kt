@@ -87,11 +87,11 @@ class ReseñasViewModel @Inject constructor(
     private fun saveReseña(){
         viewModelScope.launch {
             if(_uiState.value.usuarioId == null){
-                _uiState.value.toDTO()?.let { repository.addReseña(it) }
+                _uiState.value.toEntity()?.let { repository.addReseña(it) }
             }
             else
             {
-                _uiState.value.toDTO()?.let {
+                _uiState.value.toEntity()?.let {
                     repository.updateReseña(_uiState.value.id!!, it)
                 }
             }
@@ -109,14 +109,15 @@ class ReseñasViewModel @Inject constructor(
         return dateFormat.format(Date())
     }
 
-    fun ReseñasUiState.toDTO() = id?.let {
-        ReseñasDTO(
-        resenaId = it,
-        usuarioId = usuarioId,
-        comentario = comentario,
-        fechaResena = obtenerFechaActual(),
-        calificacion = calificacion
-    )
-    }
+    fun ReseñasUiState.toEntity() =
+        id?.let {
+            ReseñasDTO(
+                resenaId = it,
+                usuarioId = usuarioId,
+                comentario = comentario,
+                fechaResena = obtenerFechaActual(),
+                calificacion = calificacion
+            )
+        }
 
 }

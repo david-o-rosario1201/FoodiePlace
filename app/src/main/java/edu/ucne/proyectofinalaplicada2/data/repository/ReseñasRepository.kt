@@ -44,7 +44,6 @@ class ReseñasRepository @Inject constructor(
             }
         }
     }
-
 }
 
 private fun ReseñasDTO.toReseñasEntity() = ReseñasEntity(
