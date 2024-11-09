@@ -1,9 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.data.remote.dataSource
 
 import edu.ucne.proyectofinalaplicada2.data.remote.API.PagosAPI
-import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReseñasDTO
 import javax.inject.Inject
 
 class PagosRemoteDataSource @Inject constructor(
