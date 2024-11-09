@@ -15,5 +15,6 @@ data class ReseñasUiState(
     val errorMessge: String? = null,
     val success: Boolean = false,
     val isLoading: Boolean = false,
-    val reseñas: List<ReseñasEntity> = emptyList()
+    val reseñas: List<ReseñasEntity> = emptyList(),
+    val isRefreshing: Boolean =false
 )

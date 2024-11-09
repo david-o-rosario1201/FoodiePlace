@@ -74,6 +74,13 @@ class ReseñasViewModel @Inject constructor(
             is ReseñasUiEvent.SetUsuarioId -> _uiState.update {
                 it.copy( usuarioId = event.usuarioId, errorMessge = "" )
             }
+
+            is ReseñasUiEvent.IsRefreshingChanged ->  {
+                _uiState.update {
+                    it.copy(isRefreshing = event.isRefreshing)
+                    }
+                }
+            ReseñasUiEvent.Refresh -> GetReseñas()
         }
     }
 
