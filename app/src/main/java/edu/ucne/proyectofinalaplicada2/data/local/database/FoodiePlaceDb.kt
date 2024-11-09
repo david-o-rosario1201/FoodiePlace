@@ -19,9 +19,12 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
+import edu.ucne.proyectofinalaplicada2.data.local.dao.*
+import edu.ucne.proyectofinalaplicada2.data.local.entities.*
 
 @Database(
     entities = [
+        PagosEntity::class
         ReviewEntity::class,
         UsuarioEntity::class,
         ProductoEntity::class,
@@ -42,6 +45,7 @@ abstract class FoodiePlaceDb : RoomDatabase(){
     abstract fun reservacionesDao(): ReservacionesDao
     abstract fun reviewDao(): ReviewDao
     abstract fun usuarioDao(): UsuarioDao
+    abstract fun PagosDao(): PagosDao
     abstract fun categoriaDao(): CategoriaDao
     abstract fun carritoDao(): CarritoDao
     abstract fun carritoDetalleDao(): CarritoDetalleDao
