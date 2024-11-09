@@ -4,6 +4,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.ReseñasDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReseñasEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.ReseñasRemoteSource
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
+import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.RemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReseñasDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +12,7 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class ReseñasRepository @Inject constructor(
-    private val remoteDataSource: ReseñasRemoteSource,
+    private val remoteDataSource: RemoteDataSource,
     private val reseñasDao: ReseñasDao
 ) {
     suspend fun addReseña(reseña: ReseñasDTO) = remoteDataSource.postReseña(reseña)
@@ -30,8 +31,8 @@ class ReseñasRepository @Inject constructor(
                 )
             }
 
-            reseñasDao.getAll().collect{categoriasLocal ->
-                emit(Resource.Success(categoriasLocal))
+            reseñasDao.getAll().collect{reseñasLocal ->
+                emit(Resource.Success(reseñasLocal))
             }
 
         }catch (e: HttpException){
@@ -39,8 +40,8 @@ class ReseñasRepository @Inject constructor(
         }catch (e: Exception){
             emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
 
-            reseñasDao.getAll().collect{categoriasLocal ->
-                emit(Resource.Success(categoriasLocal))
+            reseñasDao.getAll().collect{reseñasLocal ->
+                emit(Resource.Success(reseñasLocal))
             }
         }
     }
