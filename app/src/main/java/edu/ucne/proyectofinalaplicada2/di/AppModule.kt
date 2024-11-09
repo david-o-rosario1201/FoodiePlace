@@ -18,6 +18,8 @@ import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.PagosAPI
+import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -67,6 +69,15 @@ object AppModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(ReviewAPI::class.java)
+    }
+    @Provides
+    @Singleton
+    fun providesPagosAPI(moshi: Moshi): PagosAPI {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(PagosAPI::class.java)
     }
 
     @Provides
