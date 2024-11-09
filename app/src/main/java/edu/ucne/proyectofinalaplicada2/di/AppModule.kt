@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -32,4 +33,8 @@ object AppModule {
             .build()
             .create(FoodiePlaceApi::class.java)
         }
+
+    @Provides
+    @Singleton
+    fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
 }
