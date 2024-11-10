@@ -7,13 +7,15 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.ReservacionesDao
 
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 
 @Database(
     entities = [
         ReviewEntity::class,
-        UsuarioEntity::class
+        UsuarioEntity::class,
+        ReservacionesEntity::class
 
     ],
     version = 1,
@@ -22,7 +24,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 
 abstract class FoodiePlaceDb : RoomDatabase(){
 
-    abstract fun ReservacionesEntity(): ReservacionesDao
+    abstract fun reservacionesDao(): ReservacionesDao
 
     abstract fun reviewDao(): ReviewDao
     abstract fun usuarioDao(): UsuarioDao
