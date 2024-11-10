@@ -3,7 +3,7 @@ package edu.ucne.proyectofinalaplicada2.data.repository
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
-import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.RemoteDataSource
+import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.UsuarioRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,7 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class UsuarioRepository @Inject constructor(
-    private val remoteDataSource: RemoteDataSource,
+    private val remoteDataSource: UsuarioRemoteDataSource,
     private val usuarioDao: UsuarioDao
 ){
     suspend fun addUsuario(usuarioDto: UsuarioDto) = remoteDataSource.addUsuario(usuarioDto)
