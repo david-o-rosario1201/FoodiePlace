@@ -97,44 +97,28 @@ class OfertaViewModel @Inject constructor(
     fun onEvent(event: OfertaUiEvent){
         when(event){
             is OfertaUiEvent.OfertaIdChanged -> {
-                _uiState.update {
-                    it.copy(ofertasId = event.ofertaId)
-                }
+                _uiState.update { it.copy(ofertasId = event.ofertaId) }
             }
             is OfertaUiEvent.ProductoIdChanged -> {
-                _uiState.update {
-                    it.copy(productoId = event.productoId)
-                }
+                _uiState.update { it.copy(productoId = event.productoId) }
             }
             is OfertaUiEvent.PrecioChanged -> {
-                _uiState.update {
-                    it.copy(precio = event.precio)
-                }
+                _uiState.update { it.copy(precio = event.precio) }
             }
             is OfertaUiEvent.DescuentoChanged -> {
-                _uiState.update {
-                    it.copy(descuento = event.descuento)
-                }
+                _uiState.update { it.copy(descuento = event.descuento) }
             }
             is OfertaUiEvent.PrecioOfertaChanged -> {
-                _uiState.update {
-                    it.copy(precioOferta = event.precioOferta)
-                }
+                _uiState.update { it.copy(precioOferta = event.precioOferta) }
             }
             is OfertaUiEvent.FechaInicioChanged -> {
-                _uiState.update {
-                    it.copy(fechaInicio = event.fechaInicio)
-                }
+                _uiState.update { it.copy(fechaInicio = event.fechaInicio) }
             }
             is OfertaUiEvent.FechaFinalChanged -> {
-                _uiState.update {
-                    it.copy(fechaFinal = event.fechaFinal)
-                }
+                _uiState.update { it.copy(fechaFinal = event.fechaFinal) }
             }
             is OfertaUiEvent.ImagenChanged -> {
-                _uiState.update {
-                    it.copy(imagen = event.imagen)
-                }
+                _uiState.update { it.copy(imagen = event.imagen) }
             }
             is OfertaUiEvent.SelectedOferta -> {
                 cargarOfertaSeleccionada(event.ofertaId)
