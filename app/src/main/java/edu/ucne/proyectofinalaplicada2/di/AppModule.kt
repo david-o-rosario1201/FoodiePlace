@@ -93,14 +93,6 @@ object AppModule {
             .create(ReservacionesAPI::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
-
-
-
-
-
 
     @Provides
     @Singleton
@@ -112,5 +104,9 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao
+
+
+
     fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
 }
