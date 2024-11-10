@@ -84,6 +84,9 @@ object AppModule {
 
 
 
+
+
+
     @Provides
     @Singleton
     fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
