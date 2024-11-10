@@ -70,6 +70,12 @@ class ReservacionesViewModel @Inject constructor(
             is ReservacionesUiEvent.EstadoChange -> {
                 _uiState.update { it.copy(estado = event.estado) }
             }
+            is ReservacionesUiEvent.IsRefreshingChanged -> {
+                _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
+            }
+            ReservacionesUiEvent.Refresh -> {
+                getReservaciones()
+            }
             is ReservacionesUiEvent.SelectedReservacion -> {
                 viewModelScope.launch {
                     if (event.reservacionId > 0) {
