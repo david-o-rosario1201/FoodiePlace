@@ -10,10 +10,7 @@ data class PagosEntity(
     @PrimaryKey(autoGenerate = true)
     val pagoId: Int? = 0,
     val pedidoId: Int,
-    val tipoTarjeta: String,
-    val numeroTarjeta: String,
-    val fechaExpiracion: String,
-    val cvv: String,
+    val tarjetaId : Int,
     val fechaPago: String,
     val monto: BigDecimal
 )

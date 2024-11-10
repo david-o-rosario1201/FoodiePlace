@@ -49,10 +49,7 @@ class PagosRepository @Inject constructor(
 private fun PagosDTO.toPagosEntity() = PagosEntity(
     pagoId = pagoId,
     pedidoId = pedidoId,
-    tipoTarjeta = tipoTarjeta,
-    numeroTarjeta = numeroTarjeta,
-    fechaExpiracion = fechaExpiracion,
-    cvv = cvv,
+    tarjetaId = tarjetaId,
     fechaPago = fechaPago.toString(),
     monto = monto
 )
