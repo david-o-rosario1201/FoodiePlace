@@ -81,6 +81,23 @@ object AppModule {
             .create(ReservacionesAPI::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun providesReservacionesAPI(moshi: Moshi): ReservacionesAPI {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(ReservacionesAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
+
+
+
+
 
     @Provides
     @Singleton
