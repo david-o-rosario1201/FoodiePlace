@@ -5,8 +5,6 @@ import androidx.room.RoomDatabase
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CategoriaDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReservacionesDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.ReseñasDao
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ReseñasEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
@@ -32,10 +30,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 )
 
 abstract class FoodiePlaceDb : RoomDatabase(){
-    abstract val ReseñasEntity: ReseñasDao
     abstract val ProductoDao: ProductoDao
-
-
     abstract fun reservacionesDao(): ReservacionesDao
     abstract fun reviewDao(): ReviewDao
     abstract fun usuarioDao(): UsuarioDao
