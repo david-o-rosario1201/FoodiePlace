@@ -139,7 +139,7 @@ class OfertaViewModel @Inject constructor(
                 getProductos()
             }
 
-            else -> {}
+            else -> {Unit}
         }
     }
 
