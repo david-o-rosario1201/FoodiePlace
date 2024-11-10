@@ -6,13 +6,15 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 
 @Database(
     entities = [
         ReviewEntity::class,
-        UsuarioEntity::class
+        UsuarioEntity::class,
+        ProductoEntity::class
     ],
     version = 1,
     exportSchema = false
