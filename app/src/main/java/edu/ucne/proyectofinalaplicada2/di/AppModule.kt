@@ -72,4 +72,8 @@ object AppModule {
     @Provides
     @Singleton
     fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
+
+    @Provides
+    @Singleton
+    fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reseñasDao()
 }
