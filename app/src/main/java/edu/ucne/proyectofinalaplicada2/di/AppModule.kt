@@ -27,6 +27,7 @@ import javax.inject.Singleton
 object AppModule {
     const val BASE_URL = "https://foodieplaceapi.azurewebsites.net/"
 
+    //Moshi
     @Provides
     @Singleton
     fun providesMoshi(): Moshi =
@@ -35,16 +36,7 @@ object AppModule {
             .add(DateAdapter())
             .build()
 
-    @Provides
-    @Singleton
-    fun providesFoodiePlaceApi(moshi: Moshi): FoodiePlaceApi {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-            .create(FoodiePlaceApi::class.java)
-    }
-
+    //FoodiPlaceDb
     @Provides
     @Singleton
     fun providesFoodiePlaceDb(@ApplicationContext appContext: Context) =
@@ -55,6 +47,18 @@ object AppModule {
         ).fallbackToDestructiveMigration()
             .build()
 
+    //FoodiePlaceApi
+    @Provides
+    @Singleton
+    fun providesFoodiePlaceApi(moshi: Moshi): FoodiePlaceApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(FoodiePlaceApi::class.java)
+    }
+
+    //APIs
     @Provides
     @Singleton
     fun providesReseñasAPI(moshi: Moshi): ReviewAPI {
@@ -97,11 +101,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesProductoDao(db: FoodiePlaceDb) = db.ProductoDao
-
-
-       @Provides
-    @Singleton
     fun providesReservacionesAPI(moshi: Moshi): ReservacionesAPI {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -122,14 +121,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
-
-
-
-
-
-    @Provides
-    @Singleton
     fun providesOfertaApi(moshi: Moshi): OfertaApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -138,23 +129,15 @@ object AppModule {
             .create(OfertaApi::class.java)
     }
 
+    //DAOs
     @Provides
     @Singleton
-    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
-
-    @Provides
-    @Singleton
-    fun providesOfertaApi(moshi: Moshi): OfertaApi {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-            .create(OfertaApi::class.java)
-    }
+    fun providesProductoDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.ProductoDao()
 
     @Provides
     @Singleton
     fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
+
     @Provides
     @Singleton
     fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
@@ -178,6 +161,4 @@ object AppModule {
     @Provides
     @Singleton
     fun providesCarritoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.carritoDetalleDao()
-
-
 }
