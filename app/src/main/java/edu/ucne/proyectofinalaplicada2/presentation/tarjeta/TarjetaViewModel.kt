@@ -49,6 +49,7 @@ class TarjetaViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 tarjetas = tarjetaDtoList,
+                                tarjetas = result.data ?: emptyList(),
                                 isLoading = false
                             )
                         }
@@ -56,16 +57,7 @@ class TarjetaViewModel @Inject constructor(
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
-                                tarjetas = result.data?.map { entity ->
-                                    TarjetaDto(
-                                        tarjetaId = entity.tarjetaId,
-                                        usuarioId = entity.usuarioId,
-                                        tipoTarjeta = entity.tipoTarjeta,
-                                        numeroTarjeta = entity.numeroTarjeta,
-                                        fechaExpiracion = entity.fechaExpiracion,
-                                        cvv = entity.cvv
-                                    )
-                                } ?: emptyList(),
+                                tarjetas = result.data ?: emptyList(),
                                 isLoading = false
                             )
                         }
