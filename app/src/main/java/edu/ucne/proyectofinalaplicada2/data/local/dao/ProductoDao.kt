@@ -29,5 +29,5 @@ interface ProductoDao {
         SELECT *
         FROM Productos
     """)
-    suspend fun getProductos(): Flow<List<ProductoEntity>>
+    fun getProductos(): Flow<List<ProductoEntity>>
 }
