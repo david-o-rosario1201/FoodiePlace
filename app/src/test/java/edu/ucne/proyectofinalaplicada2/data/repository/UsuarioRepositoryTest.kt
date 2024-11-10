@@ -5,7 +5,7 @@ import com.google.common.truth.Truth
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
-import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ReviewRemoteDataSource
+import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.UsuarioRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,17 +30,17 @@ class UsuarioRepositoryTest {
             contrasena = "contrasena2"
         )
 
-        val reviewRemoteDataSource = mockk<ReviewRemoteDataSource>()
+        val usuarioRemoteDataSource = mockk<UsuarioRemoteDataSource>()
         val usuarioDao = mockk<UsuarioDao>()
-        val repository = UsuarioRepository(reviewRemoteDataSource, usuarioDao)
+        val repository = UsuarioRepository(usuarioRemoteDataSource, usuarioDao)
 
-        coEvery { reviewRemoteDataSource.addUsuario(any()) } returns usuario
+        coEvery { usuarioRemoteDataSource.addUsuario(any()) } returns usuario
 
         // When
         repository.addUsuario(usuario)
 
         // Then
-        coVerify { reviewRemoteDataSource.addUsuario(usuario) }
+        coVerify { usuarioRemoteDataSource.addUsuario(usuario) }
     }
 
     @Test
@@ -54,17 +54,17 @@ class UsuarioRepositoryTest {
             contrasena = "contrasena2"
         )
 
-        val reviewRemoteDataSource = mockk<ReviewRemoteDataSource>()
+        val usuarioRemoteDataSource = mockk<UsuarioRemoteDataSource>()
         val usuarioDao = mockk<UsuarioDao>()
-        val repository = UsuarioRepository(reviewRemoteDataSource, usuarioDao)
+        val repository = UsuarioRepository(usuarioRemoteDataSource, usuarioDao)
 
-        coEvery { reviewRemoteDataSource.getUsuario(usuario.usuarioId ?: 0) } returns usuario
+        coEvery { usuarioRemoteDataSource.getUsuario(usuario.usuarioId ?: 0) } returns usuario
 
         //When
         repository.getUsuario(usuario.usuarioId ?: 0)
 
         //Then
-        coVerify { reviewRemoteDataSource.getUsuario(usuario.usuarioId ?: 0) }
+        coVerify { usuarioRemoteDataSource.getUsuario(usuario.usuarioId ?: 0) }
     }
 
     @Test
@@ -78,17 +78,17 @@ class UsuarioRepositoryTest {
             contrasena = "contrasena2"
         )
 
-        val reviewRemoteDataSource = mockk<ReviewRemoteDataSource>()
+        val usuarioRemoteDataSource = mockk<UsuarioRemoteDataSource>()
         val usuarioDao = mockk<UsuarioDao>()
-        val repository = UsuarioRepository(reviewRemoteDataSource, usuarioDao)
+        val repository = UsuarioRepository(usuarioRemoteDataSource, usuarioDao)
 
-        coEvery { reviewRemoteDataSource.deleteUsuario(usuario.usuarioId ?: 0) } returns Response.success(Unit)
+        coEvery { usuarioRemoteDataSource.deleteUsuario(usuario.usuarioId ?: 0) } returns Response.success(Unit)
 
         //When
         repository.deleteUsuario(usuario.usuarioId ?: 0)
 
         //Then
-        coVerify { reviewRemoteDataSource.deleteUsuario(usuario.usuarioId ?: 0) }
+        coVerify { usuarioRemoteDataSource.deleteUsuario(usuario.usuarioId ?: 0) }
     }
 
     @Test
@@ -102,17 +102,17 @@ class UsuarioRepositoryTest {
             contrasena = "contrasena2"
         )
 
-        val reviewRemoteDataSource = mockk<ReviewRemoteDataSource>()
+        val usuarioRemoteDataSource = mockk<UsuarioRemoteDataSource>()
         val usuarioDao = mockk<UsuarioDao>()
-        val repository = UsuarioRepository(reviewRemoteDataSource, usuarioDao)
+        val repository = UsuarioRepository(usuarioRemoteDataSource, usuarioDao)
 
-        coEvery { reviewRemoteDataSource.updateUsuario(usuario.usuarioId ?: 0, usuario) } returns Response.success(usuario)
+        coEvery { usuarioRemoteDataSource.updateUsuario(usuario.usuarioId ?: 0, usuario) } returns Response.success(usuario)
 
         //When
         repository.updateUsuario(usuario.usuarioId ?: 0, usuario)
 
         //Then
-        coVerify { reviewRemoteDataSource.updateUsuario(usuario.usuarioId ?: 0, usuario) }
+        coVerify { usuarioRemoteDataSource.updateUsuario(usuario.usuarioId ?: 0, usuario) }
     }
 
     @Test
@@ -128,10 +128,10 @@ class UsuarioRepositoryTest {
             )
         )
 
-        val reviewRemoteDataSource = mockk<ReviewRemoteDataSource>()
+        val usuarioRemoteDataSource = mockk<UsuarioRemoteDataSource>()
         val usuarioDao = mockk<UsuarioDao>()
 
-        val repository = UsuarioRepository(reviewRemoteDataSource,usuarioDao)
+        val repository = UsuarioRepository(usuarioRemoteDataSource,usuarioDao)
 
         coEvery { usuarioDao.getUsuarios() } returns flowOf(usuarios)
 
