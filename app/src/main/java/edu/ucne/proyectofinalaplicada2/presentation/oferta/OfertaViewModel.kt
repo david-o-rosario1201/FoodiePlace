@@ -94,148 +94,265 @@ class OfertaViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: OfertaUiEvent){
-        when(event){
+//    fun onEvent(event: OfertaUiEvent){
+//        when(event){
+//            is OfertaUiEvent.OfertaIdChanged -> {
+//                _uiState.update {
+//                    it.copy(ofertasId = event.ofertaId)
+//                }
+//            }
+//            is OfertaUiEvent.ProductoIdChanged -> {
+//                _uiState.update {
+//                    it.copy(productoId = event.productoId)
+//                }
+//            }
+//            is OfertaUiEvent.PrecioChanged -> {
+//                _uiState.update {
+//                    it.copy(precio = event.precio)
+//                }
+//            }
+//            is OfertaUiEvent.DescuentoChanged -> {
+//                _uiState.update {
+//                    it.copy(descuento = event.descuento)
+//                }
+//            }
+//            is OfertaUiEvent.PrecioOfertaChanged -> {
+//                _uiState.update {
+//                    it.copy(precioOferta = event.precioOferta)
+//                }
+//            }
+//            is OfertaUiEvent.FechaInicioChanged -> {
+//                _uiState.update {
+//                    it.copy(fechaInicio = event.fechaInicio)
+//                }
+//            }
+//            is OfertaUiEvent.FechaFinalChanged -> {
+//                _uiState.update {
+//                    it.copy(fechaFinal = event.fechaFinal)
+//                }
+//            }
+//            is OfertaUiEvent.ImagenChanged -> {
+//                _uiState.update {
+//                    it.copy(imagen = event.imagen)
+//                }
+//            }
+//            is OfertaUiEvent.SelectedOferta -> {
+//                viewModelScope.launch {
+//                    if(event.ofertaId > 0){
+//                        val oferta = ofertaRepository.getOferta(event.ofertaId)
+//                        _uiState.update {
+//                            it.copy(
+//                                ofertasId = oferta.ofertasId,
+//                                productoId = oferta.productoId,
+//                                precio = oferta.precio,
+//                                descuento = oferta.descuento,
+//                                precioOferta = oferta.precioOferta,
+//                                fechaInicio = oferta.fechaInicio,
+//                                fechaFinal = oferta.fechaFinal,
+//                                imagen = oferta.imagen
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//            is OfertaUiEvent.IsRefreshingChanged -> {
+//                _uiState.update {
+//                    it.copy(isRefreshing = event.isRefreshing)
+//                }
+//            }
+//            OfertaUiEvent.Save -> {
+//                viewModelScope.launch {
+//                    if(_uiState.value.productoId == 0){
+//                        _uiState.update {
+//                            it.copy(errorProductoId = "El campo productoId no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.precio == BigDecimal.valueOf(0.0)){
+//                        _uiState.update {
+//                            it.copy(errorPrecio = "El campo precio no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.descuento == BigDecimal.valueOf(0.0)){
+//                        _uiState.update {
+//                            it.copy(errorDescuento = "El campo descuento no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.precioOferta == BigDecimal.valueOf(0.0)){
+//                        _uiState.update {
+//                            it.copy(errorPrecioOferta = "El campo precio oferta no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.fechaInicio == null){
+//                        _uiState.update {
+//                            it.copy(errorFechaInicio = "El campo fecha inicio no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.fechaFinal == null){
+//                        _uiState.update {
+//                            it.copy(errorFechaFinal = "El campo fecha final no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.imagen.toInt() == 0){
+//                        _uiState.update {
+//                            it.copy(errorImagen = "El campo imágen no puede estar vacío")
+//                        }
+//                    }
+//
+//                    if(_uiState.value.errorProductoId == "" && _uiState.value.errorPrecio == ""
+//                        && _uiState.value.errorDescuento == "" && _uiState.value.errorPrecioOferta == ""
+//                        && _uiState.value.errorFechaInicio == "" && _uiState.value.errorFechaFinal == ""
+//                        && _uiState.value.errorImagen == ""){
+//
+//                        if(_uiState.value.ofertasId == null)
+//                            ofertaRepository.addOferta(_uiState.value.toDto())
+//                        else
+//                        {
+//                            ofertaRepository.updateOferta(
+//                                _uiState.value.ofertasId ?: 0,
+//                                _uiState.value.toDto()
+//                            )
+//                        }
+//
+//                        _uiState.update {
+//                            it.copy(isSuccess = true)
+//                        }
+//                    }
+//                }
+//            }
+//            OfertaUiEvent.Delete -> {
+//                viewModelScope.launch {
+//                    ofertaRepository.deleteOferta(_uiState.value.ofertasId ?: 0)
+//                }
+//            }
+//            OfertaUiEvent.Refresh -> {
+//                getOfertas()
+//                getProductos()
+//            }
+//        }
+//    }
+
+    fun onEvent(event: OfertaUiEvent) {
+        when (event) {
             is OfertaUiEvent.OfertaIdChanged -> {
-                _uiState.update {
-                    it.copy(ofertasId = event.ofertaId)
-                }
+                _uiState.update { it.copy(ofertasId = event.ofertaId) }
             }
             is OfertaUiEvent.ProductoIdChanged -> {
-                _uiState.update {
-                    it.copy(productoId = event.productoId)
-                }
+                _uiState.update { it.copy(productoId = event.productoId) }
             }
             is OfertaUiEvent.PrecioChanged -> {
-                _uiState.update {
-                    it.copy(precio = event.precio)
-                }
+                _uiState.update { it.copy(precio = event.precio) }
             }
             is OfertaUiEvent.DescuentoChanged -> {
-                _uiState.update {
-                    it.copy(descuento = event.descuento)
-                }
+                _uiState.update { it.copy(descuento = event.descuento) }
             }
             is OfertaUiEvent.PrecioOfertaChanged -> {
-                _uiState.update {
-                    it.copy(precioOferta = event.precioOferta)
-                }
+                _uiState.update { it.copy(precioOferta = event.precioOferta) }
             }
             is OfertaUiEvent.FechaInicioChanged -> {
-                _uiState.update {
-                    it.copy(fechaInicio = event.fechaInicio)
-                }
+                _uiState.update { it.copy(fechaInicio = event.fechaInicio) }
             }
             is OfertaUiEvent.FechaFinalChanged -> {
-                _uiState.update {
-                    it.copy(fechaFinal = event.fechaFinal)
-                }
+                _uiState.update { it.copy(fechaFinal = event.fechaFinal) }
             }
             is OfertaUiEvent.ImagenChanged -> {
-                _uiState.update {
-                    it.copy(imagen = event.imagen)
-                }
+                _uiState.update { it.copy(imagen = event.imagen) }
             }
             is OfertaUiEvent.SelectedOferta -> {
-                viewModelScope.launch {
-                    if(event.ofertaId > 0){
-                        val oferta = ofertaRepository.getOferta(event.ofertaId)
-                        _uiState.update {
-                            it.copy(
-                                ofertasId = oferta.ofertasId,
-                                productoId = oferta.productoId,
-                                precio = oferta.precio,
-                                descuento = oferta.descuento,
-                                precioOferta = oferta.precioOferta,
-                                fechaInicio = oferta.fechaInicio,
-                                fechaFinal = oferta.fechaFinal,
-                                imagen = oferta.imagen
-                            )
-                        }
-                    }
-                }
-            }
-            is OfertaUiEvent.IsRefreshingChanged -> {
-                _uiState.update {
-                    it.copy(isRefreshing = event.isRefreshing)
-                }
+                cargarOfertaSeleccionada(event.ofertaId)
             }
             OfertaUiEvent.Save -> {
                 viewModelScope.launch {
-                    if(_uiState.value.productoId == 0){
-                        _uiState.update {
-                            it.copy(errorProductoId = "El campo productoId no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.precio == BigDecimal.valueOf(0.0)){
-                        _uiState.update {
-                            it.copy(errorPrecio = "El campo precio no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.descuento == BigDecimal.valueOf(0.0)){
-                        _uiState.update {
-                            it.copy(errorDescuento = "El campo descuento no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.precioOferta == BigDecimal.valueOf(0.0)){
-                        _uiState.update {
-                            it.copy(errorPrecioOferta = "El campo precio oferta no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.fechaInicio == null){
-                        _uiState.update {
-                            it.copy(errorFechaInicio = "El campo fecha inicio no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.fechaFinal == null){
-                        _uiState.update {
-                            it.copy(errorFechaFinal = "El campo fecha final no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.imagen.toInt() == 0){
-                        _uiState.update {
-                            it.copy(errorImagen = "El campo imágen no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.errorProductoId == "" && _uiState.value.errorPrecio == ""
-                        && _uiState.value.errorDescuento == "" && _uiState.value.errorPrecioOferta == ""
-                        && _uiState.value.errorFechaInicio == "" && _uiState.value.errorFechaFinal == ""
-                        && _uiState.value.errorImagen == ""){
-
-                        if(_uiState.value.ofertasId == null)
-                            ofertaRepository.addOferta(_uiState.value.toDto())
-                        else
-                        {
-                            ofertaRepository.updateOferta(
-                                _uiState.value.ofertasId ?: 0,
-                                _uiState.value.toDto()
-                            )
-                        }
-
-                        _uiState.update {
-                            it.copy(isSuccess = true)
-                        }
+                    if (validarCampos()) {
+                        guardarOferta()
+                        _uiState.update { it.copy(isSuccess = true) }
                     }
                 }
             }
             OfertaUiEvent.Delete -> {
-                viewModelScope.launch {
-                    ofertaRepository.deleteOferta(_uiState.value.ofertasId ?: 0)
-                }
+                eliminarOferta()
             }
             OfertaUiEvent.Refresh -> {
                 getOfertas()
                 getProductos()
             }
+
+            else -> {}
         }
     }
+
+    private fun validarCampos(): Boolean {
+        var isValid = true
+        _uiState.update {
+            it.copy(
+                errorProductoId = if (it.productoId == 0) {
+                    isValid = false
+                    "El campo productoId no puede estar vacío"
+                } else null,
+                errorPrecio = if (it.precio == BigDecimal.ZERO) {
+                    isValid = false
+                    "El campo precio no puede estar vacío"
+                } else null,
+                errorDescuento = if (it.descuento == BigDecimal.ZERO) {
+                    isValid = false
+                    "El campo descuento no puede estar vacío"
+                } else null,
+                errorPrecioOferta = if (it.precioOferta == BigDecimal.ZERO) {
+                    isValid = false
+                    "El campo precio oferta no puede estar vacío"
+                } else null,
+                errorFechaInicio = if (it.fechaInicio == null) {
+                    isValid = false
+                    "El campo fecha inicio no puede estar vacío"
+                } else null,
+                errorFechaFinal = if (it.fechaFinal == null) {
+                    isValid = false
+                    "El campo fecha final no puede estar vacío"
+                } else null,
+                errorImagen = if (it.imagen.toInt() == 0) {
+                    isValid = false
+                    "El campo imágen no puede estar vacío"
+                } else null
+            )
+        }
+        return isValid
+    }
+
+    private fun cargarOfertaSeleccionada(ofertaId: Int) = viewModelScope.launch {
+        if (ofertaId > 0) {
+            val oferta = ofertaRepository.getOferta(ofertaId)
+            _uiState.update {
+                it.copy(
+                    ofertasId = oferta.ofertasId,
+                    productoId = oferta.productoId,
+                    precio = oferta.precio,
+                    descuento = oferta.descuento,
+                    precioOferta = oferta.precioOferta,
+                    fechaInicio = oferta.fechaInicio,
+                    fechaFinal = oferta.fechaFinal,
+                    imagen = oferta.imagen
+                )
+            }
+        }
+    }
+
+    private suspend fun guardarOferta() {
+        if (_uiState.value.ofertasId == null) {
+            ofertaRepository.addOferta(_uiState.value.toDto())
+        } else {
+            ofertaRepository.updateOferta(_uiState.value.ofertasId ?: 0, _uiState.value.toDto())
+        }
+    }
+
+    private fun eliminarOferta() = viewModelScope.launch {
+        ofertaRepository.deleteOferta(_uiState.value.ofertasId ?: 0)
+    }
+
 
     private fun OfertaUiState.toDto() = OfertaDto(
         ofertasId = ofertasId,
