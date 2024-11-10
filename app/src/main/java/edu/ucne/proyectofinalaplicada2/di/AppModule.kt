@@ -12,7 +12,6 @@ import dagger.hilt.components.SingletonComponent
 import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
-import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
 import retrofit2.Retrofit
@@ -71,6 +70,8 @@ object AppModule {
             .create(UsuarioApi::class.java)
     }
 
+
+
     @Provides
     @Singleton
     fun providesReservacionesAPI(moshi: Moshi): ReservacionesAPI {
@@ -80,6 +81,7 @@ object AppModule {
             .build()
             .create(ReservacionesAPI::class.java)
     }
+
 
 
     @Provides
