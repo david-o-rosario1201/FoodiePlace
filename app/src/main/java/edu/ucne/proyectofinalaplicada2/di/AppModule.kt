@@ -32,6 +32,7 @@ object AppModule {
     fun providesMoshi(): Moshi =
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
+            .add(DateAdapter())
             .build()
 
     @Provides
