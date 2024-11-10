@@ -4,39 +4,39 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ReseñasEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ReseñasDao {
+interface ReviewDao {
     @Upsert
-    suspend fun save(reseñas: ReseñasEntity)
+    suspend fun save(Review: ReviewEntity)
 
     @Delete
-    suspend fun delete(reseñas: ReseñasEntity)
+    suspend fun delete(Review: ReviewEntity)
 
     @Query(
         """
             SELECT *
-            FROM Reseñas
+            FROM Review
             WHERE resenaId = :id
             LIMIT 1
         """
     )
-    suspend fun find(id: Int): ReseñasEntity?
+    suspend fun find(id: Int): ReviewEntity?
 
     @Query(
         """
-            SELECT * FROM Reseñas
+            SELECT * FROM Review
             WHERE usuarioId = :usuarioId
             LIMIT 1
         """
     )
-    suspend fun findUsuario(usuarioId: Int): ReseñasEntity?
+    suspend fun findUsuario(usuarioId: Int): ReviewEntity?
 
 
-    @Query("SELECT * FROM Reseñas")
-    fun getAll(): Flow<List<ReseñasEntity>>
+    @Query("SELECT * FROM Review")
+    fun getAll(): Flow<List<ReviewEntity>>
 
 
 }

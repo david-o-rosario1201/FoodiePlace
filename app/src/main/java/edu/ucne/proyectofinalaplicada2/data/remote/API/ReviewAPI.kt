@@ -8,7 +8,7 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface ReseñasAPI {
+interface ReviewAPI {
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @GET("api/Reseñas")
@@ -20,11 +20,11 @@ interface ReseñasAPI {
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @POST("api/Reseñas")
-    suspend fun postReseña(@Body reseña: ReseñasDTO?): ReseñasDTO?
+    suspend fun postReseña(@Body Review: ReseñasDTO?): ReseñasDTO?
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @POST("api/Reseñas/{id}")
-    suspend fun putReseña(@Path("id") id: Int, @Body reseña: ReseñasDTO): ReseñasDTO
+    suspend fun putReseña(@Path("id") id: Int, @Body Review: ReseñasDTO): ReseñasDTO
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @DELETE("api/Reseñas/{id}")
