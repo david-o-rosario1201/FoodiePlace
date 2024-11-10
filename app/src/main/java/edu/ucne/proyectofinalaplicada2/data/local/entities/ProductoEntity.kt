@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
 @Entity(
-    tableName = "Productos"
-            foreignKeys = [
+    tableName = "Productos",
+            foreignKeys  = [
         ForeignKey(
             entity = CategoriasEntity::class,
             parentColumns = ["categoriaId"],
