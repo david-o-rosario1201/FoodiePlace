@@ -9,7 +9,7 @@ class TarjetaRemoteDataSource @Inject constructor(
 ) {
     suspend fun addTarjeta(tarjetaDto: TarjetaDto) = tarjetaApi.addTarjeta(tarjetaDto)
 
-    suspend fun getTarjeta(tarjetaId: Int) = tarjetaApi.getTarjeta(tarjetaId)
+    suspend fun getTarjeta(tarjetaId: Int) = tarjetaApi.getTarjetaById(tarjetaId)
 
     suspend fun deleteTarjeta(tarjetaId: Int) = tarjetaApi.deleteTarjeta(tarjetaId)
 
