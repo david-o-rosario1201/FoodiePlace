@@ -28,6 +28,6 @@ interface CategoriaDao {
 
 
     @Query("SELECT * FROM Categorias")
-    suspend fun getAll(): Flow<List<CategoriaEntity>>
+    fun getAll(): Flow<List<CategoriaEntity>>
 
 }
