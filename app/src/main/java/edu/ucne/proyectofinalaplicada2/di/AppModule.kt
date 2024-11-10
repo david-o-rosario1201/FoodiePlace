@@ -109,4 +109,5 @@ object AppModule {
 
 
     fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
+
 }
