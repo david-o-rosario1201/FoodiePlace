@@ -94,10 +94,10 @@ object AppModule {
     @Provides
     @Singleton
     fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
-    fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
-
     @Provides
     @Singleton
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
+
     fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reviewDao()
 
     fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
