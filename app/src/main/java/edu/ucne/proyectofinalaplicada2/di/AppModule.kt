@@ -87,16 +87,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesOfertaApi(moshi: Moshi): OfertaApi {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-            .create(OfertaApi::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun ProvidesProductoApi(moshi: Moshi): ProductoApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
