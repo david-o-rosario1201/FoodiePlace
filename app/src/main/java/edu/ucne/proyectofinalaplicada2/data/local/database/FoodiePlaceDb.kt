@@ -12,6 +12,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDetalleDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
@@ -24,7 +25,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
         ReservacionesEntity::class,
         CategoriaEntity::class,
         CarritoEntity::class,
-        CarritoDetalleEntity::class
+        CarritoDetalleEntity::class,
     ],
     version = 1,
     exportSchema = false
