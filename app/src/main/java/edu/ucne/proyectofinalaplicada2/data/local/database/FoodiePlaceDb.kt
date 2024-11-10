@@ -8,6 +8,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDetalleDao
@@ -22,10 +23,11 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
     entities = [
         ReviewEntity::class,
         UsuarioEntity::class,
+        ProductoEntity::class
+        UsuarioEntity::class,
         ReservacionesEntity::class,
         CategoriaEntity::class,
         CarritoEntity::class,
-        ProductoEntity::class,
         CarritoDetalleEntity::class,
 
     ],
