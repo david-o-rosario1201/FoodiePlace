@@ -45,27 +45,6 @@ interface CarritoDetalleDao {
 
     @Query(
         """
-            SELECT * FROM CarritoDetalle
-            WHERE carritoId= (SELECT MAX(carritoId) FROM Carrito WHERE pagado = 0)
-        """
-    )
-    fun getCarritoDetalleCount(): Flow<Int>
-
-    @Query(
-        """
-            SELECT COUNT(*) AS item_count
-            FROM carritoDetalle
-            WHERE carritoId = (SELECT MAX(carritoId) 
-                                FROM Carrito
-                                WHERE pagado = 0 AND usuarioId = :usuarioId)
-            Limit 1
-
-        """
-    )
-    fun getCarritoDetalleCountByPersona(usuarioId: Int): Flow<Int>
-
-    @Query(
-        """
             SELECT EXISTS 
                 (SELECT 1 
                  FROM carritoDetalle 
