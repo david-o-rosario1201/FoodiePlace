@@ -2,10 +2,9 @@ package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReseñasDTO
-import edu.ucne.proyectofinalaplicada2.data.repository.ReseñasRepository
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
+import edu.ucne.proyectofinalaplicada2.data.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,11 +15,11 @@ import java.util.Locale
 import javax.inject.Inject
 
 
-class ReseñasViewModel @Inject constructor(
-    private val repository: ReseñasRepository
+class ReviewViewModel @Inject constructor(
+    private val repository: ReviewRepository
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(ReseñasUiState())
+    private val _uiState = MutableStateFlow(ReviewUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -59,28 +58,28 @@ class ReseñasViewModel @Inject constructor(
         }
     }
 
-    fun onUiEvent(event: ReseñasUiEvent){
+    fun onUiEvent(event: ReviewUiEvent){
         when(event){
-            ReseñasUiEvent.Delete -> deleteReseña()
-            ReseñasUiEvent.Save -> saveReseña()
+            ReviewUiEvent.Delete -> deleteReseña()
+            ReviewUiEvent.Save -> saveReseña()
 
-            is ReseñasUiEvent.SetCalificacion -> _uiState.update {
+            is ReviewUiEvent.SetCalificacion -> _uiState.update {
                 it.copy( calificacion = event.calificacion, errorMessge = "" )
             }
 
-            is ReseñasUiEvent.SetComentario -> _uiState.update {
+            is ReviewUiEvent.SetComentario -> _uiState.update {
                 it.copy( comentario = event.comentario, errorMessge = "" )
             }
-            is ReseñasUiEvent.SetUsuarioId -> _uiState.update {
+            is ReviewUiEvent.SetUsuarioId -> _uiState.update {
                 it.copy( usuarioId = event.usuarioId, errorMessge = "" )
             }
 
-            is ReseñasUiEvent.IsRefreshingChanged ->  {
+            is ReviewUiEvent.IsRefreshingChanged ->  {
                 _uiState.update {
                     it.copy(isRefreshing = event.isRefreshing)
                     }
                 }
-            ReseñasUiEvent.Refresh -> GetReseñas()
+            ReviewUiEvent.Refresh -> GetReseñas()
         }
     }
 
@@ -109,9 +108,9 @@ class ReseñasViewModel @Inject constructor(
         return dateFormat.format(Date())
     }
 
-    fun ReseñasUiState.toEntity() =
+    fun ReviewUiState.toEntity() =
         id?.let {
-            ReseñasDTO(
+            ReviewDTO(
                 resenaId = it,
                 usuarioId = usuarioId,
                 comentario = comentario,

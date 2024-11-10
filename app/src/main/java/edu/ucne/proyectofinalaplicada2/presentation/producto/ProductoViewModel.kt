@@ -79,6 +79,12 @@ class ProductoViewModel @Inject constructor(
             is ProductoUiEvent.ImagenChange -> {
                 _uiState.update { it.copy(imagen = event.imagen) }
             }
+            is ProductoUiEvent.IsRefreshingChanged -> {
+                _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
+            }
+            ProductoUiEvent.Refresh -> {
+                getProductos()
+            }
             is ProductoUiEvent.SelectedProducto -> {
                 viewModelScope.launch {
                     if (event.productoId > 0) {

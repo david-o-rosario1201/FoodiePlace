@@ -3,11 +3,10 @@ package edu.ucne.proyectofinalaplicada2.data.local.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
-import java.util.Date
 
 @Serializable
-@Entity(tableName = "Reseñas")
-data class ReseñasEntity (
+@Entity(tableName = "Review")
+data class ReviewEntity (
     @PrimaryKey
     val resenaId: Int? = 0,
     val usuarioId: Int,

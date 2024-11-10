@@ -1,29 +1,28 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
-import edu.ucne.proyectofinalaplicada2.data.local.dao.ReseñasDao
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ReseñasEntity
-import edu.ucne.proyectofinalaplicada2.data.remote.ReseñasRemoteSource
+import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
-import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.RemoteDataSource
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReseñasDTO
+import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ReviewRemoteDataSource
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class ReseñasRepository @Inject constructor(
-    private val remoteDataSource: RemoteDataSource,
-    private val reseñasDao: ReseñasDao
+class ReviewRepository @Inject constructor(
+    private val reviewRemoteDataSource: ReviewRemoteDataSource,
+    private val reseñasDao: ReviewDao
 ) {
-    suspend fun addReseña(reseña: ReseñasDTO) = remoteDataSource.postReseña(reseña)
-    suspend fun getReseña(id: Int) = remoteDataSource.getReseñaById(id)
-    suspend fun deleteReseña(id: Int) = remoteDataSource.deleteReseña(id)
-    suspend fun updateReseña(id: Int, reseña: ReseñasDTO) = remoteDataSource.putReseña(id, reseña)
+    suspend fun addReseña(reseña: ReviewDTO) = reviewRemoteDataSource.postReseña(reseña)
+    suspend fun getReseña(id: Int) = reviewRemoteDataSource.getReseñaById(id)
+    suspend fun deleteReseña(id: Int) = reviewRemoteDataSource.deleteReseña(id)
+    suspend fun updateReseña(id: Int, reseña: ReviewDTO) = reviewRemoteDataSource.putReseña(id, reseña)
 
-    fun getReseñas(): Flow<Resource<List<ReseñasEntity>>> = flow {
+    fun getReseñas(): Flow<Resource<List<ReviewEntity>>> = flow {
         try{
             emit(Resource.Loading())
-            val reseñas = remoteDataSource.getReseñas()
+            val reseñas = reviewRemoteDataSource.getReseñas()
 
             reseñas.forEach {
                 reseñasDao.save(
@@ -47,7 +46,7 @@ class ReseñasRepository @Inject constructor(
     }
 }
 
-private fun ReseñasDTO.toReseñasEntity() = ReseñasEntity(
+private fun ReviewDTO.toReseñasEntity() = ReviewEntity(
     resenaId = resenaId,
     usuarioId = usuarioId,
     comentario = comentario,
