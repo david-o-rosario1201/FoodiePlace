@@ -10,6 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
+import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
@@ -62,6 +63,16 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesCategoriaAPI(moshi: Moshi): CategoriaAPI {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(CategoriaAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun providesUsuarioApi(moshi: Moshi): UsuarioApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -98,7 +109,7 @@ object AppModule {
     @Singleton
     fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reviewDao()
 
-
-
-
+    @Provides
+    @Singleton
+    fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
 }
