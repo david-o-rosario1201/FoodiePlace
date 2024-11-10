@@ -14,4 +14,6 @@ sealed interface ProductoUiEvent {
     data class SelectedProducto(val productoId: Int) : ProductoUiEvent
     data object Save : ProductoUiEvent
     data object Delete : ProductoUiEvent
+    data object Refresh : ProductoUiEvent
+    data class IsRefreshingChanged(val isRefreshing: Boolean) : ProductoUiEvent
 }
