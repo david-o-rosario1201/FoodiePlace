@@ -12,6 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
+import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -57,4 +58,18 @@ object AppModule {
             .build()
             .create(ReseñasAPI::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun providesUsuarioApi(moshi: Moshi): UsuarioApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(UsuarioApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
 }
