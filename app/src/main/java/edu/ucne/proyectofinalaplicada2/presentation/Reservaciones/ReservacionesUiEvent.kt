@@ -10,4 +10,6 @@ sealed class ReservacionesUiEvent {
     object Save : ReservacionesUiEvent()
     object Delete : ReservacionesUiEvent()
     data class SelectedReservacion(val reservacionId: Int) : ReservacionesUiEvent()
+    data object Refresh : ReservacionesUiEvent()
+    data class IsRefreshingChanged(val isRefreshing: Boolean) : ReservacionesUiEvent()
 }

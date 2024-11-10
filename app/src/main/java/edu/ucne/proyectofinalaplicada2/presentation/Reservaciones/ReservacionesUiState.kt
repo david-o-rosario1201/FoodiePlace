@@ -11,5 +11,6 @@ data class ReservacionesUiState(
     val reservaciones: List<ReservacionesEntity> = emptyList(),
     val isLoading: Boolean = false,
     val success: Boolean = false,
-    val errorMensaje: String? = null
+    val errorMensaje: String? = null,
+    val isRefreshing: Boolean = false
 )
