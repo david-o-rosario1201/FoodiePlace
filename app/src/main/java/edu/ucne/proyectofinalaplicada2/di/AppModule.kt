@@ -82,7 +82,6 @@ object AppModule {
     }
 
 
-
     @Provides
     @Singleton
     fun providesReservacionesAPI(moshi: Moshi): ReservacionesAPI {
@@ -95,21 +94,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
-
-
-
-
-
-    @Provides
-    @Singleton
     fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
-
     @Provides
     @Singleton
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
+
     fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reviewDao()
 
-    @Provides
-    @Singleton
     fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
+
 }
