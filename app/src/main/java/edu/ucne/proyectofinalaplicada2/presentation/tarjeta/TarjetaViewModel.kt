@@ -33,9 +33,22 @@ class TarjetaViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
+                        // Mapear de TarjetaEntity a TarjetaDto
+                        val tarjetaDtoList = result.data?.map { entity ->
+                            TarjetaDto(
+                                tarjetaId = entity.tarjetaId,
+                                usuarioId = entity.usuarioId,
+                                tipoTarjeta = entity.tipoTarjeta,
+                                numeroTarjeta = entity.numeroTarjeta,
+                                fechaExpiracion = entity.fechaExpiracion,
+                                cvv = entity.cvv
+                            )
+                        } ?: emptyList()
+
+                        // Actualizar el estado con la lista de DTOs
                         _uiState.update {
                             it.copy(
-                                tarjetas = result.data ?: emptyList(),
+                                tarjetas = tarjetaDtoList,
                                 isLoading = false
                             )
                         }
@@ -43,7 +56,16 @@ class TarjetaViewModel @Inject constructor(
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
-                                tarjetas = result.data ?: emptyList(),
+                                tarjetas = result.data?.map { entity ->
+                                    TarjetaDto(
+                                        tarjetaId = entity.tarjetaId,
+                                        usuarioId = entity.usuarioId,
+                                        tipoTarjeta = entity.tipoTarjeta,
+                                        numeroTarjeta = entity.numeroTarjeta,
+                                        fechaExpiracion = entity.fechaExpiracion,
+                                        cvv = entity.cvv
+                                    )
+                                } ?: emptyList(),
                                 isLoading = false
                             )
                         }
