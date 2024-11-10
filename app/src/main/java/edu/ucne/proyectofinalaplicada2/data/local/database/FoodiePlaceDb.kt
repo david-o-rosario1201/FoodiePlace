@@ -24,12 +24,12 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
     entities = [
         ReviewEntity::class,
         UsuarioEntity::class,
-        OfertaEntity::class,
         ProductoEntity::class,
         ReservacionesEntity::class,
         CategoriaEntity::class,
         CarritoEntity::class,
         CarritoDetalleEntity::class,
+        OfertaEntity::class
     ],
     version = 1,
     exportSchema = false
