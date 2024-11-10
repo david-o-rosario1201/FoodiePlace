@@ -2,9 +2,10 @@ package edu.ucne.proyectofinalaplicada2.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import edu.ucne.proyectofinalaplicada2.data.local.dao.OfertaDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CategoriaDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReservacionesDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
@@ -15,24 +16,23 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 
 @Database(
     entities = [
         ReviewEntity::class,
-        UsuarioEntity::class,
         UsuarioEntity::class,
         ProductoEntity::class,
         ReservacionesEntity::class,
         CategoriaEntity::class,
         CarritoEntity::class,
         CarritoDetalleEntity::class,
-
+        OfertaEntity::class
     ],
     version = 1,
     exportSchema = false
 )
 
+@TypeConverters(Converters::class)
 abstract class FoodiePlaceDb : RoomDatabase(){
 
     abstract fun ProductoDao(): ProductoDao
@@ -42,5 +42,5 @@ abstract class FoodiePlaceDb : RoomDatabase(){
     abstract fun categoriaDao(): CategoriaDao
     abstract fun carritoDao(): CarritoDao
     abstract fun carritoDetalleDao(): CarritoDetalleDao
-
+    abstract fun ofertaDao(): OfertaDao
 }

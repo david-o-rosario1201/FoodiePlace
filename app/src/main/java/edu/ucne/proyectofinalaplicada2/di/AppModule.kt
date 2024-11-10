@@ -13,6 +13,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CarritoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
@@ -31,6 +32,7 @@ object AppModule {
     fun providesMoshi(): Moshi =
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
+            .add(DateAdapter())
             .build()
 
     @Provides
@@ -120,8 +122,39 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
 
+
+
+
+
+    @Provides
+    @Singleton
+    fun providesOfertaApi(moshi: Moshi): OfertaApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(OfertaApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
+
+    @Provides
+    @Singleton
+    fun providesOfertaApi(moshi: Moshi): OfertaApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(OfertaApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
     @Provides
     @Singleton
     fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
@@ -129,6 +162,10 @@ object AppModule {
     @Provides
     @Singleton
     fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reviewDao()
+
+    @Provides
+    @Singleton
+    fun providesOfertaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.ofertaDao()
 
     @Provides
     @Singleton
