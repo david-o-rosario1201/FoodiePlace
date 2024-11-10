@@ -35,7 +35,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 
 abstract class FoodiePlaceDb : RoomDatabase(){
 
-    abstract val ProductoDao: ProductoDao
+    abstract fun ProductoDao(): ProductoDao
     abstract fun reservacionesDao(): ReservacionesDao
     abstract fun reviewDao(): ReviewDao
     abstract fun usuarioDao(): UsuarioDao

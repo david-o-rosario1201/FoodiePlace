@@ -4,7 +4,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ReviewRemoteDataSource
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReseñasDTO
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -14,10 +14,10 @@ class ReviewRepository @Inject constructor(
     private val reviewRemoteDataSource: ReviewRemoteDataSource,
     private val reseñasDao: ReviewDao
 ) {
-    suspend fun addReseña(reseña: ReseñasDTO) = reviewRemoteDataSource.postReseña(reseña)
+    suspend fun addReseña(reseña: ReviewDTO) = reviewRemoteDataSource.postReseña(reseña)
     suspend fun getReseña(id: Int) = reviewRemoteDataSource.getReseñaById(id)
     suspend fun deleteReseña(id: Int) = reviewRemoteDataSource.deleteReseña(id)
-    suspend fun updateReseña(id: Int, reseña: ReseñasDTO) = reviewRemoteDataSource.putReseña(id, reseña)
+    suspend fun updateReseña(id: Int, reseña: ReviewDTO) = reviewRemoteDataSource.putReseña(id, reseña)
 
     fun getReseñas(): Flow<Resource<List<ReviewEntity>>> = flow {
         try{
@@ -46,7 +46,7 @@ class ReviewRepository @Inject constructor(
     }
 }
 
-private fun ReseñasDTO.toReseñasEntity() = ReviewEntity(
+private fun ReviewDTO.toReseñasEntity() = ReviewEntity(
     resenaId = resenaId,
     usuarioId = usuarioId,
     comentario = comentario,

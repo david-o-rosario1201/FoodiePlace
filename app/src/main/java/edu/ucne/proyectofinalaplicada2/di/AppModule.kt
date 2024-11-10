@@ -10,6 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
+import edu.ucne.proyectofinalaplicada2.data.remote.API.CarritoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
@@ -109,13 +110,37 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesCarritoAPI(moshi: Moshi): CarritoApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(CarritoApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun providesUsuarioDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.usuarioDao()
+
     @Provides
     @Singleton
     fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
 
+    @Provides
+    @Singleton
     fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reviewDao()
 
+    @Provides
+    @Singleton
     fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
+
+    @Provides
+    @Singleton
+    fun providesCarritoDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.carritoDao()
+
+    @Provides
+    @Singleton
+    fun providesCarritoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.carritoDetalleDao()
+
 
 }

@@ -3,7 +3,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReseñasDTO
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
 import edu.ucne.proyectofinalaplicada2.data.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -110,7 +110,7 @@ class ReviewViewModel @Inject constructor(
 
     fun ReviewUiState.toEntity() =
         id?.let {
-            ReseñasDTO(
+            ReviewDTO(
                 resenaId = it,
                 usuarioId = usuarioId,
                 comentario = comentario,
