@@ -1,6 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.data.remote.API
 
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
+import okhttp3.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
