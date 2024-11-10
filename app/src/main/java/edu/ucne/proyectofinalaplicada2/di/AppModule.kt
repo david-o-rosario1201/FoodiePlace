@@ -89,4 +89,10 @@ object AppModule {
     @Provides
     @Singleton
     fun providesReseñasDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.reviewDao()
+    @Provides
+    @Singleton
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
+
+
+
 }
