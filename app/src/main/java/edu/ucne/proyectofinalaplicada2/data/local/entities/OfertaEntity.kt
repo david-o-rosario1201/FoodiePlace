@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.math.BigDecimal
 import java.util.Date
@@ -14,7 +15,8 @@ import java.util.Date
             parentColumns = ["productoId"],
             childColumns = ["productoId"]
         )
-    ]
+    ],
+    indices = [Index(value = ["productoId"])]
 )
 data class OfertaEntity(
     @PrimaryKey
