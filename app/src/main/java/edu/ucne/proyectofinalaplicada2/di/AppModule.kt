@@ -14,7 +14,6 @@ import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
-import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
 import retrofit2.Retrofit
@@ -84,16 +83,6 @@ object AppModule {
             .create(UsuarioApi::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun providesOfertaApi(moshi: Moshi): OfertaApi {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-            .create(OfertaApi::class.java)
-    }
-
 
 
     @Provides
@@ -109,10 +98,6 @@ object AppModule {
     @Provides
     @Singleton
     fun providesReservacionesDao(db: FoodiePlaceDb) = db.ReservacionesEntity
-
-
-
-
 
     @Provides
     @Singleton
