@@ -81,8 +81,6 @@ object AppModule {
             .create(UsuarioApi::class.java)
     }
 
-
-
     @Provides
     @Singleton
     fun providesReservacionesAPI(moshi: Moshi): ReservacionesAPI {
@@ -92,7 +90,6 @@ object AppModule {
             .build()
             .create(ReservacionesAPI::class.java)
     }
-
 
     @Provides
     @Singleton
@@ -104,7 +101,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao
+    fun providesReservacionesDao(db: FoodiePlaceDb) = db.reservacionesDao()
 
 
 
