@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
 @Dao
-interface CarritoDetalleEntityDao {
+interface CarritoDetalleDao {
 
     @Upsert
     suspend fun save(carritoDetalle: CarritoDetalleEntity)
