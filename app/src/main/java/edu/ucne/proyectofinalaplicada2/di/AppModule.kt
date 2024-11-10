@@ -14,7 +14,6 @@ import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
-import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
 import retrofit2.Retrofit
@@ -83,6 +82,8 @@ object AppModule {
             .create(UsuarioApi::class.java)
     }
 
+
+
     @Provides
     @Singleton
     fun ProvidesProductoApi(moshi: Moshi): ProductoApi {
@@ -96,9 +97,7 @@ object AppModule {
     @Singleton
     fun providesProductoDao(db: FoodiePlaceDb) = db.ProductoDao
 
-
-
-    @Provides
+       @Provides
     @Singleton
     fun providesReservacionesAPI(moshi: Moshi): ReservacionesAPI {
         return Retrofit.Builder()
