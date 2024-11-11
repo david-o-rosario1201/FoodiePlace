@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ReviewDao {
     @Upsert
-    suspend fun save(Review: ReviewEntity)
+    suspend fun save(review: ReviewEntity)
 
     @Delete
-    suspend fun delete(Review: ReviewEntity)
+    suspend fun delete(review: ReviewEntity)
 
     @Query(
         """

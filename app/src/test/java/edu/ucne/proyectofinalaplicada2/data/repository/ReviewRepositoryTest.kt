@@ -14,13 +14,12 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import retrofit2.Response
 import java.time.LocalDate
 
 class ReviewRepositoryTest {
 
     @Test
-    fun addReseña() = runTest {
+    fun addReview() = runTest {
         // Given
         val review = ReviewDTO(
             resenaId = 2,
@@ -34,17 +33,17 @@ class ReviewRepositoryTest {
         val reviewDao = mockk<ReviewDao>()
         val repository = ReviewRepository(reviewRemoteDataSource, reviewDao)
 
-        coEvery { reviewRemoteDataSource.postReseña(any()) } returns review
+        coEvery { reviewRemoteDataSource.postReview(any()) } returns review
 
         // When
-        repository.addReseña(review)
+        repository.addReview(review)
 
         // Then
-        coVerify { reviewRemoteDataSource.postReseña(review) }
+        coVerify { reviewRemoteDataSource.postReview(review) }
     }
 
     @Test
-    fun getReseña() = runTest {
+    fun getReview() = runTest {
         // Given
         val review = ReviewDTO(
             resenaId = 2,
@@ -58,13 +57,13 @@ class ReviewRepositoryTest {
         val reviewDao = mockk<ReviewDao>()
         val repository = ReviewRepository(reviewRemoteDataSource, reviewDao)
 
-        coEvery { reviewRemoteDataSource.getReseñaById(review.resenaId) } returns review
+        coEvery { reviewRemoteDataSource.getReviewById(review.resenaId) } returns review
 
         // When
-        val result = repository.getReseña(review.resenaId)
+        val result = repository.getReview(review.resenaId)
 
         // Then
-        coVerify { reviewRemoteDataSource.getReseñaById(review.resenaId) }
+        coVerify { reviewRemoteDataSource.getReviewById(review.resenaId) }
         assertEquals(review, result)
     }
 
@@ -83,13 +82,13 @@ class ReviewRepositoryTest {
         val reviewDao = mockk<ReviewDao>()
         val repository = ReviewRepository(reviewRemoteDataSource, reviewDao)
 
-        coEvery { reviewRemoteDataSource.putReseña(review.resenaId ?: 0, review) } returns review
+        coEvery { reviewRemoteDataSource.putReview(review.resenaId ?: 0, review) } returns review
 
         // When
-        repository.updateReseña(review.resenaId ?: 0, review)
+        repository.updateReview(review.resenaId ?: 0, review)
 
         // Then
-        coVerify { reviewRemoteDataSource.putReseña(review.resenaId ?: 0, review) }
+        coVerify { reviewRemoteDataSource.putReview(review.resenaId ?: 0, review) }
     }
 
     @Test

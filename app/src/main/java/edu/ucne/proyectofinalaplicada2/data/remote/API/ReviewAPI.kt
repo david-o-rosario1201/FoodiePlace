@@ -12,22 +12,22 @@ interface ReviewAPI {
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @GET("api/Reseñas")
-    suspend fun getReseñas(): List<ReviewDTO>
+    suspend fun getReview(): List<ReviewDTO>
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @GET("api/Reseñas/{id}")
-    suspend fun getReseñaById(@Path("id") id: Int): ReviewDTO
+    suspend fun getReviewById(@Path("id") id: Int): ReviewDTO
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @POST("api/Reseñas")
-    suspend fun postReseña(@Body Review: ReviewDTO?): ReviewDTO?
+    suspend fun postReview(@Body Review: ReviewDTO?): ReviewDTO?
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @POST("api/Reseñas/{id}")
-    suspend fun putReseña(@Path("id") id: Int, @Body Review: ReviewDTO): ReviewDTO
+    suspend fun putReview(@Path("id") id: Int, @Body Review: ReviewDTO): ReviewDTO
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @DELETE("api/Reseñas/{id}")
-    suspend fun deleteReseña(@Path("id") id: Int)
+    suspend fun deleteReview(@Path("id") id: Int)
 
 }
