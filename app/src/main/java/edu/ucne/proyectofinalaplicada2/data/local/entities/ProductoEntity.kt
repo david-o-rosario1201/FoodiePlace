@@ -10,7 +10,7 @@ import java.math.BigDecimal
     tableName = "Productos",
             foreignKeys  = [
         ForeignKey(
-            entity = CategoriasEntity::class,
+            entity = CategoriaEntity::class,
             parentColumns = ["categoriaId"],
             childColumns = ["categoriaId"]
         )
