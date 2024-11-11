@@ -7,8 +7,6 @@ import androidx.room.TypeConverters
 import edu.ucne.proyectofinalaplicada2.data.local.dao.OfertaDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CategoriaDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReservacionesDao
-
-
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.PagosEntity
