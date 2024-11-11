@@ -22,9 +22,9 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.*
 import edu.ucne.proyectofinalaplicada2.data.local.entities.*
+import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
 
 @Database(
     entities = [
