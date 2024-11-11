@@ -1,13 +1,10 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
 import edu.ucne.proyectofinalaplicada2.data.local.dao.PagosDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.TarjetaDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.PagosEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.PagosRemoteDataSource
-import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.TarjetaRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.TarjetaDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
