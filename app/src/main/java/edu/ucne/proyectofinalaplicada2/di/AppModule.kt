@@ -10,13 +10,15 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
+import edu.ucne.proyectofinalaplicada2.data.remote.API.CarritoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.PagosAPI
-import edu.ucne.proyectofinalaplicada2.data.remote.API.ReseñasAPI
+import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton

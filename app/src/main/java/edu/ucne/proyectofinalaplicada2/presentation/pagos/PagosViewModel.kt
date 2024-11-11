@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
 import edu.ucne.proyectofinalaplicada2.data.repository.PagosRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.TarjetaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -12,41 +13,33 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PagosViewModel @Inject constructor(
-    private val repository: PagosRepository
+    private val repository: PagosRepository,
+    private val tarjetarepository: TarjetaRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(PagosUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        GetTarjetas()
+        loadTarjetas()
     }
 
-
-    private fun GetTarjetas(){
+    private fun loadTarjetas() {
         viewModelScope.launch {
-            repository.getPagos().collect{ result ->
-                when(result) {
-                    is Resource.Error ->
-                        _uiState.update {
-                            it.copy(
-                                errorMessge = result.message ?: "Error desconocido",
-                                isLoading = false
-                            )
-                        }
+            tarjetarepository.getTarjetas().collect { result ->
+                when (result) {
+                    is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
+                    is Resource.Success -> _uiState.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
 
-                    is Resource.Loading ->
-                        _uiState.update {
-                            it.copy(isLoading = true)
-                        }
-
-                    is Resource.Success ->
-                        _uiState.update {
-                            it.copy(
-                                pagos = result.data ?: emptyList(),
-                                isLoading = false
-                            )
-                        }
-
+                    is Resource.Error -> _uiState.update {
+                        it.copy(
+                            errorMessge = result.message ?: "Error al cargar tarjetas",
+                            isLoading = false
+                        )
+                    }
                 }
             }
         }
@@ -60,7 +53,7 @@ class PagosViewModel @Inject constructor(
                     it.copy(isRefreshing = event.isRefreshing)
                 }
             }
-            PagosUIEvent.Refresh -> GetTarjetas()
+            PagosUIEvent.Refresh -> loadTarjetas()
         }
     }
 

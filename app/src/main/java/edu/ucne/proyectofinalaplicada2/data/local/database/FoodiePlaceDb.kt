@@ -28,7 +28,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.*
 
 @Database(
     entities = [
-        PagosEntity::class
+        PagosEntity::class,
         ReviewEntity::class,
         UsuarioEntity::class,
         ProductoEntity::class,
