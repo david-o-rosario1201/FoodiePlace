@@ -15,9 +15,11 @@ import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
-import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
+import edu.ucne.proyectofinalaplicada2.data.remote.API.TarjetaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.UsuarioApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.PagosAPI
+import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -25,9 +27,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object AppModule {
+
     const val BASE_URL = "https://foodieplaceapi.azurewebsites.net/"
 
-    //Moshi
+    // Moshi
     @Provides
     @Singleton
     fun providesMoshi(): Moshi =
@@ -36,10 +39,10 @@ object AppModule {
             .add(DateAdapter())
             .build()
 
-    //FoodiPlaceDb
+    // FoodiePlaceDb
     @Provides
     @Singleton
-    fun providesFoodiePlaceDb(@ApplicationContext appContext: Context) =
+    fun providesFoodiePlaceDb(@ApplicationContext appContext: Context): FoodiePlaceDb =
         Room.databaseBuilder(
             appContext,
             FoodiePlaceDb::class.java,
@@ -47,7 +50,7 @@ object AppModule {
         ).fallbackToDestructiveMigration()
             .build()
 
-    //FoodiePlaceApi
+    // FoodiePlaceApi
     @Provides
     @Singleton
     fun providesFoodiePlaceApi(moshi: Moshi): FoodiePlaceApi {
@@ -58,7 +61,7 @@ object AppModule {
             .create(FoodiePlaceApi::class.java)
     }
 
-    //APIs
+    // APIs
     @Provides
     @Singleton
     fun providesReseñasAPI(moshi: Moshi): ReviewAPI {
@@ -67,6 +70,15 @@ object AppModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(ReviewAPI::class.java)
+    }
+    @Provides
+    @Singleton
+    fun providesPagosAPI(moshi: Moshi): PagosAPI {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(PagosAPI::class.java)
     }
 
     @Provides
@@ -91,7 +103,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun ProvidesProductoApi(moshi: Moshi): ProductoApi {
+    fun providesProductoApi(moshi: Moshi): ProductoApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -129,7 +141,17 @@ object AppModule {
             .create(OfertaApi::class.java)
     }
 
-    //DAOs
+    @Provides
+    @Singleton
+    fun providesTarjetaApi(moshi: Moshi): TarjetaApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(TarjetaApi::class.java)
+    }
+
+    // DAOs
     @Provides
     @Singleton
     fun providesProductoDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.ProductoDao()
@@ -152,6 +174,10 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesPagosDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.pagosDao()
+
+    @Provides
+    @Singleton
     fun providesCategoriaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.categoriaDao()
 
     @Provides
@@ -161,4 +187,9 @@ object AppModule {
     @Provides
     @Singleton
     fun providesCarritoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.carritoDetalleDao()
+
+    // TarjetaDao
+    @Provides
+    @Singleton
+    fun providesTarjetaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.tarjetaDao()
 }
