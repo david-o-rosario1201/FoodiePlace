@@ -49,8 +49,6 @@ class TarjetaViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 tarjetas = tarjetaDtoList,
-                                tarjetas = tarjetaDtoList,
-                                tarjetas = result.data ?: emptyList(),
                                 isLoading = false
                             )
                         }
