@@ -18,35 +18,41 @@ class TarjetaRepository @Inject constructor(
 
     suspend fun getTarjeta(tarjetaId: Int) = tarjetaRemoteDataSource.getTarjeta(tarjetaId)
 
-    suspend fun deleteTarjeta(tarjetaId: Int) = tarjetaRemoteDataSource.deleteTarjeta(tarjetaId)
+    suspend fun deleteTarjeta(tarjetaId: Int) {
+        tarjetaRemoteDataSource.deleteTarjeta(tarjetaId)
+    }
 
-    suspend fun updateTarjeta(tarjetaId: Int, tarjetaDto: TarjetaDto) = tarjetaRemoteDataSource.updateTarjeta(tarjetaId, tarjetaDto)
+    suspend fun updateTarjeta(tarjetaId: Int, tarjeta: TarjetaDto) =tarjetaRemoteDataSource.updateTarjeta(tarjetaId,tarjeta)
 
     fun getTarjetas(): Flow<Resource<List<TarjetaEntity>>> = flow {
         try {
             emit(Resource.Loading())
+            // Obtener tarjetas desde el servidor
             val tarjetas = tarjetaRemoteDataSource.getTarjetas()
 
+            // Guardar las tarjetas en la base de datos local
             tarjetas.forEach {
-                tarjetaDao.addTarjeta(
-                    it.toTarjetaEntity()
-                )
+                tarjetaDao.addTarjeta(it.toTarjetaEntity())
             }
 
+            // Emitir las tarjetas locales como un flujo continuo
             tarjetaDao.getTarjetas().collect { tarjetasLocal ->
                 emit(Resource.Success(tarjetasLocal))
             }
 
         } catch (e: HttpException) {
             emit(Resource.Error("Error de internet ${e.message}"))
-        } catch (e: Exception) {
-            emit(Resource.Error("Error desconocido ${e.message}"))
-
+        } catch (e: Exception) { // Emitir tarjetas locales en caso de error
             tarjetaDao.getTarjetas().collect { tarjetasLocal ->
                 emit(Resource.Success(tarjetasLocal))
             }
+            emit(Resource.Error("Error desconocido ${e.message}"))
+
+
         }
     }
+
+
 }
 
 fun TarjetaDto.toTarjetaEntity(): TarjetaEntity {
