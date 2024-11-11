@@ -1,7 +1,5 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
-import edu.ucne.proyectofinalaplicada2.data.local.dao.ReseñasDao
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ReseñasEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
