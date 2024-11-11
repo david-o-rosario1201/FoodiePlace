@@ -6,7 +6,6 @@ import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.TarjetaRemoteDataS
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.TarjetaDto
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
