@@ -1,6 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.data.remote.API
 
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.TarjetaDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -24,9 +25,12 @@ interface TarjetaApi {
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @PUT("api/Tarjetas/{id}")
-    suspend fun updateTarjeta(@Path("id") id: Int, @Body tarjeta: TarjetaDto): TarjetaDto
+    suspend fun updateTarjeta(@Path("id") id: Int, @Body tarjeta: TarjetaDto): Response<TarjetaDto>
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @DELETE("api/Tarjetas/{id}")
-    suspend fun deleteTarjeta(@Path("id") id: Int)
+    suspend fun deleteTarjeta(@Path("id") id: Int): Response<Unit>
+
+
+
 }
