@@ -86,12 +86,12 @@ class ReviewViewModel @Inject constructor(
     private fun saveReseña(){
         viewModelScope.launch {
             if(_uiState.value.usuarioId == null){
-                _uiState.value.toEntity()?.let { repository.addReseña(it) }
+                _uiState.value.toEntity()?.let { repository.addReview(it) }
             }
             else
             {
                 _uiState.value.toEntity()?.let {
-                    repository.updateReseña(_uiState.value.id!!, it)
+                    repository.updateReview(_uiState.value.id!!, it)
                 }
             }
         }
@@ -99,7 +99,7 @@ class ReviewViewModel @Inject constructor(
 
     private fun deleteReseña(){
         viewModelScope.launch {
-            _uiState.value.id?.let { repository.deleteReseña(it) }
+            _uiState.value.id?.let { repository.deleteReview(it) }
         }
     }
 

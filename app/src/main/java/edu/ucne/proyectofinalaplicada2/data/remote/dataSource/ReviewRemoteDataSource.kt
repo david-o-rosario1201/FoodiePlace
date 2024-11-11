@@ -7,10 +7,10 @@ import javax.inject.Inject
 class ReviewRemoteDataSource @Inject constructor(
     private val ReviewAPI: ReviewAPI
 ) {
-    suspend fun postReseña(reseña: ReviewDTO) = ReviewAPI.postReseña(reseña)
-    suspend fun getReseñaById(id: Int) = ReviewAPI.getReseñaById(id)
-    suspend fun deleteReseña(id: Int) = ReviewAPI.deleteReseña(id)
-    suspend fun putReseña(id: Int, reseña: ReviewDTO) = ReviewAPI.putReseña(id, reseña)
-    suspend fun getReseñas() = ReviewAPI.getReseñas()
+    suspend fun postReview(review: ReviewDTO) = ReviewAPI.postReview(review)
+    suspend fun getReviewById(id: Int) = ReviewAPI.getReviewById(id)
+    suspend fun deleteReview(id: Int) = ReviewAPI.deleteReview(id)
+    suspend fun putReview(id: Int, review: ReviewDTO) = ReviewAPI.putReview(id, review)
+    suspend fun getReview() = ReviewAPI.getReview()
 
 }

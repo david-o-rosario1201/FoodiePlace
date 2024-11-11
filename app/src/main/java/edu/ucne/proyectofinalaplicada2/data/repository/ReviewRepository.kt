@@ -12,33 +12,33 @@ import javax.inject.Inject
 
 class ReviewRepository @Inject constructor(
     private val reviewRemoteDataSource: ReviewRemoteDataSource,
-    private val reseñasDao: ReviewDao
+    private val reviewDao: ReviewDao
 ) {
-    suspend fun addReseña(reseña: ReviewDTO) = reviewRemoteDataSource.postReseña(reseña)
-    suspend fun getReseña(id: Int) = reviewRemoteDataSource.getReseñaById(id)
-    suspend fun deleteReseña(id: Int) = reviewRemoteDataSource.deleteReseña(id)
-    suspend fun updateReseña(id: Int, reseña: ReviewDTO) = reviewRemoteDataSource.putReseña(id, reseña)
+    suspend fun addReview(review: ReviewDTO) = reviewRemoteDataSource.postReview(review)
+    suspend fun getReview(id: Int) = reviewRemoteDataSource.getReviewById(id)
+    suspend fun deleteReview(id: Int) = reviewRemoteDataSource.deleteReview(id)
+    suspend fun updateReview(id: Int, review: ReviewDTO) = reviewRemoteDataSource.putReview(id, review)
 
     fun getReseñas(): Flow<Resource<List<ReviewEntity>>> = flow {
         try{
             emit(Resource.Loading())
-            val reseñas = reviewRemoteDataSource.getReseñas()
+            val reseñas = reviewRemoteDataSource.getReview()
 
             reseñas.forEach {
-                reseñasDao.save(
-                    it.toReseñasEntity()
+                reviewDao.save(
+                    it.toreviewEntity()
                 )
             }
 
-            reseñasDao.getAll().collect{reseñasLocal ->
-                emit(Resource.Success(reseñasLocal))
+            reviewDao.getAll().collect{ reviewLocal ->
+                emit(Resource.Success(reviewLocal))
             }
 
         }catch (e: HttpException){
             emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
         }catch (e: Exception){
-            reseñasDao.getAll().collect{reseñasLocal ->
-                emit(Resource.Success(reseñasLocal))
+            reviewDao.getAll().collect{ reviewLocal ->
+                emit(Resource.Success(reviewLocal))
             }
             emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
 
@@ -47,7 +47,7 @@ class ReviewRepository @Inject constructor(
     }
 }
 
-private fun ReviewDTO.toReseñasEntity() = ReviewEntity(
+private fun ReviewDTO.toreviewEntity() = ReviewEntity(
     resenaId = resenaId,
     usuarioId = usuarioId,
     comentario = comentario,
