@@ -3,7 +3,6 @@ package edu.ucne.proyectofinalaplicada2.data.local.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
 
 @Serializable
 @Entity(tableName = "Categorias")
