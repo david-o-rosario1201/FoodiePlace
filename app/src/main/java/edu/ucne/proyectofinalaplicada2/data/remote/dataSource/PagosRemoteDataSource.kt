@@ -5,12 +5,12 @@ import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
 import javax.inject.Inject
 
 class PagosRemoteDataSource @Inject constructor(
-    private val PagosAPI: PagosAPI
+    private val pagosAPI: PagosAPI
 ) {
-    suspend fun postPago(pago: PagosDTO) = PagosAPI.postPago(pago)
-    suspend fun getPagoById(id: Int) = PagosAPI.getPagoById(id)
-    suspend fun deletePago(id: Int) = PagosAPI.deletePago(id)
-    suspend fun putPago(id: Int, pago: PagosDTO) = PagosAPI.putPago(id, pago)
-    suspend fun getPagos() = PagosAPI.getPagos()
+    suspend fun postPago(pago: PagosDTO) = pagosAPI.postPago(pago)
+    suspend fun getPagoById(id: Int) = pagosAPI.getPagoById(id)
+    suspend fun deletePago(id: Int) = pagosAPI.deletePago(id)
+    suspend fun putPago(id: Int, pago: PagosDTO) = pagosAPI.putPago(id, pago)
+    suspend fun getPagos() = pagosAPI.getPagos()
 
 }
