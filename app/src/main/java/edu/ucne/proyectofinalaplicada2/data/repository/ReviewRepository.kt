@@ -37,11 +37,12 @@ class ReviewRepository @Inject constructor(
         }catch (e: HttpException){
             emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
         }catch (e: Exception){
-            emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
-
             reseñasDao.getAll().collect{reseñasLocal ->
                 emit(Resource.Success(reseñasLocal))
             }
+            emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
+
+
         }
     }
 }

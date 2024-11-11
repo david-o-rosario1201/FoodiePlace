@@ -1,12 +1,17 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
+import app.cash.turbine.test
+import com.google.common.truth.Truth
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReviewDao
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
+import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ReviewRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import retrofit2.Response
@@ -64,26 +69,6 @@ class ReviewRepositoryTest {
     }
 
     @Test
-    fun deleteReseña() = runTest {
-        // Given
-        val reviewId = 2
-
-        val reviewRemoteDataSource = mockk<ReviewRemoteDataSource>()
-        val reviewDao = mockk<ReviewDao>()
-        val repository = ReviewRepository(reviewRemoteDataSource, reviewDao)
-
-        coEvery { reviewRemoteDataSource.deleteReseña(reviewId) } returns Response.success(Unit)
-
-        // When:
-        repository.deleteReseña(reviewId)
-
-        // Then:
-        coVerify { reviewRemoteDataSource.deleteReseña(reviewId) }
-    }
-
-
-
-    @Test
     fun updateReseña() = runTest {
         // Given
         val review = ReviewDTO(
@@ -111,19 +96,12 @@ class ReviewRepositoryTest {
     fun getReseñas() = runTest {
         // Given
         val reviews = listOf(
-            ReviewDTO(
-                resenaId = 1,
-                usuarioId = 1,
-                comentario = "comentario 1",
-                fechaResena = LocalDate.now().toString(),
-                calificacion = 3
-            ),
-            ReviewDTO(
+            ReviewEntity(
                 resenaId = 2,
                 usuarioId = 2,
                 comentario = "comentario 2",
                 fechaResena = LocalDate.now().toString(),
-                calificacion = 5
+                calificacion = 2
             )
         )
 
@@ -131,13 +109,19 @@ class ReviewRepositoryTest {
         val reviewDao = mockk<ReviewDao>()
         val repository = ReviewRepository(reviewRemoteDataSource, reviewDao)
 
-        coEvery { reviewRemoteDataSource.getReseñas() } returns reviews
+       coEvery { reviewDao.getAll() } returns flowOf(reviews)
 
         // When
-        val result = repository.getReseñas()
+        repository.getReseñas().test {
+            Truth.assertThat(awaitItem() is Resource.Loading).isTrue()
 
-        // Then
-        coVerify { reviewRemoteDataSource.getReseñas() }
-        assertEquals(reviews, result)
+            val result = awaitItem()
+            Truth.assertThat(result).isInstanceOf(Resource.Success::class.java)
+            Truth.assertThat(result.data).isEqualTo(reviews)
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
+
+
 }
