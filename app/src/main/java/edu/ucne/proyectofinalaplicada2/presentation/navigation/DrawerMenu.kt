@@ -70,13 +70,7 @@ fun DrawerMenu(
                         }
 
 
-                        DrawerItem(
-                            title = stringResource(R.string.drawer_home),
-                            icon = Icons.Filled.Home,
-                            isSelected = selectedItem.value == stringResource(R.string.drawer_home)
-                        ) {
-                            handleItemClick(Screen.HomeScreen, it)
-                        }
+
 
 
                     }
