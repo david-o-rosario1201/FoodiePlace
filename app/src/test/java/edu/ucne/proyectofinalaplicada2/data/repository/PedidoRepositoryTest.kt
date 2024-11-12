@@ -3,21 +3,15 @@ package edu.ucne.proyectofinalaplicada2.data.repository
 import app.cash.turbine.test
 import com.google.common.truth.Truth
 import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.PedidoRemoteDataSource
-import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.UsuarioRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PedidoDto
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
-
 import org.junit.Test
 import retrofit2.Response
 import java.math.BigDecimal
