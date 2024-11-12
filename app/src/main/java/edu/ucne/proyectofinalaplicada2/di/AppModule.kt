@@ -14,6 +14,7 @@ import edu.ucne.proyectofinalaplicada2.data.remote.API.CarritoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.PedidoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ProductoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReviewAPI
@@ -129,6 +130,16 @@ object AppModule {
             .create(OfertaApi::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun providesPedidoApi(moshi: Moshi): PedidoApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(PedidoApi::class.java)
+    }
+
     //DAOs
     @Provides
     @Singleton
@@ -161,4 +172,12 @@ object AppModule {
     @Provides
     @Singleton
     fun providesCarritoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.carritoDetalleDao()
+
+    @Provides
+    @Singleton
+    fun providesPedidoDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.pedidoDao()
+
+    @Provides
+    @Singleton
+    fun providesPedidoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.pedidoDetalleDao()
 }
