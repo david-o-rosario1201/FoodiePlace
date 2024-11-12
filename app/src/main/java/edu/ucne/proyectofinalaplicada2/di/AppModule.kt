@@ -151,7 +151,6 @@ object AppModule {
             .create(PedidoApi::class.java)
     }
 
-    //DAOs
     @Provides
     @Singleton
     fun providesTarjetaApi(moshi: Moshi): TarjetaApi {
@@ -199,7 +198,6 @@ object AppModule {
     @Singleton
     fun providesCarritoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.carritoDetalleDao()
 
-    // TarjetaDao
     @Provides
     @Singleton
     fun providesTarjetaDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.tarjetaDao()
