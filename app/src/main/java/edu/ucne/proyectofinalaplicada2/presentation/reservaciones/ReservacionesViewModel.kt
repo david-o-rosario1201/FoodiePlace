@@ -1,4 +1,4 @@
-package edu.ucne.proyectofinalaplicada2.presentation.reservacion
+package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -110,6 +110,8 @@ class ReservacionesViewModel @Inject constructor(
                     reservacionesRepository.deleteReservacion(_uiState.value.reservacionId ?: 0)
                 }
             }
+
+
         }
     }
 

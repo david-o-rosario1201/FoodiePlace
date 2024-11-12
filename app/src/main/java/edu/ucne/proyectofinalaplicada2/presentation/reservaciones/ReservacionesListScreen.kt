@@ -1,6 +1,4 @@
-
-
-package edu.ucne.reservaciones.presentation.reservaciones
+package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,21 +13,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
-import edu.ucne.proyectofinalaplicada2.presentation.reservacion.ReservacionesUiState
-import edu.ucne.proyectofinalaplicada2.presentation.reservacion.ReservacionesViewModel
 
 @Composable
 fun ReservacionesListScreen(
@@ -178,11 +172,28 @@ fun ReservacionItem(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showSystemUi = true)
 @Composable
-fun ReservacionesListScreenPreview() {
-    ReservacionesListScreen(
-        viewModel = hiltViewModel(),
+private fun ReservacionesListScreenPreview() {
+    val sampleReservaciones = listOf(
+        ReservacionesEntity(
+            reservacionId = 1,
+            usuarioId = 1,
+            estado = "Activo",
+            fechaReservacion = "2024-11-12",
+            numeroPersonas = 4
+        ),
+        ReservacionesEntity(
+            reservacionId = 2,
+            usuarioId = 1,
+            estado = "Cancelado",
+            fechaReservacion = "2024-11-13",
+            numeroPersonas = 2
+        )
+    )
+
+    ReservacionesListBodyScreen(
+        uiState = ReservacionesUiState(reservaciones = sampleReservaciones),
         goToReservacion = {},
         goToAddReservacion = {}
     )
