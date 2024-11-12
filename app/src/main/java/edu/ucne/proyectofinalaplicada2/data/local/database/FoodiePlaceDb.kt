@@ -11,6 +11,8 @@ import edu.ucne.proyectofinalaplicada2.data.local.dao.UsuarioDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDetalleDao
+import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDao
+import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDetalleDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
@@ -18,6 +20,8 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 
 @Database(
@@ -29,7 +33,9 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
         CategoriaEntity::class,
         CarritoEntity::class,
         CarritoDetalleEntity::class,
-        OfertaEntity::class
+        OfertaEntity::class,
+        PedidoEntity::class,
+        PedidoDetalleEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -46,4 +52,6 @@ abstract class FoodiePlaceDb : RoomDatabase(){
     abstract fun carritoDao(): CarritoDao
     abstract fun carritoDetalleDao(): CarritoDetalleDao
     abstract fun ofertaDao(): OfertaDao
+    abstract fun pedidoDao(): PedidoDao
+    abstract fun pedidoDetalleDao(): PedidoDetalleDao
 }
