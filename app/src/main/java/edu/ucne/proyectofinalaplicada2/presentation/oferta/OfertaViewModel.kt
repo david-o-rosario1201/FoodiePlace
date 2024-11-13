@@ -132,9 +132,7 @@ class OfertaViewModel @Inject constructor(
                 }
             }
             OfertaUiEvent.Delete -> {
-                viewModelScope.launch {
-                    ofertaRepository.deleteOferta(_uiState.value.ofertasId ?: 0)
-                }
+                eliminarOferta()
             }
             OfertaUiEvent.Refresh -> {
                 getOfertas()
@@ -206,6 +204,10 @@ class OfertaViewModel @Inject constructor(
         } else {
             ofertaRepository.updateOferta(_uiState.value.ofertasId ?: 0, _uiState.value.toDto())
         }
+    }
+
+    private fun eliminarOferta() = viewModelScope.launch {
+        ofertaRepository.deleteOferta(_uiState.value.ofertasId ?: 0)
     }
 
     private fun OfertaUiState.toDto() = OfertaDto(

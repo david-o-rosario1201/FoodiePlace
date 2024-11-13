@@ -13,8 +13,6 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.PagosEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDetalleDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDetalleDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.TarjetaDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
@@ -23,8 +21,6 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
 
@@ -39,8 +35,6 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
         CarritoEntity::class,
         CarritoDetalleEntity::class,
         OfertaEntity::class,
-        PedidoEntity::class,
-        PedidoDetalleEntity::class,
         TarjetaEntity::class
     ],
     version = 1,
@@ -55,11 +49,10 @@ abstract class FoodiePlaceDb : RoomDatabase(){
     abstract fun reviewDao(): ReviewDao
     abstract fun usuarioDao(): UsuarioDao
     abstract fun pagosDao(): PagosDao
+    abstract fun PagosDao(): PagosDao
     abstract fun categoriaDao(): CategoriaDao
     abstract fun carritoDao(): CarritoDao
     abstract fun carritoDetalleDao(): CarritoDetalleDao
     abstract fun ofertaDao(): OfertaDao
     abstract fun tarjetaDao(): TarjetaDao
-    abstract fun pedidoDao(): PedidoDao
-    abstract fun pedidoDetalleDao(): PedidoDetalleDao
 }
