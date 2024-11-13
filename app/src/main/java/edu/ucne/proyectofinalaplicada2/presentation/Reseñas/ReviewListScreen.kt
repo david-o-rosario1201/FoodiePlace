@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 
 @Composable
 fun ReviewListScreen(
@@ -47,6 +51,14 @@ fun ReviewListBodyScreen(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopBarComponent(
+                title = "Reseñas",
+                onClickMenu = {},
+                onClickNotifications = {},
+                notificationCount = 0
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = goToAddReview,
@@ -65,21 +77,6 @@ fun ReviewListBodyScreen(
                 .padding(innerPadding)
                 .background(Color.White)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(Color(0xFFFFA500)) // Color amarillo
-            )
-
-            Text(
-                text = "Reseñas",
-                color = Color(0xFFFFA500),
-                fontSize = 50.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
@@ -127,11 +124,7 @@ fun ReviewItem(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = item.comentario)
-                Text(
-                    text = "Calificación: ${item.calificacion}",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+                StarRating(rating = item.calificacion)
             }
         }
     }
@@ -141,6 +134,24 @@ private fun getUsuarioName(UsuatioId: Int?, usuarios:List<UsuarioEntity>): Strin
     return usuarios.find { it.usuarioId == UsuatioId }?.nombre ?: "Usuario desconocido"
 }
 
+@Composable
+fun StarRating(rating: Int, maxRating: Int = 5) {
+    Row {
+        for (i in 1..maxRating) {
+            val starIcon: ImageVector = if (i <= rating) Icons.Filled.Star else Icons.Filled.KeyboardArrowLeft
+            Icon(
+                imageVector = starIcon,
+                contentDescription = null,
+                tint = Color(0xFFFFA500),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+
+//__________------------------------------------
+
 // Simulación de `ReviewUiState` para el Preview
 private val sampleUiState = ReviewUiState(
     reseñas = listOf(
@@ -149,7 +160,7 @@ private val sampleUiState = ReviewUiState(
             calificacion = 5),
         ReviewEntity(resenaId = 2, usuarioId = 2,
             comentario = "Reseña de ejemplo para el segundo usuario.", fechaResena = "2023-01-02",
-            calificacion = 4)
+            calificacion = 1)
     )
 )
 
