@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 
 
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 
 data class ReviewUiState(
     val id: Int? = null,
@@ -13,5 +14,6 @@ data class ReviewUiState(
     val success: Boolean = false,
     val isLoading: Boolean = false,
     val reseñas: List<ReviewEntity> = emptyList(),
-    val isRefreshing: Boolean =false
+    val isRefreshing: Boolean =false,
+    val usuario: List<UsuarioEntity> = emptyList()
 )
