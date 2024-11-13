@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import edu.ucne.proyectofinalaplicada2.ui.theme.Menu_bar_color
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 
 @Composable
@@ -68,7 +68,7 @@ fun BottomBarNavigation(
     var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
 
     NavigationBar(
-        containerColor = Menu_bar_color
+        containerColor = color_oro
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
