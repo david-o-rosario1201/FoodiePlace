@@ -20,5 +20,8 @@ sealed class Screen {
     data object UsuarioListScreen: Screen()
 
     @Serializable
-    data class UsuarioScreen(val usuarioId: Int): Screen()
+    data class UsuarioRegisterScreen(val usuarioId: Int): Screen()
+
+    @Serializable
+    data object UsuarioLoginScreen: Screen()
 }
