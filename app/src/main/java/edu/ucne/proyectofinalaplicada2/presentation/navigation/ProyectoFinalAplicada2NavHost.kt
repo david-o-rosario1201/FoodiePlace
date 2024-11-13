@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 fun ProyectoFinalAplicada2NavHost(
     navHostController: NavHostController
 ) {
-    val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     DrawerMenu(
         drawerState = drawerState,
