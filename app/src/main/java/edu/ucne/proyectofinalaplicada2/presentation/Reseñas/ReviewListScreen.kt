@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
 @Composable
 fun ReviewListScreen(
@@ -59,7 +60,7 @@ fun ReviewListBodyScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = goToAddReview,
-                containerColor = Color(0xFFFFA500)
+                containerColor = color_oro,
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -137,7 +138,7 @@ fun StarRating(rating: Int, maxRating: Int = 5) {
             Icon(
                 imageVector = starIcon,
                 contentDescription = null,
-                tint = Color(0xFFFFA500),
+                tint = color_oro,
                 modifier = Modifier.size(20.dp)
             )
         }
