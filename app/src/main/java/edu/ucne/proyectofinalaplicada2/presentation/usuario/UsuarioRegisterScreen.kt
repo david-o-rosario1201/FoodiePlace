@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,18 +16,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
-import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
+import edu.ucne.proyectofinalaplicada2.presentation.components.SubtitleText
+import edu.ucne.proyectofinalaplicada2.presentation.components.TitleText
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
 @Composable
 fun UsuarioRegisterScreen(
@@ -57,26 +56,8 @@ private fun UsuarioRegisterBodyScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            Text(
-                text = "Registro de Usuarios",
-                style = MaterialTheme.typography.titleLarge,
-                color = color_oro,
-                fontWeight = FontWeight.Bold,
-                fontSize = 50.sp,
-                textAlign = TextAlign.Center,
-                lineHeight = 50.sp,
-                modifier = Modifier
-                    .padding(bottom = 20.dp)
-            )
-            Text(
-                text = "Por favor ingresa los datos para registrarte",
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                color = Color.Gray,
-                modifier = Modifier
-                    .padding(bottom = 30.dp)
-                    .padding(horizontal = 40.dp)
-            )
+            TitleText(text = "Registro de Usuarios")
+            SubtitleText(text = "Por favor ingresa los datos para registrarte")
 
             CustomTextField(
                 label = "Nombre",
