@@ -36,7 +36,8 @@ class ReservacionesViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 reservaciones = result.data ?: emptyList(),
-                                isLoading = false
+                                isLoading = false,
+                                errorMensaje = ""
                             )
                         }
                     }
@@ -44,7 +45,8 @@ class ReservacionesViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 reservaciones = result.data ?: emptyList(),
-                                isLoading = false
+                                isLoading = false,
+                                errorMensaje = result.message
                             )
                         }
                     }
