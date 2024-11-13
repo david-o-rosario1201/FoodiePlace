@@ -67,8 +67,10 @@ class ReviewViewModel @Inject constructor(
                 it.copy( calificacion = event.calificacion, errorMessge = "" )
             }
 
-            is ReviewUiEvent.SetComentario -> _uiState.update {
-                it.copy( comentario = event.comentario, errorMessge = "" )
+            is ReviewUiEvent.SetComentario -> {
+                _uiState.update {
+                    it.copy(comentario = event.comentario, errorMessge = "")
+                }
             }
             is ReviewUiEvent.SetUsuarioId -> _uiState.update {
                 it.copy( usuarioId = event.usuarioId, errorMessge = "" )
