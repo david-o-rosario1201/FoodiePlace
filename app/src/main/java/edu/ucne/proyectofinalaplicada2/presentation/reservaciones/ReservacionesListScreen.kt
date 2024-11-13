@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 
 @Composable
 fun ReservacionesListScreen(
@@ -43,7 +44,6 @@ fun ReservacionesListScreen(
         modifier = modifier
     )
 }
-
 @Composable
 fun ReservacionesListBodyScreen(
     uiState: ReservacionesUiState,
@@ -52,7 +52,14 @@ fun ReservacionesListBodyScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        topBar = {
+            TopBarComponent(
+                title = "",
+                onClickMenu = {},
+                onClickNotifications = {},
+                notificationCount = 0
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier = modifier
@@ -60,14 +67,6 @@ fun ReservacionesListBodyScreen(
                 .padding(innerPadding)
                 .background(Color.White)
         ) {
-            // Barra amarilla
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(Color(0xFFFFA500)) // Color amarillo
-            )
-
             Spacer(modifier = Modifier.height(8.dp)) // Espacio entre la barra y el título
 
             // Título debajo de la barra amarilla
@@ -81,43 +80,47 @@ fun ReservacionesListBodyScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Espaciado para asegurar que la lista empiece debajo de la barra amarilla
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Lista de reservaciones
+            // Lista de reservaciones y botón
             LazyColumn(
                 modifier = Modifier
-                    .weight(1f) // Esto asegura que la lista tome solo el espacio restante
+                    .fillMaxSize() // La columna ocupará todo el espacio disponible
             ) {
+                // Mostrar los elementos de la lista de reservaciones
                 items(uiState.reservaciones) { reservacion ->
                     ReservacionItem(
                         item = reservacion,
                         goToReservacion = goToReservacion
                     )
                 }
-            }
 
-            // Espacio para separar el botón de la lista
-            Spacer(modifier = Modifier.height(16.dp))
+                // Espacio entre la lista y el botón
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
-            // Botón para hacer reservación
-            Button(
-                onClick = { goToAddReservacion() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA500)),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = "Hacer Reservación",
-                    color = Color.White,
-                    fontSize = 18.sp
-                )
+                // Agregar el botón después de los elementos de la lista
+                item {
+                    Button(
+                        onClick = { goToAddReservacion() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA500)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Hacer Reservación",
+                            color = Color.White,
+                            fontSize = 18.sp
+                        )
+                    }
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun ReservacionItem(
@@ -177,8 +180,32 @@ fun ReservacionItem(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ReservacionesListScreenPreview() {
-    ReservacionesListScreen(
-        viewModel = hiltViewModel(),
+    val sampleReservaciones = listOf(
+        ReservacionesEntity(
+            reservacionId = 1,
+            usuarioId = 1,
+            estado = "Activo",
+            fechaReservacion = "2024-11-12",
+            numeroPersonas = 4
+        ),
+        ReservacionesEntity(
+            reservacionId = 2,
+            usuarioId = 2,
+            estado = "Cancelado",
+            fechaReservacion = "2024-11-13",
+            numeroPersonas = 2
+        ),
+        ReservacionesEntity(
+            reservacionId = 3,
+            usuarioId = 6,
+            estado = "Cancelado",
+            fechaReservacion = "2024-11-13",
+            numeroPersonas = 2
+        )
+    )
+
+    ReservacionesListBodyScreen(
+        uiState = ReservacionesUiState(reservaciones = sampleReservaciones),
         goToReservacion = {},
         goToAddReservacion = {}
     )
