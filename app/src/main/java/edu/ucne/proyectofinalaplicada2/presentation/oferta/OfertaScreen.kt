@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,99 +56,148 @@ private fun OfertaBodyScreen(
     onEvent: (OfertaUiEvent) -> Unit,
     goToOfertaList: () -> Unit,
     ofertaId: Int
-){
-
+) {
+    val title = if (ofertaId == 0) "Nueva oferta" else "Editar oferta"
+    val buttonIcon = if (ofertaId == 0) Icons.Default.Add else Icons.Default.Edit
+    val buttonText = if (ofertaId == 0) "Guardar" else "Actualizar"
+    val buttonContentDescription = if (ofertaId == 0) "Guardar" else "Actualizar"
 
     Scaffold(
         topBar = {
             TopBarComponent(
-                title = if(ofertaId == 0) "Nueva oferta" else "Editar oferta",
+                title = title,
                 onClickMenu = {},
                 onClickNotifications = {},
                 notificationCount = 0
             )
         }
-    ){ innerPadding->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            CustomDropDown(
-                items = uiState.productos,
-                selectedItemId = uiState.productoId,
-                onEvent = onEvent,
-                event = OfertaUiEvent.ProductoIdChanged(uiState.productoId ?: 0),
-                itemToString = { it.nombre },
-                itemId = { it.productoId }
+            ProductoDropDown(
+                uiState = uiState,
+                onEvent = onEvent
             )
-
-            CustomTextField(
-                label = "Precio",
-                value = uiState.precio.toString(),
-                onValueChange = { onEvent(OfertaUiEvent.PrecioChanged(it.toBigDecimal())) },
-                error = uiState.errorPrecio,
-                imeAction = ImeAction.Next,
-                onImeAction = {}
+            PrecioInputFields(
+                uiState = uiState,
+                onEvent = onEvent
             )
-            CustomTextField(
-                label = "Descuento",
-                value = uiState.descuento.toString(),
-                onValueChange = { onEvent(OfertaUiEvent.DescuentoChanged(it.toBigDecimal())) },
-                error = uiState.errorDescuento,
-                imeAction = ImeAction.Next,
-                onImeAction = {}
+            DatePickers(
+                uiState = uiState,
+                onEvent = onEvent
             )
-            CustomTextField(
-                label = "Precio oferta",
-                value = uiState.precioOferta.toString(),
-                onValueChange = { onEvent(OfertaUiEvent.PrecioOfertaChanged(it.toBigDecimal())) },
-                error = uiState.errorPrecioOferta,
-                imeAction = ImeAction.Next,
-                onImeAction = {}
+            SaveButton(
+                buttonIcon = buttonIcon,
+                buttonText = buttonText,
+                buttonContentDescription = buttonContentDescription,
+                onEvent = onEvent
             )
-            DatePickerField(
-                onEvent = onEvent,
-                selectedDate = uiState.fechaInicio,
-                event = OfertaUiEvent.FechaInicioChanged(uiState.fechaInicio ?: Date())
-            )
-            DatePickerField(
-                onEvent = onEvent,
-                selectedDate = uiState.fechaFinal,
-                event = OfertaUiEvent.FechaFinalChanged(uiState.fechaFinal ?: Date())
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ){
-                OutlinedButton(
-                    onClick = { onEvent(OfertaUiEvent.Save) },
-                    colors = ButtonColors(
-                        containerColor = color_oro,
-                        contentColor = color_oro,
-                        disabledContainerColor = color_oro,
-                        disabledContentColor = color_oro
-                    ),
-                    shape = RoundedCornerShape(15.dp),
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    Icon(
-                        imageVector = if(ofertaId == 0) Icons.Default.Add else Icons.Default.Edit,
-                        contentDescription = if(ofertaId == 0) "Guardar" else "Actualizar",
-                        tint = Color.White
-                    )
-
-                    Text(
-                        text = if(ofertaId == 0) "Guardar" else "Actualizar",
-                        fontSize = 20.sp,
-                        color = Color.White
-                    )
-                }
-            }
         }
     }
 }
+
+@Composable
+private fun ProductoDropDown(
+    uiState: OfertaUiState,
+    onEvent: (OfertaUiEvent) -> Unit
+) {
+    CustomDropDown(
+        items = uiState.productos,
+        selectedItemId = uiState.productoId,
+        onEvent = onEvent,
+        event = OfertaUiEvent.ProductoIdChanged(uiState.productoId ?: 0),
+        itemToString = { it.nombre },
+        itemId = { it.productoId }
+    )
+}
+
+@Composable
+private fun PrecioInputFields(
+    uiState: OfertaUiState,
+    onEvent: (OfertaUiEvent) -> Unit
+) {
+    CustomTextField(
+        label = "Precio",
+        value = uiState.precio.toString(),
+        onValueChange = { onEvent(OfertaUiEvent.PrecioChanged(it.toBigDecimal())) },
+        error = uiState.errorPrecio,
+        imeAction = ImeAction.Next,
+        onImeAction = {}
+    )
+    CustomTextField(
+        label = "Descuento",
+        value = uiState.descuento.toString(),
+        onValueChange = { onEvent(OfertaUiEvent.DescuentoChanged(it.toBigDecimal())) },
+        error = uiState.errorDescuento,
+        imeAction = ImeAction.Next,
+        onImeAction = {}
+    )
+    CustomTextField(
+        label = "Precio oferta",
+        value = uiState.precioOferta.toString(),
+        onValueChange = { onEvent(OfertaUiEvent.PrecioOfertaChanged(it.toBigDecimal())) },
+        error = uiState.errorPrecioOferta,
+        imeAction = ImeAction.Next,
+        onImeAction = {}
+    )
+}
+
+@Composable
+private fun DatePickers(
+    uiState: OfertaUiState,
+    onEvent: (OfertaUiEvent) -> Unit
+) {
+    DatePickerField(
+        onEvent = onEvent,
+        selectedDate = uiState.fechaInicio,
+        event = OfertaUiEvent.FechaInicioChanged(uiState.fechaInicio ?: Date())
+    )
+    DatePickerField(
+        onEvent = onEvent,
+        selectedDate = uiState.fechaFinal,
+        event = OfertaUiEvent.FechaFinalChanged(uiState.fechaFinal ?: Date())
+    )
+}
+
+@Composable
+private fun SaveButton(
+    buttonIcon: ImageVector,
+    buttonText: String,
+    buttonContentDescription: String,
+    onEvent: (OfertaUiEvent) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        OutlinedButton(
+            onClick = { onEvent(OfertaUiEvent.Save) },
+            colors = ButtonColors(
+                containerColor = color_oro,
+                contentColor = color_oro,
+                disabledContainerColor = color_oro,
+                disabledContentColor = color_oro
+            ),
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Icon(
+                imageVector = buttonIcon,
+                contentDescription = buttonContentDescription,
+                tint = Color.White
+            )
+            Text(
+                text = buttonText,
+                fontSize = 20.sp,
+                color = Color.White
+            )
+        }
+    }
+}
+
 
 private val sampleUiState = OfertaUiState(
     productoId = 1,
