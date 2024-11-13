@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,7 +46,18 @@ fun ReviewListBodyScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = goToAddReview,
+                containerColor = Color(0xFFFFA500)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Agregar nuevas reseñas"
+                )
+            }
+        }
     ) { innerPadding ->
         Column(
             modifier = modifier
@@ -80,6 +93,7 @@ fun ReviewListBodyScreen(
                 }
             }
         }
+
     }
 }
 
@@ -130,8 +144,12 @@ private fun getUsuarioName(UsuatioId: Int?, usuarios:List<UsuarioEntity>): Strin
 // Simulación de `ReviewUiState` para el Preview
 private val sampleUiState = ReviewUiState(
     reseñas = listOf(
-        ReviewEntity(resenaId = 1, usuarioId = 1, comentario = "Esta es la primera reseña de ejemplo.", fechaResena = "2023-01-01", calificacion = 5),
-        ReviewEntity(resenaId = 2, usuarioId = 2, comentario = "Reseña de ejemplo para el segundo usuario.", fechaResena = "2023-01-02", calificacion = 4)
+        ReviewEntity(resenaId = 1, usuarioId = 1,
+            comentario = "Esta es la primera reseña de ejemplo.", fechaResena = "2023-01-01",
+            calificacion = 5),
+        ReviewEntity(resenaId = 2, usuarioId = 2,
+            comentario = "Reseña de ejemplo para el segundo usuario.", fechaResena = "2023-01-02",
+            calificacion = 4)
     )
 )
 
