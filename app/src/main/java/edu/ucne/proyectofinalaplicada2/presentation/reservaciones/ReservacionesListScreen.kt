@@ -80,12 +80,10 @@ fun ReservacionesListBodyScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Lista de reservaciones y botón
-            LazyColumn(
+           LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize() // La columna ocupará todo el espacio disponible
-            ) {
-                // Mostrar los elementos de la lista de reservaciones
+                    .fillMaxSize()
+           ) {
                 items(uiState.reservaciones) { reservacion ->
                     ReservacionItem(
                         item = reservacion,
@@ -93,12 +91,10 @@ fun ReservacionesListBodyScreen(
                     )
                 }
 
-                // Espacio entre la lista y el botón
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Agregar el botón después de los elementos de la lista
                 item {
                     Button(
                         onClick = { goToAddReservacion() },
