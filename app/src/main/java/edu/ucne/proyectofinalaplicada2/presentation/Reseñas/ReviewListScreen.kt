@@ -29,14 +29,12 @@ import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 @Composable
 fun ReviewListScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
-    goToReview: (Int) -> Unit,
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewListBodyScreen(
         uiState = uiState,
-        goToReview = goToReview,
         goToAddReview = goToAddReview,
         modifier = modifier
     )
@@ -45,7 +43,6 @@ fun ReviewListScreen(
 @Composable
 fun ReviewListBodyScreen(
     uiState: ReviewUiState,
-    goToReview: (Int) -> Unit,
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -84,7 +81,6 @@ fun ReviewListBodyScreen(
                 items(uiState.reseñas) { review ->
                     ReviewItem(
                         item = review,
-                        goToReview = goToReview,
                         usuario = uiState.usuario
                     )
                 }
@@ -97,11 +93,10 @@ fun ReviewListBodyScreen(
 @Composable
 fun ReviewItem(
     item: ReviewEntity,
-    goToReview: (Int) -> Unit,
     usuario: List<UsuarioEntity>
 ) {
 
-    val NombreUsuario = getUsuarioName(item.usuarioId, usuario)
+    val nombreUsuario = getUsuarioName(item.usuarioId, usuario)
 
     Card(
         modifier = Modifier
@@ -118,7 +113,7 @@ fun ReviewItem(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "${NombreUsuario}",
+                    text = "${nombreUsuario}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
@@ -130,8 +125,8 @@ fun ReviewItem(
     }
 }
 
-private fun getUsuarioName(UsuatioId: Int?, usuarios:List<UsuarioEntity>): String{
-    return usuarios.find { it.usuarioId == UsuatioId }?.nombre ?: "Usuario desconocido"
+private fun getUsuarioName(usuatioId: Int?, usuarios:List<UsuarioEntity>): String{
+    return usuarios.find { it.usuarioId == usuatioId }?.nombre ?: "Usuario desconocido"
 }
 
 @Composable
@@ -169,7 +164,6 @@ private val sampleUiState = ReviewUiState(
 fun ReviewListScreenPreview() {
     ReviewListBodyScreen(
         uiState = sampleUiState,
-        goToReview = {},
         goToAddReview = {}
     )
 }
