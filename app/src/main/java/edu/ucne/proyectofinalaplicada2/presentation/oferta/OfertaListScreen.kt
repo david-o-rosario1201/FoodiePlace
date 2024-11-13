@@ -56,7 +56,6 @@ fun OfertaListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     OfertaListBodyScreen(
         uiState = uiState,
-        onEvent = viewModel::onEvent,
         onAddOferta = onAddOferta,
         onClickOferta = onClickOferta
     )
@@ -65,7 +64,6 @@ fun OfertaListScreen(
 @Composable
 private fun OfertaListBodyScreen(
     uiState: OfertaUiState,
-    onEvent: (OfertaUiEvent) -> Unit,
     onAddOferta: () -> Unit,
     onClickOferta: (Int) -> Unit
 ){
@@ -242,7 +240,6 @@ fun OfertaListScreenPreview(){
     ProyectoFinalAplicada2Theme {
         OfertaListBodyScreen(
             uiState = sampleUiState,
-            onEvent = {},
             onAddOferta = {},
             onClickOferta = {}
         )
