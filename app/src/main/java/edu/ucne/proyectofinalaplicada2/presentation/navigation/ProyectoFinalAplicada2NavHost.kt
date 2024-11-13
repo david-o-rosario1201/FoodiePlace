@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
 
 @Composable
 fun ProyectoFinalAplicada2NavHost(
@@ -20,7 +22,13 @@ fun ProyectoFinalAplicada2NavHost(
             navController = navHostController,
             startDestination = Screen.WelcomeScreen
         ) {
-
+            composable<Screen.WelcomeScreen>{
+                WelcomeScreen(
+                    onNavigateToLogin = {
+                        navHostController.navigate(Screen.UsuarioLoginScreen)
+                    }
+                )
+            }
         }
     }
 }
