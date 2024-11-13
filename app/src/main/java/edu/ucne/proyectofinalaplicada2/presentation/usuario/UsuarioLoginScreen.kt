@@ -54,9 +54,6 @@ private fun UsuarioLoginBodyScreen(
     onEvent: (UsuarioUiEvent) -> Unit,
     onRegisterUsuario: () -> Unit
 ){
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val focusManager = LocalFocusManager.current
-
     Scaffold { innerPadding->
         Column(
             modifier = Modifier
