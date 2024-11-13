@@ -92,15 +92,17 @@ fun <E> DatePickerField(
             android.app.DatePickerDialog(
                 context,
                 { _, year, month, dayOfMonth ->
-                    calendar.set(year, month, dayOfMonth)
+                    calendar[Calendar.YEAR] = year
+                    calendar[Calendar.MONTH] = month
+                    calendar[Calendar.DAY_OF_MONTH] = dayOfMonth
                     val newDate = calendar.time
                     currentSelectedDate = newDate
                     onEvent(event)
                     expanded = false
                 },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar[Calendar.YEAR],
+                calendar[Calendar.MONTH],
+                calendar[Calendar.DAY_OF_MONTH]
             ).show()
         }
     }
