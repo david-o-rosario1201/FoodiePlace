@@ -36,7 +36,7 @@ object AppModule {
     fun providesMoshi(): Moshi =
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
-            .add(DateAdapter())
+            .add(Adapter())
             .build()
 
     //FoodiPlaceDb
