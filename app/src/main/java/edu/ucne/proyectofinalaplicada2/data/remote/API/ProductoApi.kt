@@ -1,6 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.data.remote.API
 
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -20,7 +21,7 @@ interface ProductoApi {
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @POST("api/Productos")
-    suspend fun addProducto(producto: ProductoDto): ProductoDto
+    suspend fun addProducto(@Body producto: ProductoDto): ProductoDto
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
     @PUT("api/Productos/{id}")
