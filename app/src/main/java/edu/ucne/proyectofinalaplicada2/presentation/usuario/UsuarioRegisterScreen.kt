@@ -6,12 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,8 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.PasswordVisibilityToggle
 import edu.ucne.proyectofinalaplicada2.presentation.components.SubtitleText
 import edu.ucne.proyectofinalaplicada2.presentation.components.TitleText
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
@@ -60,12 +57,6 @@ private fun UsuarioRegisterBodyScreen(
 ){
     var passwordVisible by remember { mutableStateOf(false) }
 
-    val icon = if(passwordVisible) {
-        painterResource(R.drawable.eye_close_up)
-    }else{
-        painterResource(R.drawable.close_eye)
-    }
-
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -78,51 +69,53 @@ private fun UsuarioRegisterBodyScreen(
             SubtitleText(text = "Por favor ingresa los datos para registrarte")
 
             CustomTextField(
-                label = "Nombre",
-                value = uiState.nombre,
+                opcion = OpcionTextField(
+                    label = "Nombre",
+                    value = uiState.nombre,
+                    error = uiState.errorNombre
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.NombreChanged(it)) },
-                error = uiState.errorNombre,
                 imeAction = ImeAction.Next,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Teléfono",
-                value = uiState.telefono,
+                opcion = OpcionTextField(
+                    label = "Teléfono",
+                    value = uiState.telefono,
+                    error = uiState.errorTelefono
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.TelefonoChanged(it)) },
-                error = uiState.errorTelefono,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Phone,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Correo",
-                value = uiState.correo,
+                opcion = OpcionTextField(
+                    label = "Correo",
+                    value = uiState.correo,
+                    error = uiState.errorCorreo
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.CorreoChanged(it)) },
-                error = uiState.errorCorreo,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Email,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Contraseña",
-                value = uiState.contrasena,
+                opcion = OpcionTextField(
+                    label = "Contraseña",
+                    value = uiState.contrasena,
+                    error = uiState.errorContrasena
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.ContrasenaChanged(it)) },
-                error = uiState.errorContrasena,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next,
                 onImeAction = {},
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = "Visibility",
-                            modifier = Modifier.size(24.dp)
-                        )
+                    PasswordVisibilityToggle(passwordVisible = passwordVisible) {
+                        passwordVisible = !passwordVisible
                     }
                 },
                 visualTransformation = if(passwordVisible) {
@@ -133,24 +126,20 @@ private fun UsuarioRegisterBodyScreen(
             )
 
             CustomTextField(
-                label = "Confirmar contraseña",
-                value = uiState.confirmarContrasena,
+                opcion = OpcionTextField(
+                    label = "Confirmar Contraseña",
+                    value = uiState.confirmarContrasena,
+                    error = uiState.errorConfirmarContrasena
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.ConfirmarContrasenaChanged(it)) },
-                error = uiState.errorConfirmarContrasena,
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password,
                 onImeAction = {
                     onEvent(UsuarioUiEvent.Register)
                 },
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = "Visibility",
-                            modifier = Modifier.size(24.dp)
-                        )
+                    PasswordVisibilityToggle(passwordVisible = passwordVisible) {
+                        passwordVisible = !passwordVisible
                     }
                 },
                 visualTransformation = if(passwordVisible) {

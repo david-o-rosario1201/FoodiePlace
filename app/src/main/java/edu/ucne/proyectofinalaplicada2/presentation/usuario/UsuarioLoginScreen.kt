@@ -34,6 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.PasswordVisibilityToggle
 import edu.ucne.proyectofinalaplicada2.presentation.components.SubtitleText
 import edu.ucne.proyectofinalaplicada2.presentation.components.TitleText
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
@@ -60,12 +62,6 @@ private fun UsuarioLoginBodyScreen(
 ){
     var passwordVisible by remember { mutableStateOf(false) }
 
-    val icon = if(passwordVisible) {
-        painterResource(R.drawable.eye_close_up)
-    }else{
-        painterResource(R.drawable.close_eye)
-    }
-
     Scaffold { innerPadding->
         Column(
             modifier = Modifier
@@ -78,34 +74,32 @@ private fun UsuarioLoginBodyScreen(
             SubtitleText(text = "Por favor inicia sesión para continuar")
 
             CustomTextField(
-                label = "Correo",
-                value = uiState.correo,
+                opcion = OpcionTextField(
+                    label = "Correo",
+                    value = uiState.correo,
+                    error = uiState.errorCorreo
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.CorreoChanged(it)) },
-                error = uiState.errorCorreo,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Email,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Contraseña",
-                value = uiState.contrasena,
+                opcion = OpcionTextField(
+                    label = "Contraseña",
+                    value = uiState.contrasena,
+                    error = uiState.errorContrasena
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.ContrasenaChanged(it)) },
-                error = uiState.errorContrasena,
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password,
                 onImeAction = {
                     onEvent(UsuarioUiEvent.Login)
                 },
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = "Visibility",
-                            modifier = Modifier.size(24.dp)
-                        )
+                    PasswordVisibilityToggle(passwordVisible = passwordVisible) {
+                        passwordVisible = !passwordVisible
                     }
                 },
                 visualTransformation = if(passwordVisible) {
