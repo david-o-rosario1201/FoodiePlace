@@ -78,20 +78,35 @@ class CategoriaViewModel @Inject constructor(
 
     private fun saveCategoria() {
         viewModelScope.launch {
-            if (_uiState.value.categoriaId == null) {
-                _uiState.value.toEntity()?.let { categoriaRepository.addCategoria(it)}
-            }else
-            {
-                _uiState.value.toEntity()?.let {
-                    categoriaRepository.updateCategoria(_uiState.value.categoriaId!!, it)
+            val validationError = validateCategoria(_uiState.value)
+            if (validationError != null) {
+                _uiState.update {
+                    it.copy(errorMessge = validationError)
+                }
+            } else {
+                if (_uiState.value.categoriaId == null) {
+                    _uiState.value.toEntity()?.let { categoriaRepository.addCategoria(it) }
+                } else {
+                    _uiState.value.toEntity()?.let {
+                        categoriaRepository.updateCategoria(_uiState.value.categoriaId!!, it)
+                    }
                 }
             }
         }
     }
 
+
     private fun deleteCategoria() {
         viewModelScope.launch {
             _uiState.value.categoriaId?.let { categoriaRepository.deleteCategoria(it) }
+        }
+    }
+
+    private fun validateCategoria(uiState: CategoriaUiState): String? {
+        return when {
+            uiState.nombre.isNullOrBlank() -> "El nombre de la categoría no puede estar vacío."
+            uiState.imagen.isNullOrBlank() -> "La imagen de la categoría no puede estar vacía."
+            else -> null
         }
     }
 
