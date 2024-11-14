@@ -6,6 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -41,6 +44,26 @@ fun ProyectoFinalAplicada2NavHost(
                 UsuarioRegisterScreen(
                     onLoginUsuario = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
+                    }
+                )
+            }
+            composable<Screen.OfertaListScreen>{
+                OfertaListScreen(
+                    onAddOferta = {
+                        navHostController.navigate(Screen.OfertaScreen(0))
+                    },
+                    onClickOferta = {
+                        navHostController.navigate(Screen.OfertaScreen(it))
+                    }
+                )
+            }
+            composable<Screen.OfertaScreen> { argumentos ->
+                val id = argumentos.toRoute<Screen.OfertaScreen>().ofertaId
+
+                OfertaScreen(
+                    ofertaId = id,
+                    goToOfertaList = {
+                        navHostController.navigate(Screen.OfertaListScreen)
                     }
                 )
             }
