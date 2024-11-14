@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import androidx.navigation.toRoute
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
@@ -49,7 +50,7 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.UsuarioLoginScreen>{
                 UsuarioLoginScreen(
                     onRegisterUsuario = {
-                        navHostController.navigate(Screen.CategoriaListScreen)
+                        navHostController.navigate(Screen.UsuarioRegisterScreen)
                     }
                 )
             }
@@ -157,6 +158,13 @@ fun ProyectoFinalAplicada2NavHost(
                 NotificacionScreen(
                     goToHome = {
                         navHostController.navigate(Screen.HomeScreen)
+                    }
+                )
+            }
+            composable<Screen.ProductoScreen>{
+                ProductoScreen(
+                    onProductoCreado = {
+                        navHostController.navigate(Screen.ProductoScreen)
                     }
                 )
             }
