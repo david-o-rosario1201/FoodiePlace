@@ -31,24 +31,21 @@ import androidx.compose.ui.unit.toSize
 
 @Composable
 fun CustomTextField(
-    label: String,
-    value: String?,
+    opcion: OpcionTextField,
     onValueChange: (String) -> Unit,
-    error: String?,
     imeAction: ImeAction,
     keyboardType: KeyboardType = KeyboardType.Text,
     onImeAction: () -> Unit,
     trailingIcon: (@Composable () -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    maxLines: Int = 1
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     val focusManager = LocalFocusManager.current
 
     Column (horizontalAlignment = Alignment.CenterHorizontally) {
         TextField(
-            label = { Text(label) },
-            value = value ?: "",
+            label = { Text(opcion.label) },
+            value = opcion.value ?: "",
             onValueChange = onValueChange,
             modifier = Modifier
                 .padding(horizontal = 40.dp)
@@ -73,9 +70,9 @@ fun CustomTextField(
             singleLine = true,
             trailingIcon = trailingIcon,
             visualTransformation = visualTransformation,
-            maxLines = maxLines
+            maxLines = opcion.maxLines
         )
-        error?.let {
+        opcion.error?.let {
             Text(
                 text = it,
                 color = MaterialTheme.colorScheme.error
@@ -83,3 +80,10 @@ fun CustomTextField(
         }
     }
 }
+
+data class OpcionTextField(
+    val label: String,
+    val value: String?,
+    val error: String?,
+    val maxLines: Int = 1
+)

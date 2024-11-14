@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SubtitleText
 import edu.ucne.proyectofinalaplicada2.presentation.components.TitleText
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
@@ -78,39 +79,47 @@ private fun UsuarioRegisterBodyScreen(
             SubtitleText(text = "Por favor ingresa los datos para registrarte")
 
             CustomTextField(
-                label = "Nombre",
-                value = uiState.nombre,
+                opcion = OpcionTextField(
+                    label = "Nombre",
+                    value = uiState.nombre,
+                    error = uiState.errorNombre
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.NombreChanged(it)) },
-                error = uiState.errorNombre,
                 imeAction = ImeAction.Next,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Teléfono",
-                value = uiState.telefono,
+                opcion = OpcionTextField(
+                    label = "Teléfono",
+                    value = uiState.telefono,
+                    error = uiState.errorTelefono
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.TelefonoChanged(it)) },
-                error = uiState.errorTelefono,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Phone,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Correo",
-                value = uiState.correo,
+                opcion = OpcionTextField(
+                    label = "Correo",
+                    value = uiState.correo,
+                    error = uiState.errorCorreo
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.CorreoChanged(it)) },
-                error = uiState.errorCorreo,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Email,
                 onImeAction = {}
             )
 
             CustomTextField(
-                label = "Contraseña",
-                value = uiState.contrasena,
+                opcion = OpcionTextField(
+                    label = "Contraseña",
+                    value = uiState.contrasena,
+                    error = uiState.errorContrasena
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.ContrasenaChanged(it)) },
-                error = uiState.errorContrasena,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next,
                 onImeAction = {},
@@ -133,10 +142,12 @@ private fun UsuarioRegisterBodyScreen(
             )
 
             CustomTextField(
-                label = "Confirmar contraseña",
-                value = uiState.confirmarContrasena,
+                opcion = OpcionTextField(
+                    label = "Confirmar Contraseña",
+                    value = uiState.confirmarContrasena,
+                    error = uiState.errorConfirmarContrasena
+                ),
                 onValueChange = { onEvent(UsuarioUiEvent.ConfirmarContrasenaChanged(it)) },
-                error = uiState.errorConfirmarContrasena,
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password,
                 onImeAction = {
