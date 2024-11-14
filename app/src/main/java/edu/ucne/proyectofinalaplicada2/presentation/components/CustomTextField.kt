@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 
@@ -36,7 +37,10 @@ fun CustomTextField(
     error: String?,
     imeAction: ImeAction,
     keyboardType: KeyboardType = KeyboardType.Text,
-    onImeAction: () -> Unit
+    onImeAction: () -> Unit,
+    trailingIcon: (@Composable () -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    maxLines: Int = 1
 ) {
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     val focusManager = LocalFocusManager.current
@@ -66,7 +70,10 @@ fun CustomTextField(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
             ),
-            singleLine = true
+            singleLine = true,
+            trailingIcon = trailingIcon,
+            visualTransformation = visualTransformation,
+            maxLines = maxLines
         )
         error?.let {
             Text(
