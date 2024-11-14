@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
-import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
 @Composable
