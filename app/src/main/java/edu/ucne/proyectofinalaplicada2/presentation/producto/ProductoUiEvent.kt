@@ -16,4 +16,5 @@ sealed interface ProductoUiEvent {
     data object Delete : ProductoUiEvent
     data object Refresh : ProductoUiEvent
     data class IsRefreshingChanged(val isRefreshing: Boolean) : ProductoUiEvent
+    data object RestablecerCampos : ProductoUiEvent
 }
