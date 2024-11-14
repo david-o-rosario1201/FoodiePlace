@@ -10,12 +10,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +31,8 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomDropDown
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
-import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import java.util.Date
@@ -62,13 +64,19 @@ private fun OfertaBodyScreen(
     val buttonText = if (ofertaId == 0) "Guardar" else "Actualizar"
     val buttonContentDescription = if (ofertaId == 0) "Guardar" else "Actualizar"
 
+    LaunchedEffect(key1 = true, key2 = uiState.isSuccess){
+        onEvent(OfertaUiEvent.SelectedOferta(ofertaId))
+
+        if(uiState.isSuccess){
+            goToOfertaList()
+        }
+    }
+
     Scaffold(
         topBar = {
-            TopBarComponent(
+            SimpleTopBarComponent(
                 title = title,
-                onClickMenu = {},
-                onClickNotifications = {},
-                notificationCount = 0
+                onBackClick = goToOfertaList
             )
         }
     ) { innerPadding ->
@@ -120,26 +128,32 @@ private fun PrecioInputFields(
     onEvent: (OfertaUiEvent) -> Unit
 ) {
     CustomTextField(
-        label = "Precio",
-        value = uiState.precio.toString(),
+        opcion = OpcionTextField(
+            label = "Precio",
+            value = uiState.precio.toString(),
+            error = uiState.errorPrecio
+        ),
         onValueChange = { onEvent(OfertaUiEvent.PrecioChanged(it.toBigDecimal())) },
-        error = uiState.errorPrecio,
         imeAction = ImeAction.Next,
         onImeAction = {}
     )
     CustomTextField(
-        label = "Descuento",
-        value = uiState.descuento.toString(),
+        opcion = OpcionTextField(
+            label = "Descuento",
+            value = uiState.descuento.toString(),
+            error = uiState.errorDescuento
+        ),
         onValueChange = { onEvent(OfertaUiEvent.DescuentoChanged(it.toBigDecimal())) },
-        error = uiState.errorDescuento,
         imeAction = ImeAction.Next,
         onImeAction = {}
     )
     CustomTextField(
-        label = "Precio oferta",
-        value = uiState.precioOferta.toString(),
+        opcion = OpcionTextField(
+            label = "Precio oferta",
+            value = uiState.precioOferta.toString(),
+            error = uiState.errorPrecioOferta
+        ),
         onValueChange = { onEvent(OfertaUiEvent.PrecioOfertaChanged(it.toBigDecimal())) },
-        error = uiState.errorPrecioOferta,
         imeAction = ImeAction.Next,
         onImeAction = {}
     )
@@ -173,7 +187,7 @@ private fun SaveButton(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        OutlinedButton(
+        Button(
             onClick = { onEvent(OfertaUiEvent.Save) },
             colors = ButtonColors(
                 containerColor = color_oro,
