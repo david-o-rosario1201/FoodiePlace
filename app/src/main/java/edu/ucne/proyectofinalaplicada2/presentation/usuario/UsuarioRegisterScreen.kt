@@ -6,12 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.PasswordVisibilityToggle
 import edu.ucne.proyectofinalaplicada2.presentation.components.SubtitleText
 import edu.ucne.proyectofinalaplicada2.presentation.components.TitleText
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
@@ -60,12 +56,6 @@ private fun UsuarioRegisterBodyScreen(
     onLoginUsuario: () -> Unit
 ){
     var passwordVisible by remember { mutableStateOf(false) }
-
-    val icon = if(passwordVisible) {
-        painterResource(R.drawable.eye_close_up)
-    }else{
-        painterResource(R.drawable.close_eye)
-    }
 
     Scaffold { innerPadding ->
         Column(
@@ -124,14 +114,8 @@ private fun UsuarioRegisterBodyScreen(
                 imeAction = ImeAction.Next,
                 onImeAction = {},
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = "Visibility",
-                            modifier = Modifier.size(24.dp)
-                        )
+                    PasswordVisibilityToggle(passwordVisible = passwordVisible) {
+                        passwordVisible = !passwordVisible
                     }
                 },
                 visualTransformation = if(passwordVisible) {
@@ -154,14 +138,8 @@ private fun UsuarioRegisterBodyScreen(
                     onEvent(UsuarioUiEvent.Register)
                 },
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = "Visibility",
-                            modifier = Modifier.size(24.dp)
-                        )
+                    PasswordVisibilityToggle(passwordVisible = passwordVisible) {
+                        passwordVisible = !passwordVisible
                     }
                 },
                 visualTransformation = if(passwordVisible) {

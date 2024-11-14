@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.PasswordVisibilityToggle
 import edu.ucne.proyectofinalaplicada2.presentation.components.SubtitleText
 import edu.ucne.proyectofinalaplicada2.presentation.components.TitleText
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
@@ -60,12 +61,6 @@ private fun UsuarioLoginBodyScreen(
     onRegisterUsuario: () -> Unit
 ){
     var passwordVisible by remember { mutableStateOf(false) }
-
-    val icon = if(passwordVisible) {
-        painterResource(R.drawable.eye_close_up)
-    }else{
-        painterResource(R.drawable.close_eye)
-    }
 
     Scaffold { innerPadding->
         Column(
@@ -103,14 +98,8 @@ private fun UsuarioLoginBodyScreen(
                     onEvent(UsuarioUiEvent.Login)
                 },
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            painter = icon,
-                            contentDescription = "Visibility",
-                            modifier = Modifier.size(24.dp)
-                        )
+                    PasswordVisibilityToggle(passwordVisible = passwordVisible) {
+                        passwordVisible = !passwordVisible
                     }
                 },
                 visualTransformation = if(passwordVisible) {
