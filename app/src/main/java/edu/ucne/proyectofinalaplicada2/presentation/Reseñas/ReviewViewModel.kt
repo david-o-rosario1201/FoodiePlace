@@ -72,6 +72,7 @@ class ReviewViewModel @Inject constructor(
                     it.copy(comentario = event.comentario, errorMessge = "")
                 }
             }
+
             is ReviewUiEvent.SetUsuarioId -> _uiState.update {
                 it.copy( usuarioId = event.usuarioId, errorMessge = "" )
             }
@@ -85,13 +86,14 @@ class ReviewViewModel @Inject constructor(
         }
     }
 
-    private fun saveReseña(){
+    private fun saveReseña() {
+        // Validaciones
+        if (!validarDatos()) return
+
         viewModelScope.launch {
-            if(_uiState.value.usuarioId == null){
+            if (_uiState.value.usuarioId == null) {
                 _uiState.value.toEntity()?.let { repository.addReview(it) }
-            }
-            else
-            {
+            } else {
                 _uiState.value.toEntity()?.let {
                     repository.updateReview(_uiState.value.id!!, it)
                 }
@@ -99,7 +101,7 @@ class ReviewViewModel @Inject constructor(
         }
     }
 
-    private fun deleteReseña(){
+    private fun deleteReseña() {
         viewModelScope.launch {
             _uiState.value.id?.let { repository.deleteReview(it) }
         }
@@ -108,6 +110,18 @@ class ReviewViewModel @Inject constructor(
     private fun obtenerFechaActual(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         return dateFormat.format(Date())
+    }
+
+
+    private fun validarDatos(): Boolean {
+        val estado = _uiState.value
+
+        if (estado.comentario.isBlank()) {
+            _uiState.update { it.copy(errorMessge = "El comentario no puede estar vacío") }
+            return false
+        }
+        _uiState.update { it.copy(errorMessge = "") }
+        return true
     }
 
     fun ReviewUiState.toEntity() =
@@ -120,5 +134,4 @@ class ReviewViewModel @Inject constructor(
                 calificacion = calificacion
             )
         }
-
 }
