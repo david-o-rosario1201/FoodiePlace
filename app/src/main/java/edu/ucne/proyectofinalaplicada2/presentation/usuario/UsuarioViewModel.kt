@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.text.replace
 
 @HiltViewModel
 class UsuarioViewModel @Inject constructor(
@@ -62,7 +61,7 @@ class UsuarioViewModel @Inject constructor(
                 _uiState.update { it.copy(nombre = event.nombre) }
             }
             is UsuarioUiEvent.TelefonoChanged -> {
-                _uiState.update { it.copy(telefono = formatearTelefono(event.telefono)) }
+                _uiState.update { it.copy(telefono = formatPhoneNumber(event.telefono)) }
             }
             is UsuarioUiEvent.CorreoChanged -> {
                 _uiState.update { it.copy(correo = event.correo) }
@@ -172,17 +171,15 @@ class UsuarioViewModel @Inject constructor(
         return email.matches(emailPattern.toRegex())
     }
 
-    private fun formatearTelefono(oldPhone: String): String {
-        val newPhone = oldPhone.replace("-", "")
-
-        if (newPhone.length == 3) {
-            return newPhone.substring(0, 3) + "-"
+    private fun formatPhoneNumber(phoneNumber: String): String {
+        val cleanedNumber = phoneNumber.filter { it.isDigit() } // Elimina cualquier carácter no numérico
+        return if (cleanedNumber.length == 10) {
+            "${cleanedNumber.substring(0, 3)}-${cleanedNumber.substring(3, 6)}-${cleanedNumber.substring(6, 10)}"
+        } else {
+            phoneNumber // Retorna el número original si no tiene 10 dígitos
         }
-        if (newPhone.length == 6) {
-            return newPhone.substring(0, 3) + "-" + newPhone.substring(3, 6) + "-" + newPhone.substring(6)
-        }
-        return newPhone
     }
+
 
     private fun UsuarioUiState.toDto() = UsuarioDto(
         usuarioId = usuarioId,
