@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -21,7 +22,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.WelcomeScreen
+            startDestination = Screen.ProductoScreen
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
@@ -41,6 +42,13 @@ fun ProyectoFinalAplicada2NavHost(
                 UsuarioRegisterScreen(
                     onLoginUsuario = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
+                    }
+                )
+            }
+            composable<Screen.ProductoScreen>{
+                ProductoScreen(
+                    onProductoCreado = {
+                        navHostController.navigate(Screen.ProductoScreen)
                     }
                 )
             }
