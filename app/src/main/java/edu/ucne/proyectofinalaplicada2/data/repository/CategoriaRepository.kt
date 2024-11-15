@@ -50,5 +50,5 @@ class CategoriaRepository @Inject constructor(
 private fun CategoriaDto.toCategoriaEntity() = CategoriaEntity(
     categoriaId = categoriaId,
     nombre = nombre,
-    imagen = imagen
+    imagen = imagen ?: byteArrayOf()
 )
