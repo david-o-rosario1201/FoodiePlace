@@ -74,7 +74,6 @@ class ReviewViewModel @Inject constructor(
                     it.copy(comentario = event.comentario, errorMessge = "")
                 }
             }
-
             is ReviewUiEvent.SetUsuarioId -> _uiState.update {
                 it.copy( usuarioId = event.usuarioId, errorMessge = "" )
             }
@@ -87,23 +86,41 @@ class ReviewViewModel @Inject constructor(
             ReviewUiEvent.Refresh -> GetReseñas()
         }
     }
-
     private fun saveReseña() {
-        // Validaciones
-        if (!validarDatos()) return
-
         viewModelScope.launch {
-            if (_uiState.value.usuarioId == null) {
-                _uiState.value.toEntity()?.let { repository.addReview(it) }
-            } else {
-                _uiState.value.toEntity()?.let {
-                    repository.updateReview(_uiState.value.id!!, it)
-                }
+
+            val errorMessage = validarReseña()
+            if (errorMessage != null) {
+                _uiState.update { it.copy(errorMessge = errorMessage) }
+                return@launch
             }
+
+            val currentUiState = _uiState.value
+            if (currentUiState.id == null) {
+                currentUiState.toEntity()?.let { repository.addReview(it) }
+            } else {
+                currentUiState.toEntity()?.let { repository.updateReview(currentUiState.id!!, it) }
+            }
+
+            _uiState.update { ReviewUiState() }
         }
     }
+    private fun validarReseña(): String? {
+        val currentUiState = _uiState.value
 
-    private fun deleteReseña() {
+        if (currentUiState.comentario.isBlank()) {
+            return "El comentario no puede estar vacío"
+        }
+
+        if (currentUiState.calificacion == 0) {
+            return "Debe seleccionar una calificación"
+        }
+
+        return null
+    }
+
+
+    private fun deleteReseña(){
         viewModelScope.launch {
             _uiState.value.id?.let { repository.deleteReview(it) }
         }
@@ -114,26 +131,13 @@ class ReviewViewModel @Inject constructor(
         return dateFormat.format(Date())
     }
 
-
-    private fun validarDatos(): Boolean {
-        val estado = _uiState.value
-
-        if (estado.comentario.isBlank()) {
-            _uiState.update { it.copy(errorMessge = "El comentario no puede estar vacío") }
-            return false
-        }
-        _uiState.update { it.copy(errorMessge = "") }
-        return true
-    }
-
     fun ReviewUiState.toEntity() =
-        id?.let {
             ReviewDTO(
-                resenaId = it,
+                resenaId = id,
                 usuarioId = usuarioId,
                 comentario = comentario,
                 fechaResena = obtenerFechaActual(),
                 calificacion = calificacion
             )
-        }
 }
+
