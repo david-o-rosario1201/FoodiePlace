@@ -32,10 +32,8 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import java.math.BigDecimal
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun PedidoListScreen(
