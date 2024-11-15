@@ -1,15 +1,21 @@
 package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +62,7 @@ fun ReviewCreateBodyScreen(
                 .padding(innerPadding)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             CustomTextField(
                 label = "Comentario",
@@ -67,8 +74,34 @@ fun ReviewCreateBodyScreen(
                 error = uiState.errorMessge,
             )
 
+
+            var expanded by remember { mutableStateOf(false) }
             OutlinedButton(
-                onClick = { onEvent(ReviewUiEvent.Save) },
+                onClick = { expanded = true },
+                shape = RoundedCornerShape(15.dp),
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Text(text = "Calificación: ${uiState.calificacion}")
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                (1..5).forEach { rating ->
+                    DropdownMenuItem(
+                        text = { Text(text = rating.toString()) },
+                        onClick = {
+                            onEvent(ReviewUiEvent.SetCalificacion(rating))
+                            expanded = false
+                        }
+                    )
+                }
+            }
+
+            OutlinedButton(
+                onClick = {
+                    onEvent(ReviewUiEvent.Save)
+                          },
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = color_oro,
                     contentColor = Color.White
@@ -91,6 +124,7 @@ fun ReviewCreateBodyScreen(
 fun ReviewCreateScreenPreview() {
     val previewUiState = ReviewUiState(
         comentario = "Esta es una reseña de ejemplo" ,
+        calificacion = 4,
         errorMessge = ""
     )
 
