@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
@@ -96,6 +97,13 @@ fun ProyectoFinalAplicada2NavHost(
                 ReviewListScreen(
                     goToAddReview = {
                         navHostController.navigate(Screen.ReviewCreateScreen)
+                    }
+                )
+            }
+            composable<Screen.ReviewCreateScreen>{
+                ReviewCreateScreen(
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.ReviewListScreen)
                     }
                 )
             }
