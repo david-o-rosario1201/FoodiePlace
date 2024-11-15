@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.adapters)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -99,5 +101,7 @@ dependencies {
 
     //Gson for type converter
     implementation ("com.google.code.gson:gson:2.8.8")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
 }
