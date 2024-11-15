@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
+import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
@@ -65,13 +66,16 @@ fun ReviewCreateBodyScreen(
             verticalArrangement = Arrangement.Center
         ) {
             CustomTextField(
-                label = "Comentario",
-                value = uiState.comentario,
+                opcion = OpcionTextField(
+                    label = "Comentario",
+                    value = uiState.comentario,
+                    error = uiState.errorMessge,
+                    maxLines = 5
+                ),
                 onValueChange = { onEvent(ReviewUiEvent.SetComentario(it)) },
-                imeAction = ImeAction.Done,
+                imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Text,
-                onImeAction = {},
-                error = uiState.errorMessge,
+                onImeAction = {}
             )
 
 
