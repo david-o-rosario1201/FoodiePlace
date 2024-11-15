@@ -25,15 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.obtenerNombreProducto
 import edu.ucne.proyectofinalaplicada2.ui.theme.samplePedidoUiState
-import java.math.BigDecimal
-import java.time.Instant
-import java.util.Date
 
 @Composable
 fun PedidoClienteScreen(
