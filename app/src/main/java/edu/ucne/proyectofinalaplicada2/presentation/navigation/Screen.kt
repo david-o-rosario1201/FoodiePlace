@@ -20,6 +20,9 @@ sealed class Screen {
     data object ReviewListScreen: Screen()
 
     @Serializable
+    data object ReviewCreateScreen: Screen()
+
+    @Serializable
     data object UsuarioListScreen: Screen()
 
     @Serializable

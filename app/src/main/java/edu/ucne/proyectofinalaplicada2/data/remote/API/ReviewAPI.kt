@@ -11,23 +11,23 @@ import retrofit2.http.Path
 interface ReviewAPI {
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
-    @GET("api/Reseñas")
+    @GET("api/Resenas")
     suspend fun getReview(): List<ReviewDTO>
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
-    @GET("api/Reseñas/{id}")
+    @GET("api/Resenas/{id}")
     suspend fun getReviewById(@Path("id") id: Int): ReviewDTO
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
-    @POST("api/Reseñas")
+    @POST("api/Resenas")
     suspend fun postReview(@Body Review: ReviewDTO?): ReviewDTO?
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
-    @POST("api/Reseñas/{id}")
+    @POST("api/Resenas/{id}")
     suspend fun putReview(@Path("id") id: Int, @Body Review: ReviewDTO): ReviewDTO
 
     @Headers("X-Api-Key:kaisokuni_orewanara")
-    @DELETE("api/Reseñas/{id}")
+    @DELETE("api/Resenas/{id}")
     suspend fun deleteReview(@Path("id") id: Int)
 
 }
