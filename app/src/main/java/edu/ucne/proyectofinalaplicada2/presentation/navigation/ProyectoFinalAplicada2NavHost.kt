@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import edu.ucne.proyectofinalaplicada2.presentation.Home.HomeScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
@@ -50,7 +51,7 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.UsuarioLoginScreen>{
                 UsuarioLoginScreen(
                     onRegisterUsuario = {
-                        navHostController.navigate(Screen.CategoriaListScreen)
+                        navHostController.navigate(Screen.UsuarioRegisterScreen)
                     }
                 )
             }
@@ -113,6 +114,16 @@ fun ProyectoFinalAplicada2NavHost(
                 ReviewCreateScreen(
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReviewListScreen)
+                    }
+                )
+            }
+            composable<Screen.HomeScreen>{
+                HomeScreen(
+                    gocategoria = {
+                        navHostController.navigate(Screen.UsuarioLoginScreen)
+                    },
+                    goProducto = {
+                        navHostController.navigate(Screen.PedidoListScreen)
                     }
                 )
             }
