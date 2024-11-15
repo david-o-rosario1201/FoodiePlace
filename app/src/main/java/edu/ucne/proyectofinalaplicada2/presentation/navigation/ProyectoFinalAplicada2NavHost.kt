@@ -12,6 +12,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -88,6 +89,13 @@ fun ProyectoFinalAplicada2NavHost(
                 PedidoClienteScreen(
                     goToPedidoList = {
                         navHostController.navigate(Screen.PedidoListScreen)
+                    }
+                )
+            }
+            composable<Screen.ReviewListScreen>{
+                ReviewListScreen(
+                    goToAddReview = {
+                        navHostController.navigate(Screen.ReviewCreateScreen)
                     }
                 )
             }
