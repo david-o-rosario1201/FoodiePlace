@@ -89,7 +89,7 @@ class ReviewViewModel @Inject constructor(
     private fun saveReseña() {
         viewModelScope.launch {
 
-            val errorMessage = validarReseña()
+            val errorMessage = validarReview()
             if (errorMessage != null) {
                 _uiState.update { it.copy(errorMessge = errorMessage) }
                 return@launch
@@ -105,7 +105,7 @@ class ReviewViewModel @Inject constructor(
             _uiState.update { ReviewUiState() }
         }
     }
-    private fun validarReseña(): String? {
+    private fun validarReview(): String? {
         val currentUiState = _uiState.value
 
         if (currentUiState.comentario.isBlank()) {
