@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.obtenerNombreProducto
@@ -89,34 +90,7 @@ private fun PedidoClienteBodyScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         uiState.pedidoDetalle.forEach { pedido ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = pedido.cantidad.toString(),
-                                    color = Color.Black,
-                                    style = MaterialTheme.typography.displaySmall,
-                                    modifier = Modifier.weight(1f),
-                                    textAlign = TextAlign.Start
-                                )
-                                Text(
-                                    text = obtenerNombreProducto(pedido.productoId),
-                                    color = Color.Black,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.weight(3f),
-                                    textAlign = TextAlign.Start
-                                )
-                                Text(
-                                    text = "$${pedido.precioUnitario}",
-                                    color = Color.Black,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.weight(1f),
-                                    textAlign = TextAlign.End
-                                )
-                            }
+                            PedidoRow(pedido = pedido)
                         }
                     }
                 }
@@ -135,27 +109,11 @@ private fun PedidoClienteBodyScreen(
                 Column(
                     modifier = Modifier.padding(20.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "Items Total:", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "$${uiState.total}", style = MaterialTheme.typography.bodyLarge)
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "Propina:", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "$10", style = MaterialTheme.typography.bodyLarge)
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "ITBS:", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "$50", style = MaterialTheme.typography.bodyLarge)
-                    }
+
+                    TotalRow(label = "Items Total:", amount = "$${uiState.total}")
+                    TotalRow(label = "Propina:", amount = "$10")
+                    TotalRow(label = "ITBS:", amount = "$50")
+
                     Divider(modifier = Modifier.padding(vertical = 8.dp), color = Color.Black, thickness = 1.dp)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -175,6 +133,49 @@ private fun PedidoClienteBodyScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PedidoRow(pedido: PedidoDetalleEntity) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = pedido.cantidad.toString(),
+            color = Color.Black,
+            style = MaterialTheme.typography.displaySmall,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Start
+        )
+        Text(
+            text = obtenerNombreProducto(pedido.productoId),
+            color = Color.Black,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.weight(3f),
+            textAlign = TextAlign.Start
+        )
+        Text(
+            text = "$${pedido.precioUnitario}",
+            color = Color.Black,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End
+        )
+    }
+}
+
+@Composable
+fun TotalRow(label: String, amount: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        Text(text = amount, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

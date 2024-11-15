@@ -29,6 +29,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarCompo
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.obtenerNombreProducto
 import edu.ucne.proyectofinalaplicada2.ui.theme.samplePedidoUiState
+import java.math.BigDecimal
 
 @Composable
 fun PedidoAdminScreen(
@@ -79,39 +80,13 @@ private fun PedidoAdminBodyScreen(
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Cliente:", style = MaterialTheme.typography.bodyLarge)
-                            Text(text = "Juan Perez", style = MaterialTheme.typography.bodyLarge)
-                        }
+                        // Usando las nuevas funciones
+                        PedidoRow(label = "Cliente:", value = "Juan Perez")
+                        PedidoRow(label = "Orden:", value = uiState.pedidoId.toString())
+                        PedidoRow(label = "Para llevar:", value = if (uiState.paraLlevar == true) "Si" else "No")
+                        TotalRow(total = uiState.total ?: BigDecimal.ZERO)
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Orden:", style = MaterialTheme.typography.bodyLarge)
-                            Text(text = uiState.pedidoId.toString(), style = MaterialTheme.typography.bodyLarge)
-                        }
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Para llevar:", style = MaterialTheme.typography.bodyLarge)
-                            Text(text = if (uiState.paraLlevar == true) "Si" else "No", style = MaterialTheme.typography.bodyLarge)
-                        }
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "Total:", style = MaterialTheme.typography.bodyLarge)
-                            Text(text = uiState.total.toString(), style = MaterialTheme.typography.bodyLarge)
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp)) // Espacio entre detalles y pedidoDetalle
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         uiState.pedidoDetalle.forEach { pedido ->
                             Row(
@@ -173,6 +148,33 @@ private fun PedidoAdminBodyScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PedidoRow(
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        Text(text = value, style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+fun TotalRow(
+    total: BigDecimal
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "Total:", style = MaterialTheme.typography.bodyLarge)
+        Text(text = total.toString(), style = MaterialTheme.typography.bodyLarge)
     }
 }
 
