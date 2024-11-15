@@ -9,6 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
+import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
+import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
+import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -64,6 +67,27 @@ fun ProyectoFinalAplicada2NavHost(
                     ofertaId = id,
                     goToOfertaList = {
                         navHostController.navigate(Screen.OfertaListScreen)
+                    }
+                )
+            }
+            composable<Screen.PedidoListScreen>{
+               PedidoListScreen(
+                   onClickPedido = {
+                       navHostController.navigate(Screen.ReviewListScreen)
+                   }
+               )
+            }
+            composable<Screen.PedidoAdminScreen>{
+                PedidoAdminScreen(
+                    goToPedidoList = {
+                        navHostController.navigate(Screen.PedidoListScreen)
+                    }
+                )
+            }
+            composable<Screen.PedidoClienteScreen>{
+                PedidoClienteScreen(
+                    goToPedidoList = {
+                        navHostController.navigate(Screen.PedidoListScreen)
                     }
                 )
             }
