@@ -9,6 +9,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,12 +18,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
 @Composable
-private fun ReviewCreateBodyScreen(
+fun ReviewCreateScreen(
+    viewModel: ReviewViewModel = hiltViewModel(),
+    onNavigateToList: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    ReviewCreateBodyScreen(
+        uiState = uiState,
+        onEvent = viewModel::onUiEvent,
+        onNavigateToList = onNavigateToList,
+    )
+}
+
+@Composable
+fun ReviewCreateBodyScreen(
     uiState: ReviewUiState,
     onEvent: (ReviewUiEvent) -> Unit,
     onNavigateToList: () -> Unit
