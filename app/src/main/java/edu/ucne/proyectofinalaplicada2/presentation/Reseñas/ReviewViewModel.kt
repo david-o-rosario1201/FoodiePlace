@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
 import edu.ucne.proyectofinalaplicada2.data.repository.ReviewRepository
@@ -15,6 +16,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 
+@HiltViewModel
 class ReviewViewModel @Inject constructor(
     private val repository: ReviewRepository
 ): ViewModel() {
