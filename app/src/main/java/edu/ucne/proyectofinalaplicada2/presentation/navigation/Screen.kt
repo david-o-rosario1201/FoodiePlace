@@ -33,4 +33,10 @@ sealed class Screen {
 
     @Serializable
     data class OfertaScreen(val ofertaId: Int): Screen()
+
+    @Serializable
+    data object PedidoAdminScreen: Screen()
+
+    @Serializable
+    data object PedidoClienteScreen: Screen()
 }
