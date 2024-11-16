@@ -56,12 +56,15 @@ fun CategoriaListScreen(
     )
 }
 
+
+
 @Composable
 fun CategoriaListBodyScreen(
     uiState: CategoriaUiState,
     goToAddCategoria: () -> Unit
 ) {
-    val categorias = remember { mutableStateListOf<CategoriaEntity>(*uiState.categorias.toTypedArray()) }
+    val categorias =
+        remember { mutableStateListOf<CategoriaEntity>(*uiState.categorias.toTypedArray()) }
 
     LaunchedEffect(uiState.categorias) {
         categorias.clear()
@@ -112,6 +115,7 @@ fun CategoriaListBodyScreen(
                         )
                     }
                 }
+
                 uiState.categorias.isEmpty() -> {
                     // Mensaje de lista vacía
                     Column(
@@ -127,6 +131,7 @@ fun CategoriaListBodyScreen(
                         )
                     }
                 }
+
                 else -> {
                     // Mostrar lista de categorías
                     LazyVerticalGrid(
@@ -152,6 +157,7 @@ fun CategoriaListBodyScreen(
         }
     }
 }
+
 
 @Composable
 fun CategoriaItem(
@@ -196,17 +202,3 @@ fun CategoriaItem(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun CategoriaListScreenPreview() {
-//    CategoriaListBodyScreen(
-//        uiState = CategoriaUiState(
-//            categorias = listOf(
-//                CategoriaEntity(1, "Deportes", imagen = null),
-//                CategoriaEntity(2, "Tecnología", imagen = null)
-//            )
-//        ),
-//        goToAddCategoria = {}
-//    )
-//}
