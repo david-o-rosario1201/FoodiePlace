@@ -22,7 +22,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,26 +42,34 @@ import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun CategoriaListScreen(
     viewModel: CategoriaViewModel = hiltViewModel(),
     goToAddCategoria: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     CategoriaListBodyScreen(
         uiState = uiState,
         goToAddCategoria = goToAddCategoria
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoriaListBodyScreen(
     uiState: CategoriaUiState,
     goToAddCategoria: () -> Unit
 ) {
+    val categorias = remember { mutableStateListOf<CategoriaEntity>(*uiState.categorias.toTypedArray()) }
+
+    LaunchedEffect(uiState.categorias) {
+        categorias.clear()
+        categorias.addAll(uiState.categorias)
+    }
+
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopBarComponent(
                 title = "Categorías",
@@ -74,7 +85,7 @@ fun CategoriaListBodyScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Agregar nuevas reseñas"
+                    contentDescription = "Agregar nuevas categorías"
                 )
             }
         }
@@ -85,22 +96,57 @@ fun CategoriaListBodyScreen(
                 .padding(innerPadding)
                 .background(Color.White)
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2), // Dos columnas en la cuadrícula
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                contentPadding = PaddingValues(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(uiState.categorias) { categoria ->
-                    CategoriaItem(
-                        item = categoria,
+            when {
+                uiState.isLoading -> {
+                    // Indicador de carga
+                    Column(
                         modifier = Modifier
-                            .height(120.dp)
-                            .fillMaxWidth()
-                    )
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Cargando categorías...",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+                uiState.categorias.isEmpty() -> {
+                    // Mensaje de lista vacía
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No hay categorías disponibles",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+                else -> {
+                    // Mostrar lista de categorías
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.categorias) { categoria ->
+                            CategoriaItem(
+                                item = categoria,
+                                modifier = Modifier
+                                    .height(120.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -125,21 +171,19 @@ fun CategoriaItem(
         colors = CardDefaults.cardColors(containerColor = randomColor)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Si la imagen está disponible como un ByteArray, la mostramos
             item.imagen?.let { imagenByteArray ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(imagenByteArray) // Aquí se usa el ByteArray
+                        .data(imagenByteArray)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Imagen categoría",
                     modifier = Modifier
-                        .size(80.dp) // Tamaño de la imagen
+                        .size(80.dp)
                         .padding(8.dp),
                 )
             }
@@ -153,25 +197,16 @@ fun CategoriaItem(
     }
 }
 
-
-// Vista previa de la pantalla de lista de categorías
-@Preview(showBackground = true)
-@Composable
-fun CategoriaListScreenPreview() {
-    CategoriaListBodyScreen(
-        uiState = CategoriaUiState(
-            categorias = listOf(
-                CategoriaEntity(
-                    1, "Deportes.jpg",
-                    imagen = byteArrayOf()
-                ),
-                CategoriaEntity(
-                    2, "Tecnología.jpg",
-                    imagen = byteArrayOf()
-                ),
-            )
-        ),
-        goToAddCategoria = {}
-    )
-}
-
+//@Preview(showBackground = true)
+//@Composable
+//fun CategoriaListScreenPreview() {
+//    CategoriaListBodyScreen(
+//        uiState = CategoriaUiState(
+//            categorias = listOf(
+//                CategoriaEntity(1, "Deportes", imagen = null),
+//                CategoriaEntity(2, "Tecnología", imagen = null)
+//            )
+//        ),
+//        goToAddCategoria = {}
+//    )
+//}
