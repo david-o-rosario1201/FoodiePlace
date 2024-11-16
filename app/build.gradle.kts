@@ -104,4 +104,7 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    implementation ("androidx.compose.material3:material3:1.0.1")  // Asegúrate de tener la versión correcta
+    implementation ("androidx.compose.foundation:foundation:1.5.0") // Para swipe-to-refresh
+
 }
