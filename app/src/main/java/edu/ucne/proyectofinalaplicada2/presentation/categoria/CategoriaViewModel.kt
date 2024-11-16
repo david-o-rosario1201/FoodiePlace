@@ -64,7 +64,7 @@ class CategoriaViewModel @Inject constructor(
                 it.copy(nombre = event.nombre, nombreError = "")
             }
             is CategoriaUiEvent.SetImagen -> _uiState.update {
-                it.copy(imagen = event.imagen, imagenError = "")
+                it.copy(imagen = event.imagen.toString(), imagenError = "")
             }
             is CategoriaUiEvent.SetNombreError -> _uiState.update {
                 it.copy(nombreError = event.error)
