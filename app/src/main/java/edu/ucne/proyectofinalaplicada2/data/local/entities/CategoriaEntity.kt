@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Entity(tableName = "Categorias")
-data class CategoriaEntity (
+data class CategoriaEntity(
     @PrimaryKey
-    val categoriaId: Int,
+    val categoriaId: Int? = 0,
     val nombre: String,
-    val imagen: String
+    val imagen: ByteArray
 )

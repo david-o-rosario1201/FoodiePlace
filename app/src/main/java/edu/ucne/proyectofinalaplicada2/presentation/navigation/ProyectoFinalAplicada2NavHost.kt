@@ -1,5 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.presentation.navigation
 
+import CategoriaListScreen
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -41,7 +43,7 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.UsuarioLoginScreen>{
                 UsuarioLoginScreen(
                     onRegisterUsuario = {
-                        navHostController.navigate(Screen.UsuarioRegisterScreen)
+                        navHostController.navigate(Screen.CategoriaListScreen)
                     }
                 )
             }
@@ -104,6 +106,20 @@ fun ProyectoFinalAplicada2NavHost(
                 ReviewCreateScreen(
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReviewListScreen)
+                    }
+                )
+            }
+            composable<Screen.CategoriaListScreen>{
+                CategoriaListScreen(
+                    goToAddCategoria = {
+                        navHostController.navigate(Screen.CategoriaCreateScreen)
+                    }
+                )
+            }
+            composable<Screen.CategoriaCreateScreen> {
+                CategoriaCreateScreen(
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.CategoriaListScreen)
                     }
                 )
             }

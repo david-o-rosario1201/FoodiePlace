@@ -43,7 +43,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
         PedidoDetalleEntity::class,
         TarjetaEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 

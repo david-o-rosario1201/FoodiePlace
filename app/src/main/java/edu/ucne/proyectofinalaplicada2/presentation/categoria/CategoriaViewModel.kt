@@ -61,61 +61,65 @@ class CategoriaViewModel @Inject constructor(
             CategoriaUiEvent.Refresh -> GetCategoria()
             CategoriaUiEvent.Delete -> deleteCategoria()
             is CategoriaUiEvent.SetNombre -> _uiState.update {
-                it.copy(nombre = event.nombre, errorMessge = "")
+                it.copy(nombre = event.nombre, nombreError = "")
             }
-
             is CategoriaUiEvent.SetImagen -> _uiState.update {
-                it.copy(imagen = event.imagen, errorMessge = "")
+                it.copy(imagen = event.imagen, imagenError = "")
             }
-
-            is CategoriaUiEvent.IsRefreshingChanged -> {
-                _uiState.update {
-                    it.copy(isRefreshing = event.isRefreshing)
-                }
+            is CategoriaUiEvent.SetNombreError -> _uiState.update {
+                it.copy(nombreError = event.error)
+            }
+            is CategoriaUiEvent.SetImagenError -> _uiState.update {
+                it.copy(imagenError = event.error)
+            }
+            is CategoriaUiEvent.IsRefreshingChanged -> _uiState.update {
+                it.copy(isRefreshing = event.isRefreshing)
             }
         }
     }
+
+
 
     private fun saveCategoria() {
         viewModelScope.launch {
             val validationError = validateCategoria(_uiState.value)
             if (validationError != null) {
-                _uiState.update {
-                    it.copy(errorMessge = validationError)
+
+                if (_uiState.value.nombre.isBlank()) {
+                    _uiState.update { it.copy(nombreError = "El nombre de la categoría no puede estar vacío.") }
                 }
-            } else {
-                if (_uiState.value.categoriaId == null) {
-                    _uiState.value.toEntity()?.let { categoriaRepository.addCategoria(it) }
-                } else {
-                    _uiState.value.toEntity()?.let {
-                        categoriaRepository.updateCategoria(_uiState.value.categoriaId!!, it)
-                    }
+                if (_uiState.value.imagen == null) {
+                    _uiState.update { it.copy(imagenError = "Debe seleccionar una imagen.") }
                 }
+                _uiState.update { it.copy(success = false) }
             }
         }
     }
 
 
+
     private fun deleteCategoria() {
         viewModelScope.launch {
-            _uiState.value.categoriaId?.let { categoriaRepository.deleteCategoria(it) }
+            _uiState.value.categoriaId?.let {
+                categoriaRepository.deleteCategoria(it)
+                _uiState.update { it.copy(success = true, errorMessge = null) }
+            }
         }
     }
 
     private fun validateCategoria(uiState: CategoriaUiState): String? {
         return when {
             uiState.nombre.isNullOrBlank() -> "El nombre de la categoría no puede estar vacío."
-            uiState.imagen.isNullOrBlank() -> "La imagen de la categoría no puede estar vacía."
+            uiState.imagen == null -> "Debe seleccionar una imagen."
             else -> null
         }
     }
 
     fun CategoriaUiState.toEntity() =
-        this.categoriaId?.let {
             CategoriaDto(
-                categoriaId = it,
+                categoriaId = categoriaId,
                 nombre = nombre,
                 imagen = imagen
             )
-        }
+
 }
