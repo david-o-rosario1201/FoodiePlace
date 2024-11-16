@@ -92,22 +92,7 @@ class CategoriaViewModel @Inject constructor(
                     _uiState.update { it.copy(imagenError = "Debe seleccionar una imagen.") }
                 }
                 _uiState.update { it.copy(success = false) }
-            } else {
-                val categoriaEntity = _uiState.value.toEntity()
-                if (categoriaEntity != null) {
-                    try {
-                        if (_uiState.value.categoriaId == null) {
-                            categoriaRepository.addCategoria(categoriaEntity)
-                            _uiState.update { it.copy(success = true, nombreError = null, imagenError = null) }
-                        } else {
-                            categoriaRepository.updateCategoria(_uiState.value.categoriaId!!, categoriaEntity)
-                            _uiState.update { it.copy(success = true, nombreError = null, imagenError = null) }
-                        }
-                    } catch (e: Exception) {
-                        _uiState.update { it.copy(errorMessge = "Error al guardar la categoría: ${e.message}", success = false) }
-                    }
-                }
-            }
+            } else {}
         }
     }
 
