@@ -131,11 +131,10 @@ class CategoriaViewModel @Inject constructor(
     }
 
     fun CategoriaUiState.toEntity() =
-        this.categoriaId?.let {
             CategoriaDto(
-                categoriaId = it,
+                categoriaId = categoriaId,
                 nombre = nombre,
                 imagen = imagen
             )
-        }
+
 }
