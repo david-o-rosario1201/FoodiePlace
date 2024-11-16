@@ -4,6 +4,7 @@ import CategoriaListScreen
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,16 +16,20 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProyectoFinalAplicada2NavHost(
     navHostController: NavHostController
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
     DrawerMenu(
         drawerState = drawerState,
         navHostController = navHostController
@@ -120,6 +125,15 @@ fun ProyectoFinalAplicada2NavHost(
                 CategoriaCreateScreen(
                     onNavigateToList = {
                         navHostController.navigate(Screen.CategoriaListScreen)
+                    }
+                )
+            }
+            composable<Screen.AboutUsScreen> {
+                AboutUsScreen(
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     }
                 )
             }
