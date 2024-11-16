@@ -3,5 +3,6 @@
     <string name="drawer_home">Home</string>
     <string name="drawer_pedidos">Pedidos</string>
     <string name="drawer_carrito">Carrito</string>
+    <string name="drawer_aboutus">AboutUs</string>
 
 </resources>
