@@ -5,7 +5,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 data class CategoriaUiState (
     val categoriaId: Int? = null,
     val nombre: String = "",
-    val imagen: ByteArray? = null,
+    val imagen: String = "",
     val nombreError: String? = null,
     val imagenError: String? = null,
     val errorMessge: String? = null,
