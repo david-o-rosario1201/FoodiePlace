@@ -29,6 +29,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.asImageBitmap
+import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
 
 @Composable
 fun CategoriaCreateScreen(
@@ -67,8 +68,12 @@ fun CategoriaCreateScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CustomTextField(
-                label = "Nombre de la categoría",
-                value = nombreCategoria,
+                opcion = OpcionTextField(
+                    label = "Nombre de la categoría",
+                    value = nombreCategoria,
+                    error = "",
+                    maxLines = 5
+                ),
                 onValueChange = {
                     nombreCategoria = it
                     viewModel.onUiEvent(CategoriaUiEvent.SetNombre(it))
@@ -76,7 +81,7 @@ fun CategoriaCreateScreen(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text,
                 onImeAction = {},
-                error = ""
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
