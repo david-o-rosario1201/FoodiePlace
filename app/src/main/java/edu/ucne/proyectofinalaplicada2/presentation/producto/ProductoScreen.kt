@@ -129,7 +129,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Campo Prioridad
+
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         modifier = Modifier
