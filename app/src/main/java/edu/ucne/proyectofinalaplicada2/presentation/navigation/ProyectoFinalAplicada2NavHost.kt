@@ -39,7 +39,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.WelcomeScreen
+            startDestination = Screen.HomeScreen
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
