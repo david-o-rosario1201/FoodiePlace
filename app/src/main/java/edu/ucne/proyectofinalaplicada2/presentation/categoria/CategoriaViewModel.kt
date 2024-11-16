@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,7 +58,12 @@ class CategoriaViewModel @Inject constructor(
 
     fun onUiEvent(event: CategoriaUiEvent) {
         when (event) {
-            CategoriaUiEvent.Save -> saveCategoria()
+            CategoriaUiEvent.Save -> {
+                if (validarCampos()) {
+                    saveCategoria()
+                    _uiState.update { it.copy(success = true) }
+                }
+            }
             CategoriaUiEvent.Refresh -> GetCategoria()
             CategoriaUiEvent.Delete -> deleteCategoria()
             is CategoriaUiEvent.SetNombre -> _uiState.update {
@@ -78,40 +84,15 @@ class CategoriaViewModel @Inject constructor(
         }
     }
 
-
-
     private fun saveCategoria() {
         viewModelScope.launch {
-            val validationError = validateCategoria(_uiState.value)
-            if (validationError != null) {
-
-                if (_uiState.value.nombre.isBlank()) {
-                    _uiState.update { it.copy(nombreError = "El nombre de la categoría no puede estar vacío.") }
-                }
-                if (_uiState.value.imagen == null) {
-                    _uiState.update { it.copy(imagenError = "Debe seleccionar una imagen.") }
-                }
-                _uiState.update { it.copy(success = false) }
+            if (_uiState.value.categoriaId == null) {
+                categoriaRepository.addCategoria(_uiState.value.toEntity())
             } else {
-                val categoriaEntity = _uiState.value.toEntity()
-                if (categoriaEntity != null) {
-                    try {
-                        if (_uiState.value.categoriaId == null) {
-                            categoriaRepository.addCategoria(categoriaEntity)
-                            _uiState.update { it.copy(success = true, nombreError = null, imagenError = null) }
-                        } else {
-                            categoriaRepository.updateCategoria(_uiState.value.categoriaId!!, categoriaEntity)
-                            _uiState.update { it.copy(success = true, nombreError = null, imagenError = null) }
-                        }
-                    } catch (e: Exception) {
-                        _uiState.update { it.copy(errorMessge = "Error al guardar la categoría: ${e.message}", success = false) }
-                    }
-                }
+                categoriaRepository.updateCategoria(_uiState.value.categoriaId ?: 0, _uiState.value.toEntity())
             }
         }
     }
-
-
 
     private fun deleteCategoria() {
         viewModelScope.launch {
@@ -122,12 +103,21 @@ class CategoriaViewModel @Inject constructor(
         }
     }
 
-    private fun validateCategoria(uiState: CategoriaUiState): String? {
-        return when {
-            uiState.nombre.isNullOrBlank() -> "El nombre de la categoría no puede estar vacío."
-            uiState.imagen == null -> "Debe seleccionar una imagen."
-            else -> null
+    private fun validarCampos(): Boolean {
+        var isValid = true
+        _uiState.update {
+            it.copy(
+                nombreError = if (it.nombre.isBlank()) {
+                    isValid = false
+                    "El campo nombre no puede estar vacío"
+                } else null,
+                imagenError = if (it.imagen.isBlank()) {
+                    isValid = false
+                    "El campo imagen no puede estar vacío"
+                } else null
+            )
         }
+        return isValid
     }
 
     fun CategoriaUiState.toEntity() =
