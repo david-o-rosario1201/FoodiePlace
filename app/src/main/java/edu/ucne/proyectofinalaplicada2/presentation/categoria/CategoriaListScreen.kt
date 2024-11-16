@@ -179,9 +179,9 @@ fun CategoriaItem(
         ) {
             item.imagen?.let { imagenBase64 ->
                 val imagenByteArray = android.util.Base64.decode(imagenBase64, android.util.Base64.DEFAULT)
-                val ImagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
+                val imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
 
-                ImagenBitmap?.let {
+                imagenBitmap?.let {
                     Image(
                         bitmap = it.asImageBitmap(),
                         contentDescription = "Imagen categoría",
