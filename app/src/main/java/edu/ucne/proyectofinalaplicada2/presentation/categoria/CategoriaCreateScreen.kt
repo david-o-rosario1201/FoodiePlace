@@ -36,25 +36,29 @@ import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
+import android.util.Base64
 
 @Composable
 fun CategoriaCreateScreen(
     viewModel: CategoriaViewModel = hiltViewModel(),
     onNavigateToList: () -> Unit
 ) {
-    val context = LocalContext.current // Obtener el contexto
+    val context = LocalContext.current
     var nombreCategoria by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // ActivityResultLauncher para seleccionar imagen
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedImageUri = uri
         uri?.let {
-            // Convertimos la imagen seleccionada en un ByteArray y lo pasamos al ViewModel
             val byteArray = context.contentResolver.openInputStream(uri)?.readBytes()
-            byteArray?.let { viewModel.onUiEvent(CategoriaUiEvent.SetImagen(it)) }
+            byteArray?.let {
+
+                val base64String = Base64.encodeToString(it, Base64.DEFAULT)
+                viewModel.onUiEvent(CategoriaUiEvent.SetImagen(base64String))
+            }
         }
     }
 
@@ -92,14 +96,12 @@ fun CategoriaCreateScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para seleccionar la imagen
+
             Button(onClick = { launcher.launch("image/*") }) {
                 Text(text = "Seleccionar Imagen")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Mostrar la imagen seleccionada si existe
             selectedImageUri?.let { uri ->
                 val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri))
                 bitmap?.let {
@@ -116,14 +118,12 @@ fun CategoriaCreateScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de guardar
+
             Button(
                 onClick = {
                     if (nombreCategoria.isBlank()) {
-                        // Mostrar un mensaje de error o alerta
                         viewModel.onUiEvent(CategoriaUiEvent.SetNombreError("El nombre de la categoría no puede estar vacío"))
                     } else if (selectedImageUri == null) {
-                        // Mostrar un mensaje de error o alerta
                         viewModel.onUiEvent(CategoriaUiEvent.SetImagenError("Debe seleccionar una imagen"))
                     } else {
                         viewModel.onUiEvent(CategoriaUiEvent.Save)
