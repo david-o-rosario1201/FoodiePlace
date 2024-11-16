@@ -92,7 +92,7 @@ class CategoriaViewModel @Inject constructor(
                     _uiState.update { it.copy(imagenError = "Debe seleccionar una imagen.") }
                 }
                 _uiState.update { it.copy(success = false) }
-            } else {}
+            }
         }
     }
 
