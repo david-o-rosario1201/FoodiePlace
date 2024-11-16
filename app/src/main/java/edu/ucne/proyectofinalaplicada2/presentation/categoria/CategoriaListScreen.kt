@@ -1,4 +1,5 @@
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,14 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaViewModel
@@ -181,17 +178,19 @@ fun CategoriaItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            item.imagen?.let { imagenByteArray ->
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imagenByteArray)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Imagen categoría",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .padding(8.dp),
-                )
+            item.imagen?.let { imagenBase64 ->
+                val imagenByteArray = android.util.Base64.decode(imagenBase64, android.util.Base64.DEFAULT)
+                val ImagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
+
+                ImagenBitmap?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = "Imagen categoría",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(8.dp)
+                    )
+                }
             }
 
             Text(
