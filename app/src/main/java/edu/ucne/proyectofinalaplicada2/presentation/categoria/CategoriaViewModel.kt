@@ -57,14 +57,19 @@ class CategoriaViewModel @Inject constructor(
 
     fun onUiEvent(event: CategoriaUiEvent) {
         when (event) {
-            CategoriaUiEvent.Save -> saveCategoria()
+            CategoriaUiEvent.Save -> {
+                if (validarCampos()) {
+                    saveCategoria()
+                    _uiState.update { it.copy(success = true) }
+                }
+            }
             CategoriaUiEvent.Refresh -> GetCategoria()
             CategoriaUiEvent.Delete -> deleteCategoria()
             is CategoriaUiEvent.SetNombre -> _uiState.update {
                 it.copy(nombre = event.nombre, nombreError = "")
             }
             is CategoriaUiEvent.SetImagen -> _uiState.update {
-                it.copy(imagen = event.imagen, imagenError = "")
+                it.copy(imagen = event.imagen.toString(), imagenError = "")
             }
             is CategoriaUiEvent.SetNombreError -> _uiState.update {
                 it.copy(nombreError = event.error)
@@ -78,25 +83,15 @@ class CategoriaViewModel @Inject constructor(
         }
     }
 
-
-
     private fun saveCategoria() {
         viewModelScope.launch {
-            val validationError = validateCategoria(_uiState.value)
-            if (validationError != null) {
-
-                if (_uiState.value.nombre.isBlank()) {
-                    _uiState.update { it.copy(nombreError = "El nombre de la categoría no puede estar vacío.") }
-                }
-                if (_uiState.value.imagen == null) {
-                    _uiState.update { it.copy(imagenError = "Debe seleccionar una imagen.") }
-                }
-                _uiState.update { it.copy(success = false) }
+            if (_uiState.value.categoriaId == null) {
+                categoriaRepository.addCategoria(_uiState.value.toEntity())
+            } else {
+                categoriaRepository.updateCategoria(_uiState.value.categoriaId ?: 0, _uiState.value.toEntity())
             }
         }
     }
-
-
 
     private fun deleteCategoria() {
         viewModelScope.launch {
@@ -107,12 +102,21 @@ class CategoriaViewModel @Inject constructor(
         }
     }
 
-    private fun validateCategoria(uiState: CategoriaUiState): String? {
-        return when {
-            uiState.nombre.isNullOrBlank() -> "El nombre de la categoría no puede estar vacío."
-            uiState.imagen == null -> "Debe seleccionar una imagen."
-            else -> null
+    private fun validarCampos(): Boolean {
+        var isValid = true
+        _uiState.update {
+            it.copy(
+                nombreError = if (it.nombre.isBlank()) {
+                    isValid = false
+                    "El campo nombre no puede estar vacío"
+                } else null,
+                imagenError = if (it.imagen.isBlank()) {
+                    isValid = false
+                    "El campo imagen no puede estar vacío"
+                } else null
+            )
         }
+        return isValid
     }
 
     fun CategoriaUiState.toEntity() =

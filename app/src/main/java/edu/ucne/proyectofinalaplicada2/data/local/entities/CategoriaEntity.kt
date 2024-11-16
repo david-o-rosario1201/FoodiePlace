@@ -10,5 +10,5 @@ data class CategoriaEntity(
     @PrimaryKey
     val categoriaId: Int? = 0,
     val nombre: String,
-    val imagen: ByteArray
+    val imagen: String
 )

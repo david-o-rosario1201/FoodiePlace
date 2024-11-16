@@ -1,4 +1,5 @@
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,18 +31,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
 
 @Composable
@@ -101,39 +103,33 @@ fun CategoriaListBodyScreen(
         ) {
             when {
                 uiState.isLoading -> {
-                    // Indicador de carga
-                    Column(
+                    CircularProgressIndicator(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Cargando categorías...",
-                            style = MaterialTheme.typography.bodyLarge
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 20.dp),
+                        color = color_oro,
+
                         )
-                    }
                 }
 
                 uiState.categorias.isEmpty() -> {
-                    // Mensaje de lista vacía
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
                         Text(
-                            text = "No hay categorías disponibles",
-                            style = MaterialTheme.typography.bodyLarge
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
                         )
                     }
-                }
-
-                else -> {
-                    // Mostrar lista de categorías
+                }else -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         modifier = Modifier
@@ -181,17 +177,19 @@ fun CategoriaItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            item.imagen?.let { imagenByteArray ->
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imagenByteArray)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Imagen categoría",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .padding(8.dp),
-                )
+            item.imagen?.let { imagenBase64 ->
+                val imagenByteArray = android.util.Base64.decode(imagenBase64, android.util.Base64.DEFAULT)
+                val imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
+
+                imagenBitmap?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = "Imagen categoría",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(8.dp)
+                    )
+                }
             }
 
             Text(
