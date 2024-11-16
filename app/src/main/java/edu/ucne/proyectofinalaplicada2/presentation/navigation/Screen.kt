@@ -47,4 +47,7 @@ sealed class Screen {
 
     @Serializable
     data object PedidoClienteScreen: Screen()
+
+    @Serializable
+    data object AboutUsScreen: Screen()
 }
