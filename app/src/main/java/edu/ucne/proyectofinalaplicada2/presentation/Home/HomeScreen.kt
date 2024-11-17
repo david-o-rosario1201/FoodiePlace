@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,10 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import java.math.BigDecimal
@@ -42,13 +46,16 @@ fun HomeScreen(
     goCategoria: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+
+    val navController = rememberNavController()
     homeViewModel.loadUsuario(usuarioId)
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeBodyScreen(
         uiState = uiState,
         goProducto = goProducto,
         goCategoria = goCategoria,
-        onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) }
+        onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
+        navController = navController
     )
 }
 
@@ -57,6 +64,7 @@ fun HomeBodyScreen(
     uiState: HomeUiState,
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
+    navController: NavHostController,
     onSearchQueryChanged: (String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
@@ -69,6 +77,12 @@ fun HomeBodyScreen(
                 onClickMenu = {},
                 onClickNotifications = {},
                 notificationCount = 0
+            )
+        },
+
+        bottomBar = {
+            BottomBarNavigation(
+                navController = navController
             )
         }
     ){
@@ -185,6 +199,7 @@ fun HomeBodyScreenPreview() {
         uiState = uiState,
         goProducto = {},
         goCategoria = {},
-        onSearchQueryChanged = {}
+        onSearchQueryChanged = {},
+        navController = NavHostController(LocalContext.current)
     )
 }
