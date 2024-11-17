@@ -37,6 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
@@ -48,13 +50,15 @@ import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 @Composable
 fun CategoriaListScreen(
     viewModel: CategoriaViewModel = hiltViewModel(),
-    goToAddCategoria: () -> Unit
+    goToAddCategoria: () -> Unit,
+    onClickNotifications: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CategoriaListBodyScreen(
         uiState = uiState,
-        goToAddCategoria = goToAddCategoria
+        goToAddCategoria = goToAddCategoria,
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -63,7 +67,8 @@ fun CategoriaListScreen(
 @Composable
 fun CategoriaListBodyScreen(
     uiState: CategoriaUiState,
-    goToAddCategoria: () -> Unit
+    goToAddCategoria: () -> Unit,
+    onClickNotifications: () -> Unit
 ) {
     val categorias =
         remember { mutableStateListOf<CategoriaEntity>(*uiState.categorias.toTypedArray()) }
@@ -79,7 +84,7 @@ fun CategoriaListBodyScreen(
             TopBarComponent(
                 title = "Categorías",
                 onClickMenu = {},
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },

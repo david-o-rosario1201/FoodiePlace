@@ -26,14 +26,15 @@ import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 
 @Composable
 fun AboutUsScreen(
-    onDrawer: () -> Unit
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit
 ){
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "",
                 onClickMenu = onDrawer,
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         }
@@ -100,7 +101,8 @@ fun AboutUsScreen(
 fun AboutUsScreenPreview(){
     ProyectoFinalAplicada2Theme {
         AboutUsScreen(
-            onDrawer = {}
+            onDrawer = {},
+            onClickNotifications = {}
         )
     }
 }

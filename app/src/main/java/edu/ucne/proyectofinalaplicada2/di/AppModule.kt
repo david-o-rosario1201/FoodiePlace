@@ -13,6 +13,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.database.FoodiePlaceDb
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CarritoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.CategoriaAPI
 import edu.ucne.proyectofinalaplicada2.data.remote.API.FoodiePlaceApi
+import edu.ucne.proyectofinalaplicada2.data.remote.API.NotificacionApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.OfertaApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.PedidoApi
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
@@ -161,6 +162,16 @@ object AppModule {
             .create(TarjetaApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun providesNotificacionApi(moshi: Moshi): NotificacionApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(NotificacionApi::class.java)
+    }
+
     // DAOs
     @Provides
     @Singleton
@@ -209,4 +220,8 @@ object AppModule {
     @Provides
     @Singleton
     fun providesPedidoDetalleDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.pedidoDetalleDao()
+
+    @Provides
+    @Singleton
+    fun providesNotificacionDao(foodiePlaceDb: FoodiePlaceDb) = foodiePlaceDb.notificacionDao()
 }
