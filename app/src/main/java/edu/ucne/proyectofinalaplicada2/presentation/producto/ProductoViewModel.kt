@@ -138,7 +138,13 @@ class ProductoViewModel @Inject constructor(
                         }
                     }
 
-                    if (_uiState.value.errorNombre == "") {
+                    // Validación de la imagen
+                    if (_uiState.value.imagen.isNullOrBlank()) {
+                        _uiState.update { it.copy(errorImagen = "Debe seleccionar una imagen") }
+                    }
+
+                    // Si no hay errores, se guarda el producto
+                    if (_uiState.value.errorNombre!!.isEmpty() && _uiState.value.errorImagen.isNullOrEmpty()) {
                         if (_uiState.value.productoId == null)
                             productoRepository.addProducto(_uiState.value.toEntity())
                         else
