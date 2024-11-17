@@ -130,12 +130,13 @@ fun ProyectoFinalAplicada2NavHost(
             }
             composable<Screen.HomeScreen>{
                 HomeScreen(
-                    gocategoria = {
+                    goCategoria = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
                     },
                     goProducto = {
                         navHostController.navigate(Screen.PedidoListScreen)
-                    }
+                    },
+                    usuarioId = 1
                 )
             }
             composable<Screen.CategoriaListScreen>{
