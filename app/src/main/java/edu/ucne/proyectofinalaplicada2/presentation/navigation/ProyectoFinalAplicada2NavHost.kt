@@ -19,6 +19,8 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
@@ -168,6 +170,29 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+            composable<Screen.ProductoScreen> {
+                ProductoScreen(
+                    onProductoCreado = {
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    onBackClick = {
+                        navHostController.navigate(Screen.ProductoListScreen)
+                    }
+                )
+            }
+            composable<Screen.ProductoListScreen> {
+                ProductosListScreen(
+                    onAddProducto = {
+                        // Navegar a la pantalla de producto para agregar un nuevo producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    goToProducto = {
+                        // Navegar a la pantalla de detalles del producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    }
+                )
+            }
+
         }
     }
 }
