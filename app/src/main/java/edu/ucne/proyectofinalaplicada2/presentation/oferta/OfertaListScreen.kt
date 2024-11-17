@@ -51,13 +51,15 @@ import java.util.Locale
 fun OfertaListScreen(
     viewModel: OfertaViewModel = hiltViewModel(),
     onAddOferta: () -> Unit,
-    onClickOferta: (Int) -> Unit
+    onClickOferta: (Int) -> Unit,
+    onClickNotifications: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     OfertaListBodyScreen(
         uiState = uiState,
         onAddOferta = onAddOferta,
-        onClickOferta = onClickOferta
+        onClickOferta = onClickOferta,
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -65,14 +67,15 @@ fun OfertaListScreen(
 private fun OfertaListBodyScreen(
     uiState: OfertaUiState,
     onAddOferta: () -> Unit,
-    onClickOferta: (Int) -> Unit
+    onClickOferta: (Int) -> Unit,
+    onClickNotifications: () -> Unit
 ){
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "Ofertas",
                 onClickMenu = {},
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },
@@ -241,7 +244,8 @@ fun OfertaListScreenPreview(){
         OfertaListBodyScreen(
             uiState = sampleUiState,
             onAddOferta = {},
-            onClickOferta = {}
+            onClickOferta = {},
+            onClickNotifications = {}
         )
     }
 }
