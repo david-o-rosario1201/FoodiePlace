@@ -1,5 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.presentation.producto
+
 import android.net.Uri
+import android.util.Base64
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,22 +31,32 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiEvent.Cat
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
+import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiEvent
 import java.math.BigDecimal
 
 @Composable
 fun ProductoScreen(
     viewModel: ProductoViewModel = hiltViewModel(),
     onProductoCreado: (ProductoEntity) -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var categoriaExpanded by remember { mutableStateOf(false) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            val imagePath = uri.toString() // Convierte la URI a String
-            viewModel.onEvent(ProductoUiEvent.ImagenChange(imagePath))
+            selectedImageUri = uri
+            uri?.let {
+                val byteArray = context.contentResolver.openInputStream(uri)?.readBytes()
+                byteArray?.let {
+                    val base64String = Base64.encodeToString(it, Base64.DEFAULT)
+                    viewModel.onEvent(ProductoUiEvent.ImagenChange(base64String))
+
+                }
+            }
         }
     }
 
@@ -128,7 +140,6 @@ fun ProductoScreen(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
@@ -219,7 +230,11 @@ fun ProductoScreen(
                         onProductoCreado(nuevoProducto)
                         // Restablecer los valores de los campos
                         viewModel.onEvent(ProductoUiEvent.RestablecerCampos)
+
+
+
                     }
+                    onBackClick()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
