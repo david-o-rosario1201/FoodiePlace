@@ -16,6 +16,7 @@ data class ProductoUiState(
     val categoria: List<CategoriaEntity> = emptyList(),
     val errorNombre: String? = "",
     val errorCargar: String? = "",
+    val errorImagen: String? = "",
     val success: Boolean = false,
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false
