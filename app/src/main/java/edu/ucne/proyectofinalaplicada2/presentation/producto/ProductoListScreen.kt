@@ -1,5 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.presentation.producto
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -129,14 +131,20 @@ fun ProductoItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Imagen del producto en la parte izquierda
-            Image(
-                painter = rememberImagePainter(data = Uri.parse(item.imagen)),
-                contentDescription = "Imagen del producto",
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+            item.imagen?.let { imagenBase64 ->
+                val imagenByteArray = android.util.Base64.decode(imagenBase64, android.util.Base64.DEFAULT)
+                val imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
+
+                imagenBitmap?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = "Imagen Producto",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(8.dp)
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -146,7 +154,7 @@ fun ProductoItem(
                 Text(text = "Precio: ${item.precio} USD", fontSize = 16.sp, color = Color.Gray)
                 Text(text = "Descripción: ${item.descripcion}", fontSize = 14.sp, color = Color.Gray)
                 Text(
-                    text = "Disponibilidad: ${if (item.disponibilidad) "Disponible" else "No disponible"}",
+                    text = " ${if (item.disponibilidad) "Disponible" else "No disponible"}",
                     fontSize = 14.sp,
                     color = if (item.disponibilidad) Color(0xFF4CAF50) else Color(0xFFFF0000)
                 )
