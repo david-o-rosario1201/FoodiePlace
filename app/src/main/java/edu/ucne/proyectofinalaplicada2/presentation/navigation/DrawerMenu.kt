@@ -77,6 +77,14 @@ fun DrawerMenu(
                         ) {
                             handleItemClick(Screen.AboutUsScreen, it)
                         }
+
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_productos),
+                            icon = Icons.Filled.Info,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_productos)
+                        ) {
+                            handleItemClick(Screen.ProductoListScreen, it)
+                        }
                     }
                 }
             }
