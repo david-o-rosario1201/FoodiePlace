@@ -135,7 +135,8 @@ fun ProyectoFinalAplicada2NavHost(
                     goProducto = {
                         navHostController.navigate(Screen.PedidoListScreen)
                     },
-                    usuarioId = 1
+                    usuarioId = 1,
+                    navController = navHostController
                 )
             }
             composable<Screen.CategoriaListScreen>{
@@ -219,7 +220,6 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-
         }
     }
 }

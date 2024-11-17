@@ -44,10 +44,10 @@ fun HomeScreen(
     usuarioId: Int,
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
 
-    val navController = rememberNavController()
     homeViewModel.loadUsuario(usuarioId)
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeBodyScreen(
