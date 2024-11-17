@@ -1,7 +1,9 @@
 package edu.ucne.proyectofinalaplicada2.ui.theme
 
+import edu.ucne.proyectofinalaplicada2.data.local.entities.NotificacionEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
+import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionUiState
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoUiState
 import java.math.BigDecimal
 import java.time.Instant
@@ -62,3 +64,20 @@ val productoMap = sampleProducto.associateBy { it.productoId }
 fun obtenerNombreProducto(productoId: Int): String {
     return productoMap[productoId]?.nombre ?: "Producto no encontrado"
 }
+
+val sampleNotificacionUiState = NotificacionUiState(
+    notificaciones = listOf(
+        NotificacionEntity(
+            notificacionId = 1,
+            usuarioId = 1,
+            descripcion = "Tu pedido ha sido entregado",
+            fecha = Date.from(Instant.now())
+        ),
+        NotificacionEntity(
+            notificacionId = 2,
+            usuarioId = 1,
+            descripcion = "Tu pedido ha sido entregado",
+            fecha = Date.from(Instant.now())
+        )
+    )
+)
