@@ -104,7 +104,7 @@ fun NotificacionBodyScreen(
                             )
                         }
                         Text(
-                            text = uiState.fecha.let { it -> dateFormat.format(it) } ?: "",
+                            text = uiState.fecha.let { dateFormat.format(it) } ?: "",
                             color = Color.Gray,
                             style = MaterialTheme.typography.bodySmall
                         )
