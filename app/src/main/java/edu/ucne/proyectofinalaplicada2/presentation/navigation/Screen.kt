@@ -13,6 +13,8 @@ sealed class Screen {
     @Serializable
     data object WelcomeScreen: Screen()
 
+    
+
     @Serializable
     data object CarritoListScreen: Screen()
 
