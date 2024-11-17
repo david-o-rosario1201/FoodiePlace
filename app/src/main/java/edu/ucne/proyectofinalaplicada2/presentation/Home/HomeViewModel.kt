@@ -5,9 +5,7 @@ import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -104,7 +102,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun loadUsuario(usuarioId: Int) {
         viewModelScope.launch {
             val usuario = usuarioRepository.getUsuario(
