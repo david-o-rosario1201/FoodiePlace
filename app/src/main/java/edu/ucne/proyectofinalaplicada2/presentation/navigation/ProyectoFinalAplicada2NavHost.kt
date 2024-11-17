@@ -23,6 +23,8 @@ import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScr
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -175,10 +177,13 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.ProductoScreen>{
+            composable<Screen.ProductoScreen> {
                 ProductoScreen(
                     onProductoCreado = {
                         navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    onBackClick = {
+                        navHostController.navigate(Screen.ProductoListScreen)
                     }
                 )
             }
@@ -192,6 +197,19 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+            composable<Screen.ProductoListScreen> {
+                ProductosListScreen(
+                    onAddProducto = {
+                        // Navegar a la pantalla de producto para agregar un nuevo producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    goToProducto = {
+                        // Navegar a la pantalla de detalles del producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    }
+                )
+            }
+
             composable<Screen.ProductoListScreen> {
                 ProductosListScreen(
                     onAddProducto = {
