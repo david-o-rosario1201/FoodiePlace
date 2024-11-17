@@ -1,84 +1,109 @@
 package edu.ucne.proyectofinalaplicada2.presentation.Home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
-import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaViewModel
-import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiEvent
+import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
-import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
+import java.math.BigDecimal
 
 @Composable
 fun HomeScreen(
+    usuarioId: Int,
     goProducto: () -> Unit,
-    gocategoria: () -> Unit,
-    productoViewModel: ProductoViewModel = hiltViewModel(),
-    categoriaViewModel: CategoriaViewModel = hiltViewModel()
-){
-    val productouiState by productoViewModel.uiState.collectAsStateWithLifecycle()
-    val categoriauiState by categoriaViewModel.uiState.collectAsStateWithLifecycle()
+    goCategoria: () -> Unit,
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
+    homeViewModel.loadUsuario(usuarioId)
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeBodyScreen(
+        uiState = uiState,
         goProducto = goProducto,
-        goCategoria = gocategoria,
-        productoUiState = productouiState,
-        categoriaUiState = categoriauiState,
-        productoViewModel = productoViewModel,
-        categoriaViewModel = categoriaViewModel
+        goCategoria = goCategoria,
+        onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) }
     )
 }
 
-
 @Composable
 fun HomeBodyScreen(
-    productoViewModel: ProductoViewModel,
-    categoriaViewModel: CategoriaViewModel,
+    uiState: HomeUiState,
     goProducto: () -> Unit,
-    goCategoria : () -> Unit,
-    categoriaUiState: CategoriaUiState,
-    productoUiState: ProductoUiState,
+    goCategoria: () -> Unit,
+    onSearchQueryChanged: (String) -> Unit
 ) {
+    var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
 
-
-        var searchQuery by remember { mutableStateOf("") }
-
+    Scaffold(
+        modifier = Modifier.fillMaxWidth(),
+        topBar = {
+            TopBarComponent(
+                title = " ",
+                onClickMenu = {},
+                onClickNotifications = {},
+                notificationCount = 0
+            )
+        }
+    ){
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(it),
         ) {
-            SearchBar(
-                query = searchQuery,
-                onQueryChange = { query ->
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Hola, ${uiState.usuarioNombre}",
+                style = TextStyle(
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight(700),
+                    color = color_oro,
+                )
+            )
+            Text(
+                text = "Comida y bebida",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    color = Color.Black,
+                )
+            )
+            // Actualizar el SearchBar con el query
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { query ->
                     searchQuery = query
-                    productoViewModel.onEvent(ProductoUiEvent.NombreChange(query))
-                }
+                    onSearchQueryChanged(query)
+                },
+                label = { Text("Buscar producto") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -89,12 +114,12 @@ fun HomeBodyScreen(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(categoriaUiState.categorias) { categoria ->
+                items(uiState.categoriaUiState.categorias) { categoria ->
                     CategoriaCard(
                         nombre = categoria.nombre,
                         imagen = categoria.imagen,
                         onClick = {
-                            productoViewModel.onEvent(ProductoUiEvent.CategoriaIdChange(categoria.categoriaId))
+                            goCategoria()
                         }
                     )
                 }
@@ -102,125 +127,64 @@ fun HomeBodyScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Carrusel de productos
             Text(
                 text = "Productos",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(productoUiState.productos) { producto ->
-                    producto.nombre?.let {
-                        ProductoCard(
-                            nombre = it,
-                            precio = producto.precio.toString(),
-                            imagen = producto.imagen,
-                            onClick = {
-                                // Acción al seleccionar producto
-                                productoViewModel.onEvent(ProductoUiEvent.SelectedProducto(producto.productoId))
-                            }
-                        )
-                    }
+                items(uiState.productoUiState.productos) { producto ->
+                    ProductoCard(
+                        nombre = producto.nombre ?: "Sin nombre",
+                        imagen = producto.imagen,
+                        precio = producto.precio.toString(),
+                        onClick = {
+                            goProducto()
+                        }
+                    )
                 }
             }
         }
     }
+}
 
-    @Composable
-    fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            label = { Text("Buscar producto") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun HomeBodyScreenPreview() {
+    val uiState = HomeUiState(
+        categoriaUiState = CategoriaUiState(
+            categorias = listOf(
+                CategoriaEntity(categoriaId = 1, nombre = "Electrónica", imagen = "imagenBase64"),
+                CategoriaEntity(categoriaId = 2, nombre = "Ropa", imagen = "imagenBase64")
+            )
+        ),
+        productoUiState = ProductoUiState(
+            productos = listOf(ProductoEntity(
+                productoId = 1,
+                nombre = "Producto 1",
+                categoriaId = 1,
+                descripcion = "Descripción del Producto 1",
+                precio = BigDecimal(100),
+                disponibilidad = true,
+                imagen = "https://via.placeholder.com/150"
+            ),
+                ProductoEntity(
+                    productoId = 2,
+                    nombre = "Producto 2",
+                    categoriaId = 2,
+                    descripcion = "Descripción del Producto 2",
+                    precio = BigDecimal(200),
+                    disponibilidad = true,
+                    imagen = "https://via.placeholder.com/150"
+                )
+            )
         )
-    }
+    )
 
-    @Composable
-    fun CategoriaCard(nombre: String, imagen: String?, onClick: () -> Unit) {
-        Card(
-            modifier = Modifier
-                .size(100.dp)
-                .clickable { onClick() },
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = nombre,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun ProductoCard(nombre: String, precio: String, imagen: String?, onClick: () -> Unit) {
-        Card(
-            modifier = Modifier
-                .width(150.dp)
-                .clickable { onClick() },
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(8.dp)
-            ) {
-                // Aquí puedes usar una librería como Coil para cargar imágenes desde una URL
-                Text(
-                    text = nombre,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Text(
-                    text = "Precio: $precio",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }
-    }
-
-
-//@Composable
-//@Preview(showBackground = true, showSystemUi = true)
-//fun HomeScreenPreview() {
-//    // Datos ficticios para categorías
-//    val categorias = listOf(
-//        CategoriaEntity(categoriaId = 1, nombre = "Electrónica", imagen = ""),
-//        CategoriaEntity(categoriaId = 2, nombre = "Ropa", imagen = ""),
-//        CategoriaEntity(categoriaId = 3, nombre = "Hogar", imagen = "")
-//    )
-//
-//    // Datos ficticios para productos
-//    val productos = listOf(
-//        ProductoEntity(
-//            productoId = 1, nombre = "Smartphone", categoriaId = 1,
-//            descripcion = "Teléfono inteligente", precio = BigDecimal.valueOf(500.0),
-//            disponibilidad = true, imagen = ""
-//        ),
-//        ProductoEntity(
-//            productoId = 2, nombre = "Camiseta", categoriaId = 2,
-//            descripcion = "Ropa de algodón", precio = BigDecimal.valueOf(20.0),
-//            disponibilidad = true, imagen = ""
-//        ),
-//        ProductoEntity(
-//            productoId = 3, nombre = "Silla", categoriaId = 3,
-//            descripcion = "Silla ergonómica", precio = BigDecimal.valueOf(100.0),
-//            disponibilidad = true, imagen = ""
-//        )
-//    )
-//
-//    // Renderizar la pantalla
-//    HomeScreen(
-//        goProducto = { /* Acción de navegación */ },
-//        goCategoria = { /* Acción de navegación */ },
-//        productoViewModel = { },
-//        categoriaViewModel = fakeCategoriaViewModel,
-//        productoUiState = productoUiState,
-//        categoriaUiState = categoriaUiState
-//    )
-//}
-
+    HomeBodyScreen(
+        uiState = uiState,
+        goProducto = {},
+        goCategoria = {},
+        onSearchQueryChanged = {}
+    )
+}
