@@ -4,5 +4,6 @@
     <string name="drawer_pedidos">Pedidos</string>
     <string name="drawer_carrito">Carrito</string>
     <string name="drawer_aboutus">AboutUs</string>
+    <string name="drawer_productos">Productos</string>
 
 </resources>
