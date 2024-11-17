@@ -1,4 +1,3 @@
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,11 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
@@ -46,13 +43,15 @@ import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 @Composable
 fun CategoriaListScreen(
     viewModel: CategoriaViewModel = hiltViewModel(),
-    goToAddCategoria: () -> Unit
+    goToAddCategoria: () -> Unit,
+    onClickNotifications: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CategoriaListBodyScreen(
         uiState = uiState,
-        goToAddCategoria = goToAddCategoria
+        goToAddCategoria = goToAddCategoria,
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -61,7 +60,8 @@ fun CategoriaListScreen(
 @Composable
 fun CategoriaListBodyScreen(
     uiState: CategoriaUiState,
-    goToAddCategoria: () -> Unit
+    goToAddCategoria: () -> Unit,
+    onClickNotifications: () -> Unit
 ) {
     val categorias =
         remember { mutableStateListOf<CategoriaEntity>(*uiState.categorias.toTypedArray()) }
@@ -77,7 +77,7 @@ fun CategoriaListBodyScreen(
             TopBarComponent(
                 title = "Categorías",
                 onClickMenu = {},
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },

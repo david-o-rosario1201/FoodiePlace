@@ -38,26 +38,29 @@ import java.util.Date
 @Composable
 fun PedidoListScreen(
     viewModel: PedidoViewModel = hiltViewModel(),
-    onClickPedido: (Int) -> Unit
+    onClickPedido: (Int) -> Unit,
+    onClickNotifications: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PedidoListBodyScreen(
         uiState = uiState,
-        onClickPedido = onClickPedido
+        onClickPedido = onClickPedido,
+        onClickNotifications = onClickNotifications
     )
 }
 
 @Composable
 private fun PedidoListBodyScreen(
     uiState: PedidoUiState,
-    onClickPedido: (Int) -> Unit
+    onClickPedido: (Int) -> Unit,
+    onClickNotifications: () -> Unit
 ){
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "Pedidos",
                 onClickMenu = {},
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         }
@@ -203,7 +206,8 @@ private fun PedidoListScreenPreview(){
     ProyectoFinalAplicada2Theme {
         PedidoListBodyScreen(
             uiState = sampleUiState,
-            onClickPedido = {}
+            onClickPedido = {},
+            onClickNotifications = {}
         )
     }
 }

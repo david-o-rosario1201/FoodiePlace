@@ -31,13 +31,15 @@ import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 fun ReviewListScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
     goToAddReview: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickNotifications: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewListBodyScreen(
         uiState = uiState,
         goToAddReview = goToAddReview,
-        modifier = modifier
+        modifier = modifier,
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -45,7 +47,8 @@ fun ReviewListScreen(
 fun ReviewListBodyScreen(
     uiState: ReviewUiState,
     goToAddReview: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickNotifications: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -53,7 +56,7 @@ fun ReviewListBodyScreen(
             TopBarComponent(
                 title = "Reseñas",
                 onClickMenu = {},
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },
@@ -165,6 +168,7 @@ private val sampleUiState = ReviewUiState(
 fun ReviewListScreenPreview() {
     ReviewListBodyScreen(
         uiState = sampleUiState,
-        goToAddReview = {}
+        goToAddReview = {},
+        onClickNotifications = {}
     )
 }
