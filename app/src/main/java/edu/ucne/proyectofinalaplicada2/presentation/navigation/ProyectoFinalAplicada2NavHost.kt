@@ -18,6 +18,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
+import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -66,6 +67,9 @@ fun ProyectoFinalAplicada2NavHost(
                     },
                     onClickOferta = {
                         navHostController.navigate(Screen.OfertaScreen(it))
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
                     }
                 )
             }
@@ -83,6 +87,9 @@ fun ProyectoFinalAplicada2NavHost(
                PedidoListScreen(
                    onClickPedido = {
                        navHostController.navigate(Screen.ReviewListScreen)
+                   },
+                   onClickNotifications = {
+                       navHostController.navigate(Screen.NotificacionScreen)
                    }
                )
             }
@@ -104,6 +111,9 @@ fun ProyectoFinalAplicada2NavHost(
                 ReviewListScreen(
                     goToAddReview = {
                         navHostController.navigate(Screen.ReviewCreateScreen)
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
                     }
                 )
             }
@@ -118,6 +128,9 @@ fun ProyectoFinalAplicada2NavHost(
                 CategoriaListScreen(
                     goToAddCategoria = {
                         navHostController.navigate(Screen.CategoriaCreateScreen)
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
                     }
                 )
             }
@@ -134,6 +147,16 @@ fun ProyectoFinalAplicada2NavHost(
                         scope.launch {
                             drawerState.open()
                         }
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
+                    }
+                )
+            }
+            composable<Screen.NotificacionScreen> {
+                NotificacionScreen(
+                    goToHome = {
+                        navHostController.navigate(Screen.HomeScreen)
                     }
                 )
             }
