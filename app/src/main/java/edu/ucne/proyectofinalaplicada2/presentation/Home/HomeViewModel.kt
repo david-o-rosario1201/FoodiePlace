@@ -30,6 +30,8 @@ import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,7 +46,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadCategorias()
-        loadProductos()
+        getProductos()
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -77,31 +79,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
-    private fun loadProductos() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+    private fun getProductos() {
         viewModelScope.launch {
-            productoRepository.getProductos().collect { resource ->
-                when (resource) {
+            productoRepository.getProductos().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
                     is Resource.Success -> {
-                        _uiState.value = _uiState.value.copy(
-                            productoUiState = ProductoUiState(productos = resource.data ?: emptyList()),
-                            isLoading = false
-                        )
+                        _uiState.update {
+                            it.copy(productoUiState = ProductoUiState(productos = result.data ?: emptyList()), isLoading = false)
+                        }
                     }
                     is Resource.Error -> {
-                        _uiState.value = _uiState.value.copy(
-                            errorMessage = resource.message ?: "Error al cargar productos",
-                            isLoading = false
-                        )
-                    }
-                    is Resource.Loading -> {
-                        _uiState.value = _uiState.value.copy(isLoading = true)
+                        _uiState.update {
+                            it.copy(productoUiState = ProductoUiState(productos = result.data ?: emptyList()), isLoading = false)
+                        }
                     }
                 }
             }
         }
     }
+
 
     fun loadUsuario(usuarioId: Int) {
         viewModelScope.launch {
