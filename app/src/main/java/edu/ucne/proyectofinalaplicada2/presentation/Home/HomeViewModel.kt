@@ -93,7 +93,10 @@ class HomeViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _uiState.update {
-                            it.copy(productoUiState = ProductoUiState(productos = result.data ?: emptyList()), isLoading = false)
+                            it.copy(
+                                errorMessage = result.message ?: "Error desconocido",
+                                isLoading = false
+                            )
                         }
                     }
                 }
@@ -131,7 +134,8 @@ data class HomeUiState(
     val errorMessage: String = "",
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
-    val usuarioNombre: String = ""
+    val usuarioNombre: String = "",
+
 )
 
 @Composable
