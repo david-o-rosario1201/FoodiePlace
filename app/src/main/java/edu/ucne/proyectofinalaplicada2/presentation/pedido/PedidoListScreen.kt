@@ -27,9 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import java.math.BigDecimal
 import java.time.Instant
@@ -39,13 +42,15 @@ import java.util.Date
 fun PedidoListScreen(
     viewModel: PedidoViewModel = hiltViewModel(),
     onClickPedido: (Int) -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    navHostController: NavHostController
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PedidoListBodyScreen(
         uiState = uiState,
         onClickPedido = onClickPedido,
-        onClickNotifications = onClickNotifications
+        onClickNotifications = onClickNotifications,
+        navHostController = navHostController
     )
 }
 
@@ -53,7 +58,8 @@ fun PedidoListScreen(
 private fun PedidoListBodyScreen(
     uiState: PedidoUiState,
     onClickPedido: (Int) -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    navHostController: NavHostController
 ){
     Scaffold(
         topBar = {
@@ -63,6 +69,9 @@ private fun PedidoListBodyScreen(
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
+        },
+        bottomBar = {
+            BottomBarNavigation(navController = navHostController)
         }
     ){ innerPadding->
         Column(
@@ -207,7 +216,8 @@ private fun PedidoListScreenPreview(){
         PedidoListBodyScreen(
             uiState = sampleUiState,
             onClickPedido = {},
-            onClickNotifications = {}
+            onClickNotifications = {},
+            navHostController = rememberNavController()
         )
     }
 }
