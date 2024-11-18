@@ -3,15 +3,19 @@ package edu.ucne.proyectofinalaplicada2.presentation.Home
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -142,16 +146,18 @@ data class HomeUiState(
 )
 
 @Composable
-fun CategoriaCard(
+fun CardItem(
     nombre: String,
+    descripcion: String? = null,
     imagen: String?,
-    color: Color,
-    onClick: () -> Unit
+    color: Color = MaterialTheme.colorScheme.primary,
+    showButton: Boolean = false,
+    buttonText: String = "Add",
+    onButtonClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = Modifier
-            .size(120.dp)
-            .clickable { onClick() },
+            .width(150.dp),
         colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -167,51 +173,7 @@ fun CategoriaCard(
                 imagenBitmap?.let {
                     Image(
                         bitmap = it.asImageBitmap(),
-                        contentDescription = "Imagen categoría",
-                        modifier = Modifier
-                            .size(80.dp)
-                            .padding(bottom = 8.dp)
-                    )
-                }
-            }
-
-            Text(
-                text = nombre,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp),
-                color = Color.White
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun ProductoCard(
-    nombre: String,
-    precio: String,
-    imagen: String?,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .width(150.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(8.dp)
-        ) {
-            imagen?.let { imagenBase64 ->
-                val imagenByteArray = Base64.decode(imagenBase64, Base64.DEFAULT)
-                val imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
-
-                imagenBitmap?.let {
-                    Image(
-                        bitmap = it.asImageBitmap(),
-                        contentDescription = "Imagen del producto",
+                        contentDescription = null,
                         modifier = Modifier
                             .size(80.dp)
                             .padding(bottom = 8.dp)
@@ -225,28 +187,40 @@ fun ProductoCard(
                 modifier = Modifier.padding(bottom = 4.dp)
             )
 
-            Text(
-                text = "Precio: $precio",
-                color = Color.Gray,
-                style = MaterialTheme.typography.bodySmall
-            )
+            descripcion?.let {
+                Text(
+                    text = it,
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
-            Button(
-                onClick = onClick,
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = color_oro,
-                    contentColor = Color.White
-                ),
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .align(Alignment.End)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "Add")
+            if (showButton) {
+                Button(
+                    onClick = { onButtonClick?.invoke() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = color_oro,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(text = buttonText)
+                    }
+                }
             }
         }
     }
 }
+
 
 val categoryColors = listOf(
     Color(0xFFE57373), // Rojo
