@@ -214,8 +214,6 @@ fun ProductoScreen(
                 Button(
                     onClick = {
                         Toast.makeText(context, "Seleccionar imagen", Toast.LENGTH_SHORT).show()
-                        // Lógica para actualizar el estado de la imagen seleccionada
-                        // viewModel.onEvent(ProductoUiEvent.ImagenChange(imageUri))
                         launcher.launch("image/*")
                     },
                     modifier = Modifier
