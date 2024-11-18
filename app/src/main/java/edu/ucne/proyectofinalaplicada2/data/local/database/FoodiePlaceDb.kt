@@ -46,7 +46,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
         TarjetaEntity::class,
         NotificacionEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 
