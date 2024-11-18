@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.DrawerState
@@ -63,8 +63,15 @@ fun DrawerMenu(
                     item {
 
                         DrawerItem(
-                            title = stringResource(R.string.drawer_pedidos),
+                            title = stringResource(R.string.drawer_home),
                             icon = Icons.Filled.Home,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_pedidos)
+                        ) {
+                            handleItemClick(Screen.HomeScreen, it)
+                        }
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_pedidos),
+                            icon = Icons.Filled.Info,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_pedidos)
                         ) {
                             handleItemClick(Screen.PedidoListScreen, it)
@@ -76,6 +83,22 @@ fun DrawerMenu(
                             isSelected = selectedItem.value == stringResource(R.string.drawer_aboutus)
                         ) {
                             handleItemClick(Screen.AboutUsScreen, it)
+                        }
+
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_productos),
+                            icon = Icons.Filled.Info,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_productos)
+                        ) {
+                            handleItemClick(Screen.ProductoListScreen, it)
+
+                        }
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_Reviews),
+                            icon = Icons.Filled.Favorite,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_Reviews)
+                        ) {
+                            handleItemClick(Screen.ReviewListScreen, it)
                         }
                     }
                 }

@@ -9,16 +9,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import edu.ucne.proyectofinalaplicada2.presentation.Home.HomeScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
+import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
+import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
+import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
-import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
-import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
-import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
-import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -37,7 +40,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.WelcomeScreen
+            startDestination = Screen.HomeScreen
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
@@ -49,7 +52,7 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.UsuarioLoginScreen>{
                 UsuarioLoginScreen(
                     onRegisterUsuario = {
-                        navHostController.navigate(Screen.CategoriaListScreen)
+                        navHostController.navigate(Screen.UsuarioRegisterScreen)
                     }
                 )
             }
@@ -124,6 +127,18 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+            composable<Screen.HomeScreen>{
+                HomeScreen(
+                    goCategoria = {
+                        navHostController.navigate(Screen.UsuarioLoginScreen)
+                    },
+                    goProducto = {
+                        navHostController.navigate(Screen.PedidoListScreen)
+                    },
+                    usuarioId = 1,
+                    navController = navHostController
+                )
+            }
             composable<Screen.CategoriaListScreen>{
                 CategoriaListScreen(
                     goToAddCategoria = {
@@ -157,6 +172,51 @@ fun ProyectoFinalAplicada2NavHost(
                 NotificacionScreen(
                     goToHome = {
                         navHostController.navigate(Screen.HomeScreen)
+                    }
+                )
+            }
+            composable<Screen.ProductoScreen> {
+                ProductoScreen(
+                    onProductoCreado = {
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    onBackClick = {
+                        navHostController.navigate(Screen.ProductoListScreen)
+                    }
+                )
+            }
+            composable<Screen.ProductoScreen> {
+                ProductoScreen(
+                    onProductoCreado = {
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    onBackClick = {
+                        navHostController.navigate(Screen.ProductoListScreen)
+                    }
+                )
+            }
+            composable<Screen.ProductoListScreen> {
+                ProductosListScreen(
+                    onAddProducto = {
+                        // Navegar a la pantalla de producto para agregar un nuevo producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    goToProducto = {
+                        // Navegar a la pantalla de detalles del producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    }
+                )
+            }
+
+            composable<Screen.ProductoListScreen> {
+                ProductosListScreen(
+                    onAddProducto = {
+                        // Navegar a la pantalla de producto para agregar un nuevo producto
+                        navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    goToProducto = {
+                        // Navegar a la pantalla de detalles del producto
+                        navHostController.navigate(Screen.ProductoScreen)
                     }
                 )
             }
