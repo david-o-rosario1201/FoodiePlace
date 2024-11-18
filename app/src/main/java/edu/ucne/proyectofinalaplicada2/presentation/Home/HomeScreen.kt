@@ -129,12 +129,12 @@ fun HomeBodyScreen(
             )
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(uiState.categoriaUiState.categorias) { categoria ->
+                    val color = getCategoryColor(categoria.nombre)
                     CategoriaCard(
                         nombre = categoria.nombre,
                         imagen = categoria.imagen,
-                        onClick = {
-                            goCategoria()
-                        }
+                        color = color,
+                        onClick = { goCategoria() }
                     )
                 }
             }
