@@ -157,11 +157,11 @@ fun HomeBodyScreen(
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(uiState.categoriaUiState.categorias) { categoria ->
                     val color = getCategoryColor(categoria.nombre)
-                    CategoriaCard(
+                    CardItem(
                         nombre = categoria.nombre,
                         imagen = categoria.imagen,
                         color = color,
-                        onClick = { goCategoria() }
+                        onButtonClick = { goCategoria() }
                     )
                 }
             }
@@ -175,13 +175,13 @@ fun HomeBodyScreen(
             )
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(uiState.productoUiState.productos) { producto ->
-                    ProductoCard(
+                    CardItem(
                         nombre = producto.nombre ?: "Sin nombre",
+                        descripcion = "Precio: ${producto.precio}",
                         imagen = producto.imagen,
-                        precio = producto.precio.toString(),
-                        onClick = {
-                            goProducto()
-                        }
+                        showButton = true,
+                        onButtonClick = { goProducto() },
+                        color = Color.White
                     )
                 }
             }
