@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,12 +29,14 @@ import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -142,12 +145,14 @@ data class HomeUiState(
 fun CategoriaCard(
     nombre: String,
     imagen: String?,
+    color: Color,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .size(120.dp)
             .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -173,11 +178,13 @@ fun CategoriaCard(
             Text(
                 text = nombre,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp),
+                color = Color.White
             )
         }
     }
 }
+
 
 
 @Composable
@@ -189,8 +196,7 @@ fun ProductoCard(
 ) {
     Card(
         modifier = Modifier
-            .width(150.dp)
-            .clickable { onClick() },
+            .width(150.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -224,6 +230,39 @@ fun ProductoCard(
                 color = Color.Gray,
                 style = MaterialTheme.typography.bodySmall
             )
+
+            Button(
+                onClick = onClick,
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = color_oro,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .align(Alignment.End)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "Add")
+            }
         }
     }
+}
+
+val categoryColors = listOf(
+    Color(0xFFE57373), // Rojo
+    Color(0xFF81C784), // Verde
+    Color(0xFF64B5F6), // Azul
+    Color(0xFFFFD54F), // Amarillo
+    Color(0xFFBA68C8), // Morado
+    Color(0xFFFF8A65), // Naranja
+    Color(0xFFAED581), // Verde claro
+    Color(0xFF7986CB), // Azul oscuro
+    Color(0xFFFFB74D), // Naranja claro
+    Color(0xFF4DB6AC)  // Turquesa
+)
+
+fun getCategoryColor(nombre: String): Color {
+    val hash = nombre.hashCode()
+    val index = (hash % categoryColors.size).absoluteValue
+    return categoryColors[index]
 }
