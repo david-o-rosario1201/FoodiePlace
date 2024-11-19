@@ -13,9 +13,6 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.PagosEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.CarritoDetalleDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.NotificacionDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDao
-import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDetalleDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.dao.TarjetaDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
@@ -25,10 +22,13 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.NotificacionEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
-import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
+import edu.ucne.proyectofinalaplicada2.data.local.dao.NotificacionDao
+import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDao
+import edu.ucne.proyectofinalaplicada2.data.local.dao.PedidoDetalleDao
+import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoDetalleEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
 
 @Database(
     entities = [
@@ -41,9 +41,9 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.TarjetaEntity
         CarritoEntity::class,
         CarritoDetalleEntity::class,
         OfertaEntity::class,
+        TarjetaEntity::class,
         PedidoEntity::class,
         PedidoDetalleEntity::class,
-        TarjetaEntity::class,
         NotificacionEntity::class
     ],
     version = 3,
