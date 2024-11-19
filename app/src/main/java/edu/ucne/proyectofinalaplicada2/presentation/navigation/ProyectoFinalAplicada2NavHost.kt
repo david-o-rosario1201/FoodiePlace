@@ -93,7 +93,8 @@ fun ProyectoFinalAplicada2NavHost(
                    },
                    onClickNotifications = {
                        navHostController.navigate(Screen.NotificacionScreen)
-                   }
+                   },
+                   navHostController = navHostController
                )
             }
             composable<Screen.PedidoAdminScreen>{
@@ -185,37 +186,12 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.ProductoScreen> {
-                ProductoScreen(
-                    onProductoCreado = {
-                        navHostController.navigate(Screen.ProductoScreen)
-                    },
-                    onBackClick = {
-                        navHostController.navigate(Screen.ProductoListScreen)
-                    }
-                )
-            }
             composable<Screen.ProductoListScreen> {
                 ProductosListScreen(
                     onAddProducto = {
-                        // Navegar a la pantalla de producto para agregar un nuevo producto
                         navHostController.navigate(Screen.ProductoScreen)
                     },
                     goToProducto = {
-                        // Navegar a la pantalla de detalles del producto
-                        navHostController.navigate(Screen.ProductoScreen)
-                    }
-                )
-            }
-
-            composable<Screen.ProductoListScreen> {
-                ProductosListScreen(
-                    onAddProducto = {
-                        // Navegar a la pantalla de producto para agregar un nuevo producto
-                        navHostController.navigate(Screen.ProductoScreen)
-                    },
-                    goToProducto = {
-                        // Navegar a la pantalla de detalles del producto
                         navHostController.navigate(Screen.ProductoScreen)
                     }
                 )
