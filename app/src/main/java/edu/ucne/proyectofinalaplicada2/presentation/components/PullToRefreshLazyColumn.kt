@@ -29,7 +29,7 @@ fun <I, E> PullToRefreshLazyColumn(
     content: @Composable (I) -> Unit,
     isRefreshing: Boolean,
     onRefresh: (E) -> Unit,
-    onEvent: E,
+    event: E,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ){
@@ -52,7 +52,7 @@ fun <I, E> PullToRefreshLazyColumn(
 
         if(pullToRefreshState.isRefreshing){
             LaunchedEffect(key1 = true) {
-                onRefresh(onEvent)
+                onRefresh(event)
             }
         }
 
@@ -83,7 +83,7 @@ fun PullToRefreshLazyColumnPreview(){
             },
             isRefreshing = false,
             onRefresh = {},
-            onEvent = {}
+            event = {}
         )
     }
 }
