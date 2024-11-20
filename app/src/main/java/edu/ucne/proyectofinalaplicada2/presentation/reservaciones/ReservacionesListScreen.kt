@@ -34,7 +34,8 @@ fun ReservacionesListScreen(
     goToReservacion: (Int) -> Unit,
     goToAddReservacion: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -43,7 +44,8 @@ fun ReservacionesListScreen(
         goToReservacion = goToReservacion,
         goToAddReservacion = goToAddReservacion,
         modifier = modifier,
-        onClickNotifications = onClickNotifications
+        onClickNotifications = onClickNotifications,
+        onDrawer = onDrawer
     )
 }
 @Composable
@@ -52,13 +54,14 @@ fun ReservacionesListBodyScreen(
     goToReservacion: (Int) -> Unit,
     goToAddReservacion: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -207,6 +210,7 @@ fun ReservacionesListScreenPreview() {
         uiState = ReservacionesUiState(reservaciones = sampleReservaciones),
         goToReservacion = {},
         goToAddReservacion = {},
-        onClickNotifications = {}
+        onClickNotifications = {},
+        onDrawer = {}
     )
 }
