@@ -254,6 +254,7 @@ fun ProyectoFinalAplicada2NavHost(
                     onDrawer = {
                         scope.launch {
                             drawerState.open()
+
                         }
                     },
                     onClickNotifications = {
