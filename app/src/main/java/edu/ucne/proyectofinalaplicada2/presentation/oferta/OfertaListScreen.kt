@@ -113,11 +113,32 @@ private fun OfertaListBodyScreen(
             PullToRefreshLazyColumn(
                 items = uiState.ofertas,
                 content = {
-                    OfertaRow(
-                        it = it,
-                        productos = uiState.productos,
-                        onClickOferta = onClickOferta
-                    )
+                    if (uiState.ofertas.isEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ){
+                            Image(
+                                painter = painterResource(R.drawable.empty_icon),
+                                contentDescription = "Lista vacía"
+                            )
+                            Text(
+                                text = "Lista vacía",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    } else {
+                        uiState.ofertas.forEach { oferta ->
+                            OfertaRow(
+                                it = oferta,
+                                productos = uiState.productos,
+                                onClickOferta = onClickOferta
+                            )
+                        }
+                    }
                 },
                 isRefreshing = isRefreshing,
                 onRefresh = { event ->
@@ -130,25 +151,6 @@ private fun OfertaListBodyScreen(
                 },
                 event = OfertaUiEvent.Refresh
             )
-        }
-
-        if(uiState.ofertas.isEmpty()){
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
-                Image(
-                    painter = painterResource(R.drawable.empty_icon),
-                    contentDescription = "Lista vacía"
-                )
-                Text(
-                    text = "Lista vacía",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
         }
     }
 }
@@ -214,8 +216,7 @@ private fun OfertaRow(
                     text = "$.${it.precioOferta}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Green,
-                    fontSize = 20.sp,
-                    //fontWeight = FontWeight.Bold
+                    fontSize = 20.sp
                 )
                 Text(
                     text = "$.${it.precio}",
