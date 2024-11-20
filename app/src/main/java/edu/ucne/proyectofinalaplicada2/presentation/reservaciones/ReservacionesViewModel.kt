@@ -3,7 +3,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.ucne.proyectofinalaplicada2.data.local.dto.ReservacionesDto
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.repository.ReservacionesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,6 +73,15 @@ class ReservacionesViewModel @Inject constructor(
             is ReservacionesUiEvent.EstadoChange -> {
                 _uiState.update { it.copy(estado = event.estado) }
             }
+            is ReservacionesUiEvent.NumeroMesaChange -> {
+                _uiState.update { it.copy(numeroMesa = event.numeroMesa) }
+                }
+            is ReservacionesUiEvent.HoraReservacionChange -> {
+                _uiState.update { it.copy(horaReservacion = event.horaReservacion) }
+            }
+            is ReservacionesUiEvent.RestablecerCampos -> {
+                _uiState.value = ReservacionesUiState()
+            }
             is ReservacionesUiEvent.IsRefreshingChanged -> {
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
             }
@@ -88,7 +98,9 @@ class ReservacionesViewModel @Inject constructor(
                                 usuarioId = reservacion.usuarioId,
                                 fechaReservacion = reservacion.fechaReservacion,
                                 numeroPersonas = reservacion.numeroPersonas,
-                                estado = reservacion.estado
+                                estado = reservacion.estado,
+                                numeroMesa = reservacion.numeroMesa,
+                                horaReservacion = reservacion.horaReservacion
                             )
                         }
                     }
@@ -120,8 +132,10 @@ class ReservacionesViewModel @Inject constructor(
     fun ReservacionesUiState.toEntity() = ReservacionesDto(
         reservacionId = reservacionId ?: 0,
         usuarioId = usuarioId ?: 0,
-        fechaReservacion = fechaReservacion ?: "",
+        fechaReservacion = (fechaReservacion ?: Date()),
         numeroPersonas = numeroPersonas ?: 0,
-        estado = estado ?: ""
+        estado = estado ?: "",
+        numeroMesa = numeroMesa ?: 0,
+        horaReservacion = (horaReservacion ?: Date())
     )
 }
