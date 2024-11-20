@@ -32,14 +32,16 @@ fun ReviewListScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewListBodyScreen(
         uiState = uiState,
         goToAddReview = goToAddReview,
         modifier = modifier,
-        onClickNotifications = onClickNotifications
+        onClickNotifications = onClickNotifications,
+        onDrawer = onDrawer
     )
 }
 
@@ -48,14 +50,15 @@ fun ReviewListBodyScreen(
     uiState: ReviewUiState,
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopBarComponent(
                 title = "Reseñas",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -169,6 +172,7 @@ fun ReviewListScreenPreview() {
     ReviewListBodyScreen(
         uiState = sampleUiState,
         goToAddReview = {},
-        onClickNotifications = {}
+        onClickNotifications = {},
+        onDrawer = {}
     )
 }
