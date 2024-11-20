@@ -70,6 +70,7 @@ fun ProductosListScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductosListBodyScreen(
     uiState: ProductoUiState,
@@ -226,8 +227,7 @@ fun ProductosListScreenPreview() {
         uiState = ProductoUiState(productos = sampleProductos),
         goToProducto = {},
         onAddProducto = {},
-        onEvent = {}
-        onAddProducto = {},
+        onEvent = {},
         onDrawer = {}
     )
 }
