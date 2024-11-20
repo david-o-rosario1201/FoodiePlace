@@ -199,17 +199,9 @@ fun ProyectoFinalAplicada2NavHost(
             }
             composable<Screen.ReservacionesScreenCliente> {
                 ReservacionesScreenCliente(
-                    onReservacionCreado = { reservacion ->
-                        // Acción tras crear una reservación
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.ReservacionesScreenCliente)
                     },
-                    onEvent = { event ->
-                        // Manejo de eventos
-                    },
-                    onBackClick = {
-                        // Acción al hacer clic en el botón de retroceso
-                    }
-
-
                 )
             }
             composable<Screen.ProductoListScreen> {
