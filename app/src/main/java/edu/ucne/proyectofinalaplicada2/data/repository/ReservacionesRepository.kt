@@ -1,7 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ReservacionesDao
-import edu.ucne.proyectofinalaplicada2.data.local.dto.ReservacionesDto
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ReservacionesRemoteDataSource
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
@@ -56,6 +56,8 @@ fun ReservacionesDto.toReservacionesEntity(): ReservacionesEntity {
         usuarioId = this.usuarioId,
         fechaReservacion = this.fechaReservacion,
         numeroPersonas = this.numeroPersonas,
-        estado = this.estado
+        estado = this.estado,
+        numeroMesa = this.numeroMesa,
+        horaReservacion = this.horaReservacion
     )
 }
