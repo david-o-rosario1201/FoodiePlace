@@ -208,10 +208,6 @@ class OfertaViewModel @Inject constructor(
         }
     }
 
-    private fun eliminarOferta() = viewModelScope.launch {
-        ofertaRepository.deleteOferta(_uiState.value.ofertasId ?: 0)
-    }
-
     private fun OfertaUiState.toDto() = OfertaDto(
         ofertasId = ofertasId,
         productoId = productoId ?: 0,
