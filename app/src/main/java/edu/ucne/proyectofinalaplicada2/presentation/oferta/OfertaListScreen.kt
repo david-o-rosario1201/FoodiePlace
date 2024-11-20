@@ -58,7 +58,8 @@ fun OfertaListScreen(
     viewModel: OfertaViewModel = hiltViewModel(),
     onAddOferta: () -> Unit,
     onClickOferta: (Int) -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     OfertaListBodyScreen(
@@ -66,7 +67,8 @@ fun OfertaListScreen(
         onAddOferta = onAddOferta,
         onClickOferta = onClickOferta,
         onEvent = viewModel::onEvent,
-        onClickNotifications = onClickNotifications
+        onClickNotifications = onClickNotifications,
+        onDrawer = onDrawer
     )
 }
 
@@ -76,7 +78,8 @@ private fun OfertaListBodyScreen(
     onEvent: (OfertaUiEvent) -> Unit,
     onAddOferta: () -> Unit,
     onClickOferta: (Int) -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ){
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -85,7 +88,7 @@ private fun OfertaListBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Ofertas",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -263,7 +266,8 @@ fun OfertaListScreenPreview(){
             onAddOferta = {},
             onClickOferta = {},
             onClickNotifications = {},
-            onEvent = {}
+            onEvent = {},
+            onDrawer = {}
         )
     }
 }
