@@ -3,6 +3,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.pedido
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +36,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.Date
@@ -48,6 +56,7 @@ fun PedidoListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PedidoListBodyScreen(
         uiState = uiState,
+        onEvent = viewModel::onEvent,
         onClickPedido = onClickPedido,
         onClickNotifications = onClickNotifications,
         navHostController = navHostController
@@ -57,10 +66,14 @@ fun PedidoListScreen(
 @Composable
 private fun PedidoListBodyScreen(
     uiState: PedidoUiState,
+    onEvent: (PedidoUiEvent) -> Unit,
     onClickPedido: (Int) -> Unit,
     onClickNotifications: () -> Unit,
     navHostController: NavHostController
 ){
+    var isRefreshing by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             TopBarComponent(
@@ -73,43 +86,58 @@ private fun PedidoListBodyScreen(
         bottomBar = {
             BottomBarNavigation(navController = navHostController)
         }
-    ){ innerPadding->
-        Column(
+    ){
+        Box(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
+                .padding(it)
         ){
-            if(uiState.pedidos.isEmpty()){
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ){
-                    Image(
-                        painter = painterResource(R.drawable.empty_icon),
-                        contentDescription = "Lista vacía"
-                    )
-                    Text(
-                        text = "Lista vacía",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .fillMaxSize()
-                ){
-                    items(uiState.pedidos){
-                        PedidoRow(
-                            it = it,
-                            onClickPedido = onClickPedido
-                        )
+            PullToRefreshLazyColumn(
+                items = uiState.pedidos,
+                content = {
+                    if(uiState.pedidos.isEmpty()){
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ){
+                            Image(
+                                painter = painterResource(R.drawable.empty_icon),
+                                contentDescription = "Lista vacía"
+                            )
+                            Text(
+                                text = "Lista vacía",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .fillMaxSize()
+                        ){
+                            items(uiState.pedidos){
+                                PedidoRow(
+                                    it = it,
+                                    onClickPedido = onClickPedido
+                                )
+                            }
+                        }
                     }
-                }
-            }
+                },
+                isRefreshing = isRefreshing,
+                onRefresh = { event ->
+                    scope.launch {
+                        isRefreshing = true
+                        onEvent(event)
+                        delay(3000L)
+                        isRefreshing = false
+                    }
+                },
+                event = PedidoUiEvent.Refresh
+            )
         }
     }
 }
@@ -215,6 +243,7 @@ private fun PedidoListScreenPreview(){
     ProyectoFinalAplicada2Theme {
         PedidoListBodyScreen(
             uiState = sampleUiState,
+            onEvent = {},
             onClickPedido = {},
             onClickNotifications = {},
             navHostController = rememberNavController()
