@@ -9,17 +9,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import edu.ucne.proyectofinalaplicada2.presentation.Home.HomeScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
-import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
-import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
-import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
-import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
+import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
@@ -41,30 +39,30 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.HomeScreen
+            startDestination = Screen.ReservacionesScreenCliente
         ) {
-            composable<Screen.WelcomeScreen>{
+            composable<Screen.WelcomeScreen> {
                 WelcomeScreen(
                     onNavigateToLogin = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
                     }
                 )
             }
-            composable<Screen.UsuarioLoginScreen>{
+            composable<Screen.UsuarioLoginScreen> {
                 UsuarioLoginScreen(
                     onRegisterUsuario = {
-                        navHostController.navigate(Screen.UsuarioRegisterScreen)
+                        navHostController.navigate(Screen.CategoriaListScreen)
                     }
                 )
             }
-            composable<Screen.UsuarioRegisterScreen>{
+            composable<Screen.UsuarioRegisterScreen> {
                 UsuarioRegisterScreen(
                     onLoginUsuario = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
                     }
                 )
             }
-            composable<Screen.OfertaListScreen>{
+            composable<Screen.OfertaListScreen> {
                 OfertaListScreen(
                     onAddOferta = {
                         navHostController.navigate(Screen.OfertaScreen(0))
@@ -92,6 +90,12 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+            composable<Screen.PedidoListScreen> {
+                PedidoListScreen(
+                    onClickPedido = {
+                        navHostController.navigate(Screen.ReviewListScreen)
+                    }
+                )
             composable<Screen.PedidoListScreen>{
                PedidoListScreen(
                    onClickPedido = {
@@ -108,21 +112,21 @@ fun ProyectoFinalAplicada2NavHost(
                    }
                )
             }
-            composable<Screen.PedidoAdminScreen>{
+            composable<Screen.PedidoAdminScreen> {
                 PedidoAdminScreen(
                     goToPedidoList = {
                         navHostController.navigate(Screen.PedidoListScreen)
                     }
                 )
             }
-            composable<Screen.PedidoClienteScreen>{
+            composable<Screen.PedidoClienteScreen> {
                 PedidoClienteScreen(
                     goToPedidoList = {
                         navHostController.navigate(Screen.PedidoListScreen)
                     }
                 )
             }
-            composable<Screen.ReviewListScreen>{
+            composable<Screen.ReviewListScreen> {
                 ReviewListScreen(
                     goToAddReview = {
                         navHostController.navigate(Screen.ReviewCreateScreen)
@@ -137,13 +141,14 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.ReviewCreateScreen>{
+            composable<Screen.ReviewCreateScreen> {
                 ReviewCreateScreen(
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReviewListScreen)
                     }
                 )
             }
+            composable<Screen.CategoriaListScreen> {
             composable<Screen.HomeScreen>{
                 HomeScreen(
                     goCategoria = {
@@ -189,27 +194,22 @@ fun ProyectoFinalAplicada2NavHost(
                         scope.launch {
                             drawerState.open()
                         }
+                    }
+                )
+            }
+            composable<Screen.ReservacionesScreenCliente> {
+                ReservacionesScreenCliente(
+                    onReservacionCreado = { reservacion ->
+                        // Acción tras crear una reservación
                     },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    }
-                )
-            }
-            composable<Screen.NotificacionScreen> {
-                NotificacionScreen(
-                    goToHome = {
-                        navHostController.navigate(Screen.HomeScreen)
-                    }
-                )
-            }
-            composable<Screen.ProductoScreen> {
-                ProductoScreen(
-                    onProductoCreado = {
-                        navHostController.navigate(Screen.ProductoScreen)
+                    onEvent = { event ->
+                        // Manejo de eventos
                     },
                     onBackClick = {
-                        navHostController.navigate(Screen.ProductoListScreen)
+                        // Acción al hacer clic en el botón de retroceso
                     }
+
+
                 )
             }
             composable<Screen.ProductoListScreen> {
