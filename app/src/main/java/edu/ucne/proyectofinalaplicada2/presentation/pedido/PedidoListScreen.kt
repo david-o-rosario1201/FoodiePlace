@@ -43,14 +43,16 @@ fun PedidoListScreen(
     viewModel: PedidoViewModel = hiltViewModel(),
     onClickPedido: (Int) -> Unit,
     onClickNotifications: () -> Unit,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onDrawer: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PedidoListBodyScreen(
         uiState = uiState,
         onClickPedido = onClickPedido,
         onClickNotifications = onClickNotifications,
-        navHostController = navHostController
+        navHostController = navHostController,
+        onDrawer = onDrawer
     )
 }
 
@@ -59,13 +61,14 @@ private fun PedidoListBodyScreen(
     uiState: PedidoUiState,
     onClickPedido: (Int) -> Unit,
     onClickNotifications: () -> Unit,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onDrawer: () -> Unit
 ){
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "Pedidos",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -217,7 +220,8 @@ private fun PedidoListScreenPreview(){
             uiState = sampleUiState,
             onClickPedido = {},
             onClickNotifications = {},
-            navHostController = rememberNavController()
+            navHostController = rememberNavController(),
+            onDrawer = {}
         )
     }
 }
