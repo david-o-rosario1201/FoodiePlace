@@ -83,7 +83,7 @@ fun BottomBarNavigation(
             containerColor = color_oro,
             modifier = Modifier.fillMaxWidth()
         ) {
-            items.forEachIndexed { index, item ->
+            items.forEachIndexed { _, item ->
                 NavigationBarItem(
                     selected = currentRoute == item.route,
                     onClick = { navController.navigate(item.route) },
