@@ -22,6 +22,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -73,6 +74,11 @@ fun ProyectoFinalAplicada2NavHost(
                     },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     }
                 )
             }
@@ -94,7 +100,12 @@ fun ProyectoFinalAplicada2NavHost(
                    onClickNotifications = {
                        navHostController.navigate(Screen.NotificacionScreen)
                    },
-                   navHostController = navHostController
+                   navHostController = navHostController,
+                   onDrawer = {
+                       scope.launch {
+                           drawerState.open()
+                       }
+                   }
                )
             }
             composable<Screen.PedidoAdminScreen>{
@@ -118,6 +129,11 @@ fun ProyectoFinalAplicada2NavHost(
                     },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     }
                 )
             }
@@ -137,7 +153,12 @@ fun ProyectoFinalAplicada2NavHost(
                         navHostController.navigate(Screen.PedidoListScreen)
                     },
                     usuarioId = 1,
-                    navController = navHostController
+                    navController = navHostController,
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }
                 )
             }
             composable<Screen.CategoriaListScreen>{
@@ -147,6 +168,11 @@ fun ProyectoFinalAplicada2NavHost(
                     },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     }
                 )
             }
@@ -193,6 +219,25 @@ fun ProyectoFinalAplicada2NavHost(
                     },
                     goToProducto = {
                         navHostController.navigate(Screen.ProductoScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }
+                )
+            }
+            composable<Screen.ReservacionListScreen> {
+                ReservacionesListScreen(
+                    goToAddReservacion = {},
+                    goToReservacion = {},
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     }
                 )
             }

@@ -51,7 +51,8 @@ fun HomeScreen(
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    onDrawer: () -> Unit
 ) {
 
     homeViewModel.loadUsuario(usuarioId)
@@ -61,7 +62,8 @@ fun HomeScreen(
         goProducto = goProducto,
         goCategoria = goCategoria,
         onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
-        navController = navController
+        navController = navController,
+        onDrawer = onDrawer
     )
 }
 
@@ -72,7 +74,8 @@ fun HomeBodyScreen(
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
     navController: NavHostController,
-    onSearchQueryChanged: (String) -> Unit
+    onSearchQueryChanged: (String) -> Unit,
+    onDrawer: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
 
@@ -81,7 +84,7 @@ fun HomeBodyScreen(
         topBar = {
             TopBarComponent(
                 title = " ",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = {},
                 notificationCount = 0
             )
@@ -227,6 +230,7 @@ fun HomeBodyScreenPreview() {
         goProducto = {},
         goCategoria = {},
         onSearchQueryChanged = {},
-        navController = NavHostController(LocalContext.current)
+        navController = NavHostController(LocalContext.current),
+        onDrawer = {}
     )
 }

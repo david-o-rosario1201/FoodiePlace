@@ -55,7 +55,8 @@ fun ProductosListScreen(
     viewModel: ProductoViewModel = hiltViewModel(),
     goToProducto: (Int) -> Unit,
     onAddProducto: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -64,7 +65,8 @@ fun ProductosListScreen(
         onEvent = viewModel::onEvent,
         goToProducto = goToProducto,
         onAddProducto = onAddProducto,
-        modifier = modifier
+        modifier = modifier,
+        onDrawer = onDrawer
     )
 }
 
@@ -75,7 +77,8 @@ fun ProductosListBodyScreen(
     onEvent: (ProductoUiEvent) -> Unit,
     goToProducto: (Int) -> Unit,
     onAddProducto: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDrawer: () -> Unit
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -84,7 +87,7 @@ fun ProductosListBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Productos",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = {},
                 notificationCount = 0
             )
@@ -224,6 +227,7 @@ fun ProductosListScreenPreview() {
         uiState = ProductoUiState(productos = sampleProductos),
         goToProducto = {},
         onAddProducto = {},
-        onEvent = {}
+        onEvent = {},
+        onDrawer = {}
     )
 }

@@ -51,7 +51,8 @@ fun PedidoListScreen(
     viewModel: PedidoViewModel = hiltViewModel(),
     onClickPedido: (Int) -> Unit,
     onClickNotifications: () -> Unit,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onDrawer: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PedidoListBodyScreen(
@@ -59,7 +60,8 @@ fun PedidoListScreen(
         onEvent = viewModel::onEvent,
         onClickPedido = onClickPedido,
         onClickNotifications = onClickNotifications,
-        navHostController = navHostController
+        navHostController = navHostController,
+        onDrawer = onDrawer
     )
 }
 
@@ -69,7 +71,8 @@ private fun PedidoListBodyScreen(
     onEvent: (PedidoUiEvent) -> Unit,
     onClickPedido: (Int) -> Unit,
     onClickNotifications: () -> Unit,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onDrawer: () -> Unit
 ){
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -78,7 +81,7 @@ private fun PedidoListBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Pedidos",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -246,7 +249,8 @@ private fun PedidoListScreenPreview(){
             onEvent = {},
             onClickPedido = {},
             onClickNotifications = {},
-            navHostController = rememberNavController()
+            navHostController = rememberNavController(),
+            onDrawer = {}
         )
     }
 }
