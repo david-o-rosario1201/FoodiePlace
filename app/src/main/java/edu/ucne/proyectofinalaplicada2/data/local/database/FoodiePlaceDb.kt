@@ -46,7 +46,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.PedidoEntity
         PedidoDetalleEntity::class,
         NotificacionEntity::class
     ],
-    version = 5,
+    version = 9,
     exportSchema = false
 )
 
