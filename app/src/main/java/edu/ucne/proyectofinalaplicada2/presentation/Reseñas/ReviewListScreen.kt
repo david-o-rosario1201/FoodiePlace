@@ -53,7 +53,8 @@ fun ReviewListScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewListBodyScreen(
@@ -61,7 +62,8 @@ fun ReviewListScreen(
         onUiEvent = viewModel::onUiEvent,
         goToAddReview = goToAddReview,
         modifier = modifier,
-        onClickNotifications = onClickNotifications
+        onClickNotifications = onClickNotifications,
+        onDrawer = onDrawer
     )
 }
 
@@ -71,7 +73,8 @@ fun ReviewListBodyScreen(
     onUiEvent: (ReviewUiEvent) -> Unit,
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -81,7 +84,7 @@ fun ReviewListBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Reseñas",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -219,6 +222,7 @@ fun ReviewListScreenPreview() {
         uiState = sampleUiState,
         onUiEvent = {},
         goToAddReview = {},
-        onClickNotifications = {}
+        onClickNotifications = {},
+        onDrawer = {}
     )
 }
