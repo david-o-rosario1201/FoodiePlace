@@ -37,7 +37,8 @@ fun ProductosListScreen(
     viewModel: ProductoViewModel = hiltViewModel(),
     goToProducto: (Int) -> Unit,
     onAddProducto: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -45,23 +46,24 @@ fun ProductosListScreen(
         uiState = uiState,
         goToProducto = goToProducto,
         onAddProducto = onAddProducto,
-        modifier = modifier
+        modifier = modifier,
+        onDrawer = onDrawer
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductosListBodyScreen(
     uiState: ProductoUiState,
     goToProducto: (Int) -> Unit,
     onAddProducto: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDrawer: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "Productos",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = {},
                 notificationCount = 0
             )
@@ -190,6 +192,7 @@ fun ProductosListScreenPreview() {
     ProductosListBodyScreen(
         uiState = ProductoUiState(productos = sampleProductos),
         goToProducto = {},
-        onAddProducto = {}
+        onAddProducto = {},
+        onDrawer = {}
     )
 }
