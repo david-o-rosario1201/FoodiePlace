@@ -20,11 +20,11 @@ import java.util.Date
 data class ReservacionesEntity(
     @PrimaryKey
     val reservacionId: Int? = 0,
-    val usuarioId: Int,
+    val usuarioId: Int?,
     val fechaReservacion: Date,
     val numeroPersonas: Int,
-    val estado: String,
-    val numeroMesa: Int,
-    val horaReservacion: Date
+    val estado: String?,
+    val numeroMesa: Int?,
+    val horaReservacion: Date?
 
 )
