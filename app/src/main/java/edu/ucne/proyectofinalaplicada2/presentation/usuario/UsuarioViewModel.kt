@@ -55,44 +55,26 @@ class UsuarioViewModel @Inject constructor(
     fun onEvent(event: UsuarioUiEvent){
         when(event){
             is UsuarioUiEvent.UsuarioIdChanged -> {
-                _uiState.update {
-                    it.copy(usuarioId = event.usuarioId)
-                }
+                _uiState.update { it.copy(usuarioId = event.usuarioId) }
             }
             is UsuarioUiEvent.NombreChanged -> {
-                _uiState.update {
-                    it.copy(nombre = event.nombre)
-                }
+                _uiState.update { it.copy(nombre = event.nombre) }
             }
             is UsuarioUiEvent.TelefonoChanged -> {
-                _uiState.update {
-                    it.copy(telefono = event.telefono)
-                }
+                _uiState.update { it.copy(telefono = formatPhoneNumber(event.telefono)) }
             }
             is UsuarioUiEvent.CorreoChanged -> {
-                _uiState.update {
-                    it.copy(correo = event.correo)
-                }
+                _uiState.update { it.copy(correo = event.correo) }
             }
-            is UsuarioUiEvent.Contrasena -> {
-                _uiState.update {
-                    it.copy(contrasena = event.contrasena)
-                }
+            is UsuarioUiEvent.ContrasenaChanged -> {
+                _uiState.update { it.copy(contrasena = event.contrasena) }
+            }
+            is UsuarioUiEvent.ConfirmarContrasenaChanged -> {
+                _uiState.update { it.copy(confirmarContrasena = event.confirmarContrasena) }
             }
             is UsuarioUiEvent.SelectedUsuario -> {
                 viewModelScope.launch {
-                    if(event.usuarioId > 0){
-                        val usuario = usuarioRepository.getUsuario(event.usuarioId)
-                        _uiState.update {
-                            it.copy(
-                                usuarioId = usuario.usuarioId,
-                                nombre = usuario.nombre,
-                                telefono = usuario.telefono,
-                                correo = usuario.correo,
-                                contrasena = usuario.contrasena
-                            )
-                        }
-                    }
+                    cargarUsuarioSeleccionado(event.usuarioId)
                 }
             }
             is UsuarioUiEvent.IsRefreshingChanged -> {
@@ -100,48 +82,11 @@ class UsuarioViewModel @Inject constructor(
                     it.copy(isRefreshing = event.isRefreshing)
                 }
             }
-            UsuarioUiEvent.Save -> {
+            UsuarioUiEvent.Register -> {
                 viewModelScope.launch {
-                    if(_uiState.value.nombre.isNullOrBlank()){
-                        _uiState.update {
-                            it.copy(errorNombre = "El nombre no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.telefono.isNullOrBlank()){
-                        _uiState.update {
-                            it.copy(errorTelefono = "El teléfono no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.correo.isNullOrBlank()){
-                        _uiState.update {
-                            it.copy(errorCorreo = "El correo no puede estar vacío")
-                        }
-                    }
-
-                    if(_uiState.value.contrasena.isNullOrBlank()){
-                        _uiState.update {
-                            it.copy(errorContrasena = "La contraseña no puede ir vacío")
-                        }
-                    }
-
-                    if(_uiState.value.errorNombre == "" && _uiState.value.errorTelefono == ""
-                        && _uiState.value.errorCorreo == "" && _uiState.value.errorContrasena == ""){
-
-                        if(_uiState.value.usuarioId == null)
-                            usuarioRepository.addUsuario(_uiState.value.toDto())
-                        else
-                        {
-                            usuarioRepository.updateUsuario(
-                                _uiState.value.usuarioId ?: 0,
-                                _uiState.value.toDto()
-                            )
-                        }
-
-                        _uiState.update {
-                            it.copy(isSuccess = true)
-                        }
+                    if (validarCampos()) {
+                        guardarUsuario()
+                        _uiState.update { it.copy(isSuccess = true) }
                     }
                 }
             }
@@ -150,11 +95,91 @@ class UsuarioViewModel @Inject constructor(
                     usuarioRepository.deleteUsuario(_uiState.value.usuarioId ?: 0)
                 }
             }
+            UsuarioUiEvent.Login -> TODO()
             UsuarioUiEvent.Refresh -> {
                 getUsuarios()
             }
         }
     }
+
+    private suspend fun guardarUsuario() {
+        if (_uiState.value.usuarioId == null) {
+            usuarioRepository.addUsuario(_uiState.value.toDto())
+        } else {
+            usuarioRepository.updateUsuario(_uiState.value.usuarioId ?: 0, _uiState.value.toDto())
+        }
+    }
+
+    private fun validarCampos(): Boolean {
+        var isValid = true
+        _uiState.update {
+            it.copy(
+                errorNombre = if (it.nombre.isNullOrBlank()) {
+                    isValid = false
+                    "El campo nombre no puede estar vacío"
+                } else null,
+                errorTelefono = if (it.telefono.isNullOrBlank()) {
+                    isValid = false
+                    "El campo teléfono no puede estar vacío"
+                } else if (it.telefono.length != 12) {
+                    isValid = false
+                    "El campo teléfono debe tener 10 caracteres"
+                } else null,
+                errorCorreo = if (it.correo.isNullOrBlank()) {
+                    isValid = false
+                    "El campo correo no puede estar vacío"
+                } else if (!isValidEmail(it.correo)) {
+                    isValid = false
+                    "El campo correo no es válido"
+                } else null,
+                errorContrasena = if (it.contrasena.isNullOrBlank()) {
+                    isValid = false
+                    "El campo contraseña no puede estar vacío"
+                } else if (it.contrasena.length !in 5..21) {
+                    isValid = false
+                    "El campo contraseña debe tener al menos 6 caracteres y máximo 20"
+                } else null,
+                errorConfirmarContrasena = if (it.confirmarContrasena.isNullOrBlank()) {
+                    isValid = false
+                    "El campo confirmar contraseña no puede estar vacío"
+                } else if (it.contrasena != it.confirmarContrasena) {
+                    isValid = false
+                    "Las contraseñas no coinciden"
+                } else null
+            )
+        }
+        return isValid
+    }
+
+    private fun cargarUsuarioSeleccionado(usuarioId: Int) = viewModelScope.launch {
+        if (usuarioId > 0) {
+            val usuario = usuarioRepository.getUsuario(usuarioId)
+            _uiState.update {
+                it.copy(
+                    usuarioId = usuario.usuarioId,
+                    nombre = usuario.nombre,
+                    telefono = usuario.telefono,
+                    correo = usuario.correo,
+                    contrasena = usuario.contrasena
+                )
+            }
+        }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+        return email.matches(emailPattern.toRegex())
+    }
+
+    private fun formatPhoneNumber(phoneNumber: String): String {
+        val cleanedNumber = phoneNumber.filter { it.isDigit() } // Elimina cualquier carácter no numérico
+        return if (cleanedNumber.length == 10) {
+            "${cleanedNumber.substring(0, 3)}-${cleanedNumber.substring(3, 6)}-${cleanedNumber.substring(6, 10)}"
+        } else {
+            phoneNumber // Retorna el número original si no tiene 10 dígitos
+        }
+    }
+
 
     private fun UsuarioUiState.toDto() = UsuarioDto(
         usuarioId = usuarioId,

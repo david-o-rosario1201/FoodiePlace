@@ -59,6 +59,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.adapters)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.volley)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,6 +70,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.coil.compose)
 
     //navigation
     implementation(libs.androidx.navigation.compose)
@@ -98,5 +103,10 @@ dependencies {
 
     //Gson for type converter
     implementation ("com.google.code.gson:gson:2.8.8")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation ("androidx.compose.material3:material3:1.0.1")  // Asegúrate de tener la versión correcta
+    implementation ("androidx.compose.foundation:foundation:1.5.0") // Para swipe-to-refresh
 
 }

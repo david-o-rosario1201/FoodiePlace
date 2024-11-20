@@ -1,4 +1,4 @@
-package edu.ucne.proyectofinalaplicada2.presentation.reservacion
+package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 sealed interface ReservacionesUiEvent {
     data class ReservacionIdChange(val reservacionId: Int?) : ReservacionesUiEvent

@@ -14,6 +14,8 @@ class ProductoRepository @Inject constructor(
     private val productoRemoteDataSource: ProductoRemoteDataSource,
     private val productoDao: ProductoDao
 ){
+    private var productosCargados: List<ProductoEntity> = emptyList()
+
     suspend fun addProducto(productoDto: ProductoDto) = productoRemoteDataSource.addProducto(productoDto)
 
     suspend fun getProducto(productoId: Int) = productoRemoteDataSource.getProductoById(productoId)
@@ -45,6 +47,12 @@ class ProductoRepository @Inject constructor(
             productoDao.getProductos().collect { productosLocal ->
                 emit(Resource.Success(productosLocal))
             }
+        }
+    }
+
+    fun searchProductos(query: String): List<ProductoEntity> {
+        return productosCargados.filter { producto ->
+            producto.nombre?.contains(query, ignoreCase = true) == true
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
+import edu.ucne.proyectofinalaplicada2.data.repository.CategoriaRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,10 +14,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import javax.inject.Inject
-
 @HiltViewModel
 class ProductoViewModel @Inject constructor(
-    private val productoRepository: ProductoRepository
+    private val productoRepository: ProductoRepository,
+    private val categoRepository: CategoriaRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductoUiState())
@@ -24,6 +25,7 @@ class ProductoViewModel @Inject constructor(
 
     init {
         getProductos()
+        getCategorias()
     }
 
     private fun getProductos() {
@@ -31,24 +33,38 @@ class ProductoViewModel @Inject constructor(
             productoRepository.getProductos().collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
-                        }
+                        _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
                         _uiState.update {
-                            it.copy(
-                                productos = result.data ?: emptyList(),
-                                isLoading = false
-                            )
+                            it.copy(productos = result.data ?: emptyList(), isLoading = false)
                         }
                     }
                     is Resource.Error -> {
                         _uiState.update {
-                            it.copy(
-                                productos = result.data ?: emptyList(),
-                                isLoading = false
-                            )
+                            it.copy(productos = result.data ?: emptyList(), isLoading = false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getCategorias() {
+        viewModelScope.launch {
+            categoRepository.getCategorias().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(categoria = result.data ?: emptyList(), isLoading = false)
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(categoria = emptyList(), isLoading = false)
                         }
                     }
                 }
@@ -82,8 +98,12 @@ class ProductoViewModel @Inject constructor(
             is ProductoUiEvent.IsRefreshingChanged -> {
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
             }
+            is ProductoUiEvent.RestablecerCampos -> {
+                _uiState.value = ProductoUiState() // Restablece los campos a sus valores iniciales
+            }
             ProductoUiEvent.Refresh -> {
                 getProductos()
+                getCategorias()  // Actualiza también las categorías al refrescar
             }
             is ProductoUiEvent.SelectedProducto -> {
                 viewModelScope.launch {
@@ -118,7 +138,13 @@ class ProductoViewModel @Inject constructor(
                         }
                     }
 
-                    if (_uiState.value.errorNombre == "") {
+                    // Validación de la imagen
+                    if (_uiState.value.imagen.isNullOrBlank()) {
+                        _uiState.update { it.copy(errorImagen = "Debe seleccionar una imagen") }
+                    }
+
+                    // Si no hay errores, se guarda el producto
+                    if (_uiState.value.errorNombre!!.isEmpty() && _uiState.value.errorImagen.isNullOrEmpty()) {
                         if (_uiState.value.productoId == null)
                             productoRepository.addProducto(_uiState.value.toEntity())
                         else

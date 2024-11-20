@@ -57,21 +57,28 @@ class CategoriaViewModel @Inject constructor(
 
     fun onUiEvent(event: CategoriaUiEvent) {
         when (event) {
-            CategoriaUiEvent.Save -> saveCategoria()
+            CategoriaUiEvent.Save -> {
+                if (validarCampos()) {
+                    saveCategoria()
+                    _uiState.update { it.copy(success = true) }
+                }
+            }
             CategoriaUiEvent.Refresh -> GetCategoria()
             CategoriaUiEvent.Delete -> deleteCategoria()
             is CategoriaUiEvent.SetNombre -> _uiState.update {
-                it.copy(nombre = event.nombre, errorMessge = "")
+                it.copy(nombre = event.nombre, nombreError = "")
             }
-
             is CategoriaUiEvent.SetImagen -> _uiState.update {
-                it.copy(imagen = event.imagen, errorMessge = "")
+                it.copy(imagen = event.imagen.toString(), imagenError = "")
             }
-
-            is CategoriaUiEvent.IsRefreshingChanged -> {
-                _uiState.update {
-                    it.copy(isRefreshing = event.isRefreshing)
-                }
+            is CategoriaUiEvent.SetNombreError -> _uiState.update {
+                it.copy(nombreError = event.error)
+            }
+            is CategoriaUiEvent.SetImagenError -> _uiState.update {
+                it.copy(imagenError = event.error)
+            }
+            is CategoriaUiEvent.IsRefreshingChanged -> _uiState.update {
+                it.copy(isRefreshing = event.isRefreshing)
             }
         }
     }
@@ -79,28 +86,44 @@ class CategoriaViewModel @Inject constructor(
     private fun saveCategoria() {
         viewModelScope.launch {
             if (_uiState.value.categoriaId == null) {
-                _uiState.value.toEntity()?.let { categoriaRepository.addCategoria(it)}
-            }else
-            {
-                _uiState.value.toEntity()?.let {
-                    categoriaRepository.updateCategoria(_uiState.value.categoriaId!!, it)
-                }
+                categoriaRepository.addCategoria(_uiState.value.toEntity())
+            } else {
+                categoriaRepository.updateCategoria(_uiState.value.categoriaId ?: 0, _uiState.value.toEntity())
             }
         }
     }
 
     private fun deleteCategoria() {
         viewModelScope.launch {
-            _uiState.value.categoriaId?.let { categoriaRepository.deleteCategoria(it) }
+            _uiState.value.categoriaId?.let {
+                categoriaRepository.deleteCategoria(it)
+                _uiState.update { it.copy(success = true, errorMessge = null) }
+            }
         }
     }
 
+    private fun validarCampos(): Boolean {
+        var isValid = true
+        _uiState.update {
+            it.copy(
+                nombreError = if (it.nombre.isBlank()) {
+                    isValid = false
+                    "El campo nombre no puede estar vacío"
+                } else null,
+                imagenError = if (it.imagen.isBlank()) {
+                    isValid = false
+                    "El campo imagen no puede estar vacío"
+                } else null
+            )
+        }
+        return isValid
+    }
+
     fun CategoriaUiState.toEntity() =
-        this.categoriaId?.let {
             CategoriaDto(
-                categoriaId = it,
+                categoriaId = categoriaId,
                 nombre = nombre,
                 imagen = imagen
             )
-        }
+
 }

@@ -14,8 +14,6 @@ class CategoriaRepository @Inject constructor(
     private val categoriaRemoteDataSource: CategoriaRemoteDataSource,
     private val categoriaDao: CategoriaDao
 ) {
-    suspend fun getCategoriaById(id: Int) = categoriaRemoteDataSource.getCategoriaById(id)
-    suspend fun getCategoria() = categoriaRemoteDataSource.getCategorias()
     suspend fun addCategoria(categoria: CategoriaDto) = categoriaRemoteDataSource.postCategoria(categoria)
     suspend fun updateCategoria(id: Int, categoria: CategoriaDto) = categoriaRemoteDataSource.putCategoria(id, categoria)
     suspend fun deleteCategoria(id: Int) = categoriaRemoteDataSource.deleteCategoria(id)
@@ -38,11 +36,12 @@ class CategoriaRepository @Inject constructor(
         }catch (e: HttpException){
             emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
         }catch (e: Exception){
-            emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
-
             categoriaDao.getAll().collect{categoriasLocal ->
                 emit(Resource.Success(categoriasLocal))
             }
+            emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
+
+
         }
     }
 }

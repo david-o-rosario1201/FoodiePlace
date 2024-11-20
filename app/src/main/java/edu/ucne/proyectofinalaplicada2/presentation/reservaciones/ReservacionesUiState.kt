@@ -1,4 +1,4 @@
-package edu.ucne.proyectofinalaplicada2.presentation.reservacion
+package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 

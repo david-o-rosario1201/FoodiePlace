@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
 import edu.ucne.proyectofinalaplicada2.data.repository.ReviewRepository
@@ -15,6 +16,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 
+@HiltViewModel
 class ReviewViewModel @Inject constructor(
     private val repository: ReviewRepository
 ): ViewModel() {
@@ -67,8 +69,10 @@ class ReviewViewModel @Inject constructor(
                 it.copy( calificacion = event.calificacion, errorMessge = "" )
             }
 
-            is ReviewUiEvent.SetComentario -> _uiState.update {
-                it.copy( comentario = event.comentario, errorMessge = "" )
+            is ReviewUiEvent.SetComentario -> {
+                _uiState.update {
+                    it.copy(comentario = event.comentario, errorMessge = "")
+                }
             }
             is ReviewUiEvent.SetUsuarioId -> _uiState.update {
                 it.copy( usuarioId = event.usuarioId, errorMessge = "" )
@@ -82,20 +86,39 @@ class ReviewViewModel @Inject constructor(
             ReviewUiEvent.Refresh -> GetReseñas()
         }
     }
-
-    private fun saveReseña(){
+    private fun saveReseña() {
         viewModelScope.launch {
-            if(_uiState.value.usuarioId == null){
-                _uiState.value.toEntity()?.let { repository.addReview(it) }
+
+            val errorMessage = validarReview()
+            if (errorMessage != null) {
+                _uiState.update { it.copy(errorMessge = errorMessage) }
+                return@launch
             }
-            else
-            {
-                _uiState.value.toEntity()?.let {
-                    repository.updateReview(_uiState.value.id!!, it)
-                }
+
+            val currentUiState = _uiState.value
+            if (currentUiState.id == null) {
+                currentUiState.toEntity()?.let { repository.addReview(it) }
+            } else {
+                currentUiState.toEntity()?.let { repository.updateReview(currentUiState.id!!, it) }
             }
+
+            _uiState.update { ReviewUiState() }
         }
     }
+    private fun validarReview(): String? {
+        val currentUiState = _uiState.value
+
+        if (currentUiState.comentario.isBlank()) {
+            return "El comentario no puede estar vacío"
+        }
+
+        if (currentUiState.calificacion == 0) {
+            return "Debe seleccionar una calificación"
+        }
+
+        return null
+    }
+
 
     private fun deleteReseña(){
         viewModelScope.launch {
@@ -109,14 +132,12 @@ class ReviewViewModel @Inject constructor(
     }
 
     fun ReviewUiState.toEntity() =
-        id?.let {
             ReviewDTO(
-                resenaId = it,
+                resenaId = id,
                 usuarioId = usuarioId,
                 comentario = comentario,
                 fechaResena = obtenerFechaActual(),
                 calificacion = calificacion
             )
-        }
-
 }
+
