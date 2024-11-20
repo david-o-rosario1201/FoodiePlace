@@ -43,7 +43,7 @@ object AppModule {
     //FoodiPlaceDb
     @Provides
     @Singleton
-    fun providesFoodiePlaceDb(@ApplicationContext appContext: Context) =
+    fun providesFoodiePlaceDb(@ApplicationContext appContext: Context): FoodiePlaceDb =
         Room.databaseBuilder(
             appContext,
             FoodiePlaceDb::class.java,
@@ -104,7 +104,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun ProvidesProductoApi(moshi: Moshi): ProductoApi {
+    fun providesProductoApi(moshi: Moshi): ProductoApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))

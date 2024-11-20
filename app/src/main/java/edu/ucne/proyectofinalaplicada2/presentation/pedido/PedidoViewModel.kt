@@ -129,15 +129,15 @@ class PedidoViewModel @Inject constructor(
                 errorTotal = if(it.total == BigDecimal.ZERO){
                     isValid = false
                     "El campo total no puede estar vacío"
-                    } else null,
+                } else null,
                 errorParaLlevar = if(it.paraLlevar == null){
                     isValid = false
                     "El campo para llevar no puede estar vacío"
-                    } else null,
+                } else null,
                 errorEstado = if(it.estado.isNullOrEmpty()){
                     isValid = false
                     "El campo estado no puede estar vacío"
-                    } else null,
+                } else null,
                 errorPedidoDetalle = if(it.pedidoDetalle.isEmpty()){
                     isValid = false
                     "El campo pedido detalle no puede estar vacío"

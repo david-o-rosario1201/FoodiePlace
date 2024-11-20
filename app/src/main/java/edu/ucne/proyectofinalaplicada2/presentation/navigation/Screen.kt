@@ -13,8 +13,6 @@ sealed class Screen {
     @Serializable
     data object WelcomeScreen: Screen()
 
-    
-
     @Serializable
     data object CarritoListScreen: Screen()
 
@@ -41,6 +39,7 @@ sealed class Screen {
 
     @Serializable
     data object CategoriaListScreen: Screen()
+
     @Serializable
     data object CategoriaCreateScreen: Screen()
 
