@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import edu.ucne.proyectofinalaplicada2.presentation.Home.HomeScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
@@ -21,6 +22,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScr
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenCliente
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
@@ -94,8 +96,19 @@ fun ProyectoFinalAplicada2NavHost(
                 PedidoListScreen(
                     onClickPedido = {
                         navHostController.navigate(Screen.ReviewListScreen)
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    navHostController = navHostController,
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     }
+
                 )
+            }
             composable<Screen.PedidoListScreen>{
                PedidoListScreen(
                    onClickPedido = {
@@ -148,7 +161,7 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.CategoriaListScreen> {
+            composable<Screen.CategoriaListScreen> {}
             composable<Screen.HomeScreen>{
                 HomeScreen(
                     goCategoria = {
@@ -204,6 +217,9 @@ fun ProyectoFinalAplicada2NavHost(
                             drawerState.open()
 
                         }
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
                     }
                 )
             }

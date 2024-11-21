@@ -1,6 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -14,14 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
-import java.util.Date
+import java.util.*
+
 @Composable
 fun ReservacionesScreenCliente(
     viewModel: ReservacionesViewModel = hiltViewModel(),
-
     onNavigateToList: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -39,13 +38,12 @@ private fun ReservacionesBodyScreen(
     onEvent: (ReservacionesUiEvent) -> Unit,
     onNavigateToList: () -> Unit
 ) {
-    // Título y lógica del botón
     val title = if (uiState.reservacionId == 0) "Nueva Reservación" else "Editar Reservación"
     val buttonText = if (uiState.reservacionId == 0) "Guardar" else "Actualizar"
 
     LaunchedEffect(key1 = uiState.success) {
         if (uiState.success) {
-            onNavigateToList() // Navegar a la lista después de guardar/actualizar
+            onNavigateToList()
         }
     }
 
@@ -64,15 +62,14 @@ private fun ReservacionesBodyScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            // Campos de entrada
             ReservacionFields(
                 uiState = uiState,
                 onEvent = onEvent
             )
 
-            // Botón para guardar
             SaveButton(
                 buttonText = buttonText,
+                uiState = uiState,
                 onEvent = onEvent
             )
         }
@@ -89,7 +86,6 @@ private fun ReservacionFields(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // Título de la pantalla
         Text(
             text = "Nueva Reservación",
             color = Color(0xFFFFA500),
@@ -100,7 +96,6 @@ private fun ReservacionFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo para seleccionar la fecha
         DatePickers(
             uiState = uiState,
             onEvent = onEvent
@@ -108,19 +103,19 @@ private fun ReservacionFields(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo para el número de personas
         OutlinedTextField(
             value = uiState.numeroPersonas?.toString() ?: "",
             onValueChange = {
                 val numero = it.toIntOrNull()
-                if (numero != null) {
+                if (numero != null && numero > 0) {
                     onEvent(ReservacionesUiEvent.NumeroPersonasChange(numero))
                 } else {
                     onEvent(ReservacionesUiEvent.NumeroPersonasChange(0))
                 }
             },
             label = { Text("Número de Personas") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -130,11 +125,16 @@ private fun ReservacionFields(
 @Composable
 private fun SaveButton(
     buttonText: String,
+    uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit
 ) {
     Button(
         onClick = {
-            onEvent(ReservacionesUiEvent.Save)
+            if (validateFields(uiState)) {
+                onEvent(ReservacionesUiEvent.Save)
+            } else {
+                Log.e("ValidationError", "Datos inválidos: Fecha o número de personas incorrectos")
+            }
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -153,6 +153,16 @@ private fun DatePickers(
     DatePickerField(
         onEvent = onEvent,
         selectedDate = uiState.fechaReservacion,
-        event = ReservacionesUiEvent.FechaReservacionChange((uiState.fechaReservacion ?: Date()))
+        event = ReservacionesUiEvent.FechaReservacionChange(uiState.fechaReservacion ?: Date())
     )
+}
+
+private fun validateFields(uiState: ReservacionesUiState): Boolean {
+    if (uiState.fechaReservacion == null) {
+        return false
+    }
+    if (uiState.numeroPersonas == null || uiState.numeroPersonas <= 0) {
+        return false
+    }
+    return true
 }

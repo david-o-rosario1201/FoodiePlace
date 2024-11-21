@@ -18,7 +18,7 @@ import java.util.Date
     indices = [Index("usuarioId")]
 )
 data class ReservacionesEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val reservacionId: Int? = 0,
     val usuarioId: Int?,
     val fechaReservacion: Date,
