@@ -108,15 +108,14 @@ fun ProductosListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.productos,
+                items = uiState.productos.distinct(), // Asegura que no haya elementos duplicados
                 content = {
                     if (uiState.productos.isEmpty()) {
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
+                            modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
-                        ){
+                        ) {
                             Image(
                                 painter = painterResource(R.drawable.empty_icon),
                                 contentDescription = "Lista vacía"
@@ -141,7 +140,7 @@ fun ProductosListBodyScreen(
                     scope.launch {
                         isRefreshing = true
                         onEvent(event)
-                        delay(3000L)
+                        delay(3000L) // Simula el retraso de la actualización
                         isRefreshing = false
                     }
                 },
@@ -194,6 +193,7 @@ fun ProductoItem(
                     fontSize = 14.sp,
                     color = if (item.disponibilidad) Color(0xFF4CAF50) else Color(0xFFFF0000)
                 )
+                Text(text = "Tiempo:  ${item.tiempo}", fontSize = 16.sp, color = Color.Gray)
             }
         }
     }
@@ -210,7 +210,8 @@ fun ProductosListScreenPreview() {
             descripcion = "Descripción de producto A",
             precio = BigDecimal("19.99"),
             disponibilidad = true,
-            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png"
+            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png",
+            tiempo = "15 minutos"
         ),
         ProductoEntity(
             productoId = 2,
@@ -219,7 +220,8 @@ fun ProductosListScreenPreview() {
             descripcion = "Descripción de producto B",
             precio = BigDecimal("29.99"),
             disponibilidad = false,
-            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png"
+            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png",
+            tiempo = "10 minutos"
         )
     )
 

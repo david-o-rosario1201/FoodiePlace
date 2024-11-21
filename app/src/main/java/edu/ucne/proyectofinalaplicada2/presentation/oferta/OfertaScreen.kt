@@ -229,6 +229,7 @@ private val sampleUiState = OfertaUiState(
             disponibilidad = true,
             imagen = "",
             descripcion = "Producto 1",
+            tiempo = "10 minutos"
         ),
         ProductoEntity(
             productoId = 2,
@@ -237,7 +238,8 @@ private val sampleUiState = OfertaUiState(
             nombre = "Pepsi",
             categoriaId = 1,
             disponibilidad = true,
-            imagen = ""
+            imagen = "",
+            tiempo = "20 minutos"
         )
     )
 )
