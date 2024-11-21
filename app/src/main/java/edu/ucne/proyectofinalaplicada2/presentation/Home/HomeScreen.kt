@@ -210,7 +210,8 @@ fun HomeBodyScreenPreview() {
                 descripcion = "Descripción del Producto 1",
                 precio = BigDecimal(100),
                 disponibilidad = true,
-                imagen = "https://via.placeholder.com/150"
+                imagen = "https://via.placeholder.com/150",
+                tiempo = "10 minutos"
             ),
                 ProductoEntity(
                     productoId = 2,
@@ -219,7 +220,8 @@ fun HomeBodyScreenPreview() {
                     descripcion = "Descripción del Producto 2",
                     precio = BigDecimal(200),
                     disponibilidad = true,
-                    imagen = "https://via.placeholder.com/150"
+                    imagen = "https://via.placeholder.com/150",
+                    tiempo = "20 minutos"
                 )
             )
         )

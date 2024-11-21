@@ -67,6 +67,8 @@ fun ProductoDto.toProductoEntity(): ProductoEntity {
         descripcion = this.descripcion,
         precio = this.precio,
         disponibilidad = this.disponibilidad,
-        imagen = this.imagen
+        imagen = this.imagen,
+        tiempo = this.tiempo
+
     )
 }

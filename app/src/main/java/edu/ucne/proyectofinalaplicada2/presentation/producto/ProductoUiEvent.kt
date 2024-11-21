@@ -11,6 +11,7 @@ sealed interface ProductoUiEvent {
     data class PrecioChange(val precio: BigDecimal) : ProductoUiEvent
     data class DisponibilidadChange(val disponibilidad: Boolean) : ProductoUiEvent
     data class ImagenChange(val imagen: String) : ProductoUiEvent
+    data class TiempoChange(val tiempo: String) : ProductoUiEvent
     data class SelectedProducto(val productoId: Int) : ProductoUiEvent
     data object Save : ProductoUiEvent
     data object Delete : ProductoUiEvent
