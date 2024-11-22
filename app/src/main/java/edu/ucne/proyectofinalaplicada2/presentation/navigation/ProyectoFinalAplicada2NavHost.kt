@@ -41,7 +41,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.HomeScreen
+            startDestination = Screen.ReservacionListScreen
         ) {
             composable<Screen.WelcomeScreen> {
                 WelcomeScreen(
@@ -247,7 +247,7 @@ fun ProyectoFinalAplicada2NavHost(
             }
             composable<Screen.ReservacionListScreen> {
                 ReservacionesListScreen(
-                    goToAddReservacion = {},
+
                     goToReservacion = {},
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
