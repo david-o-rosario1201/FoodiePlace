@@ -8,7 +8,7 @@ data class CarritoUiState (
     val id: Int? = null,
     val usuarioId: Int = 0,
     val fechaCreacion: String = "",
-    val pagado: Boolean = false,
+    var pagado: Boolean = false,
     val errorMessge: String? = null,
     val success: Boolean = false,
     val isLoading: Boolean = false,
