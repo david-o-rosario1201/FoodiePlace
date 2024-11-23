@@ -8,9 +8,9 @@ import java.math.BigDecimal
 @Entity(tableName = "Pagos")
 data class PagosEntity(
     @PrimaryKey(autoGenerate = true)
-    val pagoId: Int? = 0,
+    val pagoId: Int? = null,
     val pedidoId: Int,
     val tarjetaId : Int,
     val fechaPago: String,
-    val monto: BigDecimal
+    val monto: BigDecimal?
 )
