@@ -108,45 +108,42 @@ fun ProductosListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.productos,
-                content = {
-                    if (uiState.productos.isEmpty()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ){
-                            Image(
-                                painter = painterResource(R.drawable.empty_icon),
-                                contentDescription = "Lista vacía"
-                            )
-                            Text(
-                                text = "Lista vacía",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    } else {
-                        uiState.productos.forEach { producto ->
-                            ProductoItem(
-                                item = producto,
-                                goToProducto = goToProducto
-                            )
-                        }
-                    }
-                },
                 isRefreshing = isRefreshing,
-                onRefresh = { event ->
+                onRefresh = {
                     scope.launch {
                         isRefreshing = true
-                        onEvent(event)
+                        onEvent(ProductoUiEvent.Refresh)
                         delay(3000L)
                         isRefreshing = false
                     }
-                },
-                event = ProductoUiEvent.Refresh
-            )
+                }
+            ){
+                if (uiState.productos.isEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    uiState.productos.forEach { producto ->
+                        ProductoItem(
+                            item = producto,
+                            goToProducto = goToProducto
+                        )
+                    }
+                }
+            }
         }
     }
 }

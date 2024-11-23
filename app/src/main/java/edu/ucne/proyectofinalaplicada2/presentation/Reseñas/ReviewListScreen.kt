@@ -107,45 +107,42 @@ fun ReviewListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.reseñas,
-                content = {
-                    if (uiState.reseñas.isEmpty()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ){
-                            Image(
-                                painter = painterResource(R.drawable.empty_icon),
-                                contentDescription = "Lista vacía"
-                            )
-                            Text(
-                                text = "Lista vacía",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    } else {
-                        uiState.reseñas.forEach { review ->
-                            ReviewItem(
-                                item = review,
-                                usuario = uiState.usuario
-                            )
-                        }
-                    }
-                },
                 isRefreshing = isRefreshing,
-                onRefresh = { event ->
+                onRefresh = {
                     scope.launch {
                         isRefreshing = true
-                        onUiEvent(event)
+                        onUiEvent(ReviewUiEvent.Refresh)
                         delay(3000L)
                         isRefreshing = false
                     }
-                },
-                event = ReviewUiEvent.Refresh
-            )
+                }
+            ){
+                if (uiState.reseñas.isEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    uiState.reseñas.forEach { review ->
+                        ReviewItem(
+                            item = review,
+                            usuario = uiState.usuario
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -96,51 +96,48 @@ private fun PedidoListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.pedidos,
-                content = {
-                    if(uiState.pedidos.isEmpty()){
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ){
-                            Image(
-                                painter = painterResource(R.drawable.empty_icon),
-                                contentDescription = "Lista vacía"
-                            )
-                            Text(
-                                text = "Lista vacía",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier
-                                .padding(20.dp)
-                                .fillMaxSize()
-                        ){
-                            items(uiState.pedidos){
-                                PedidoRow(
-                                    it = it,
-                                    onClickPedido = onClickPedido
-                                )
-                            }
-                        }
-                    }
-                },
                 isRefreshing = isRefreshing,
-                onRefresh = { event ->
+                onRefresh = {
                     scope.launch {
                         isRefreshing = true
-                        onEvent(event)
+                        onEvent(PedidoUiEvent.Refresh)
                         delay(3000L)
                         isRefreshing = false
                     }
-                },
-                event = PedidoUiEvent.Refresh
-            )
+                }
+            ){
+                if(uiState.pedidos.isEmpty()){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .fillMaxSize()
+                    ){
+                        items(uiState.pedidos){
+                            PedidoRow(
+                                it = it,
+                                onClickPedido = onClickPedido
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
