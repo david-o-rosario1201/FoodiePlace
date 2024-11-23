@@ -114,46 +114,43 @@ private fun OfertaListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.ofertas,
-                content = {
-                    if (uiState.ofertas.isEmpty()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ){
-                            Image(
-                                painter = painterResource(R.drawable.empty_icon),
-                                contentDescription = "Lista vacía"
-                            )
-                            Text(
-                                text = "Lista vacía",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    } else {
-                        uiState.ofertas.forEach { oferta ->
-                            OfertaRow(
-                                it = oferta,
-                                productos = uiState.productos,
-                                onClickOferta = onClickOferta
-                            )
-                        }
-                    }
-                },
                 isRefreshing = isRefreshing,
-                onRefresh = { event ->
+                onRefresh = {
                     scope.launch {
                         isRefreshing = true
-                        onEvent(event)
+                        onEvent(OfertaUiEvent.Refresh)
                         delay(3000L)
                         isRefreshing = false
                     }
-                },
-                event = OfertaUiEvent.Refresh
-            )
+                }
+            ){
+                if (uiState.ofertas.isEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    uiState.ofertas.forEach { oferta ->
+                        OfertaRow(
+                            it = oferta,
+                            productos = uiState.productos,
+                            onClickOferta = onClickOferta
+                        )
+                    }
+                }
+            }
         }
     }
 }
