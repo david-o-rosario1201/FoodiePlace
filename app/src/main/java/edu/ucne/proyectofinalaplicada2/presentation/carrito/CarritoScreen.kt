@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -70,18 +71,18 @@ private fun CarritoBodyScreen(
         }
     ){paddingValues ->
         Column(
-            modifier = androidx.compose.ui.Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             verticalArrangement = Arrangement.SpaceBetween
         ){
             Column(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
                 Column(
-                    modifier = androidx.compose.ui.Modifier.padding(20.dp)
+                    modifier = Modifier.padding(20.dp)
                 ) {
                     uiState.carritoDetalle.forEach {
                         CarritoRow(carrito = it)
@@ -90,7 +91,7 @@ private fun CarritoBodyScreen(
             }
 
             Card(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
                 colors = CardDefaults.cardColors(
@@ -100,16 +101,16 @@ private fun CarritoBodyScreen(
                 elevation = CardDefaults.cardElevation(10.dp)
             ) {
                 Column(
-                    modifier = androidx.compose.ui.Modifier.padding(20.dp)
+                    modifier = Modifier.padding(20.dp)
                 ) {
                     TotalRow(label = "Tiempo:", amount = "$${uiState.tiempo}")
-                    TotalRow(label = "Items Total:", amount = "$${uiState.total}")
+                    TotalRow(label = "Subtotal:", amount = "$${uiState.subTotal}")
                     TotalRow(label = "Propina:", amount = "$${uiState.propina}")
                     TotalRow(label = "ITBS:", amount = "$${uiState.impuesto}")
 
-                    Divider(modifier = androidx.compose.ui.Modifier.padding(vertical = 8.dp), color = Color.Black, thickness = 1.dp)
+                    Divider(modifier = Modifier.padding(vertical = 8.dp), color = Color.Black, thickness = 1.dp)
                     Row(
-                        modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -129,7 +130,7 @@ private fun CarritoBodyScreen(
                             containerColor = Color(0xFF738AFF),
                             contentColor = Color.White
                         ),
-                        modifier = androidx.compose.ui.Modifier.padding(top = 8.dp).fillMaxWidth()
+                        modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
                     ) {
                         Text(
                             text = "Pagar $${uiState.total}",
@@ -147,7 +148,7 @@ private fun CarritoBodyScreen(
 @Composable
 fun CarritoRow(carrito: CarritoDetalleEntity) {
     Card(
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp),
         colors = CardDefaults.cardColors(
@@ -157,7 +158,7 @@ fun CarritoRow(carrito: CarritoDetalleEntity) {
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
         Row(
-            modifier = androidx.compose.ui.Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -171,7 +172,7 @@ fun CarritoRow(carrito: CarritoDetalleEntity) {
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = androidx.compose.ui.Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Cantidad: ${carrito.cantidad}",
                     style = MaterialTheme.typography.bodySmall,
@@ -184,6 +185,11 @@ fun CarritoRow(carrito: CarritoDetalleEntity) {
             ) {
                 Text(
                     text = "$${carrito.precioUnitario}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "$${carrito.subTotal}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -217,7 +223,7 @@ fun CarritoScreenPreview() {
                 subTotal = BigDecimal("25.50"),
                 propina = BigDecimal("2.00")
             )
-        )
+        ).toMutableList()
     )
 
     CarritoBodyScreen(
