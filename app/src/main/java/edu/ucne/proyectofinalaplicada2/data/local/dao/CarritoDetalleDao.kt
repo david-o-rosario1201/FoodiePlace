@@ -20,11 +20,12 @@ interface CarritoDetalleDao {
     @Query(
         """
             SELECT * FROM CarritoDetalle
-            WHERE carritoDetalleId=:id
+            WHERE carritoDetalleId=:carritoId
             LIMIT 1
         """
     )
-    suspend fun getCarritoDetalleById(id: Int): CarritoDetalleEntity?
+    fun getCarritoDetalles(carritoId: Int): Flow<List<CarritoDetalleEntity>>
+
 
     @Query(
         """
@@ -33,6 +34,9 @@ interface CarritoDetalleDao {
         """
     )
     suspend fun carritoItem(id: Int): List<CarritoDetalleEntity>
+
+    @Query("DELETE FROM CarritoDetalle WHERE carritoId = :carritoId")
+    suspend fun clearCarrito(carritoId: Int)
 
     @Query(
         """
