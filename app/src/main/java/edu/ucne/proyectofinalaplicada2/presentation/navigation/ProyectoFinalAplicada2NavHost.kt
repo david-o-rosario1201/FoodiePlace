@@ -34,6 +34,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
+import edu.ucne.proyectofinalaplicada2.presentation.usuario.ProfileScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioViewModel
@@ -294,6 +295,28 @@ fun ProyectoFinalAplicada2NavHost(
                     onDrawer = {
                         scope.launch {
                             drawerState.open()
+                        }
+                    }
+                )
+            }
+            composable<Screen.ProfileScreen> {
+                ProfileScreen(
+                    userData = googleAuthUiClient.getSignedInUser(),
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    },
+                    onSignedOut = {
+                        scope.launch {
+                            googleAuthUiClient.signOut()
+                            Toast.makeText(
+                                context,
+                                "Signed out",
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                            navHostController.popBackStack()
                         }
                     }
                 )
