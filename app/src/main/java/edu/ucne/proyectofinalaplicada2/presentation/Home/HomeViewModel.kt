@@ -112,13 +112,13 @@ class HomeViewModel @Inject constructor(
     }
 
 
-    fun loadUsuario(usuarioId: Int) {
+    fun loadUsuario(correo: String) {
         viewModelScope.launch {
-            val usuario = usuarioRepository.getUsuario(
-                usuarioId = usuarioId
+            val usuario = usuarioRepository.getUsuarioId(
+                correo = correo
             )
             _uiState.value = _uiState.value.copy(
-                usuarioNombre = usuario.nombre ?: "Usuario no encontrado"
+                usuarioNombre = usuario?.nombre ?: "Usuario no encontrado"
             )
         }
     }
@@ -141,8 +141,7 @@ data class HomeUiState(
     val errorMessage: String = "",
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
-    val usuarioNombre: String = "",
-
+    val usuarioNombre: String = ""
 )
 
 @Composable

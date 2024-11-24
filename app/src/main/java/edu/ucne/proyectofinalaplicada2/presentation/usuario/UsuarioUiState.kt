@@ -18,5 +18,7 @@ data class UsuarioUiState(
     val errorCargar: String? = "",
     val isSuccess: Boolean = false,
     val isLoading: Boolean = false,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val isSignInSuccessful: Boolean = false,
+    val signInError: String? = null
 )

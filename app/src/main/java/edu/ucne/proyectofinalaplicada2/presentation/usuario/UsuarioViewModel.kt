@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
+import edu.ucne.proyectofinalaplicada2.presentation.sign_in.SignInResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -19,6 +20,25 @@ class UsuarioViewModel @Inject constructor(
 ): ViewModel(){
     private val _uiState = MutableStateFlow(UsuarioUiState())
     val uiState = _uiState.asStateFlow()
+
+    fun onSignInResult(result: SignInResult) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isSignInSuccessful = result.data != null,
+                    signInError = result.errorMessage,
+                    usuarioId = null,
+                    nombre = result.data?.userName,
+                    telefono = result.data?.phoneNumber,
+                    correo = result.data?.email,
+                    contrasena = result.data?.password
+                )
+            }
+            if(usuarioRepository.getUsuarioCorreo(_uiState.value.correo ?: "") == null){
+                guardarUsuario()
+            }
+        }
+    }
 
     private fun getUsuarios(){
         viewModelScope.launch {
@@ -172,11 +192,11 @@ class UsuarioViewModel @Inject constructor(
     }
 
     private fun formatPhoneNumber(phoneNumber: String): String {
-        val cleanedNumber = phoneNumber.filter { it.isDigit() } // Elimina cualquier carácter no numérico
+        val cleanedNumber = phoneNumber.filter { it.isDigit() }
         return if (cleanedNumber.length == 10) {
             "${cleanedNumber.substring(0, 3)}-${cleanedNumber.substring(3, 6)}-${cleanedNumber.substring(6, 10)}"
         } else {
-            phoneNumber // Retorna el número original si no tiene 10 dígitos
+            phoneNumber
         }
     }
 

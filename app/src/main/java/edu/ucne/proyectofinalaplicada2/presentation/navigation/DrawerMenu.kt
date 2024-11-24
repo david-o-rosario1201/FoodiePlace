@@ -26,12 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import edu.ucne.proyectofinalaplicada2.R
+import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import kotlinx.coroutines.launch
 
 @Composable
 fun DrawerMenu(
     drawerState: DrawerState,
     navHostController: NavHostController,
+    userEmail: GoogleAuthUiClient,
     content: @Composable () -> Unit
 ){
     val selectedItem = remember { mutableStateOf("Home") }
@@ -67,7 +69,7 @@ fun DrawerMenu(
                             icon = Icons.Filled.Home,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_pedidos)
                         ) {
-                            handleItemClick(Screen.HomeScreen, it)
+                            handleItemClick(Screen.HomeScreen(userEmail.getSignedInUser()?.email ?: ""), it)
                         }
                         DrawerItem(
                             title = stringResource(R.string.drawer_pedidos),

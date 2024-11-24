@@ -1,10 +1,20 @@
 package edu.ucne.proyectofinalaplicada2.presentation.navigation
 
 import CategoriaListScreen
+import android.app.Activity.RESULT_OK
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,25 +33,30 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
+import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProyectoFinalAplicada2NavHost(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    googleAuthUiClient: GoogleAuthUiClient
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     DrawerMenu(
+        userEmail = googleAuthUiClient,
         drawerState = drawerState,
         navHostController = navHostController
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.HomeScreen
+            startDestination = Screen.UsuarioLoginScreen
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
@@ -51,9 +66,49 @@ fun ProyectoFinalAplicada2NavHost(
                 )
             }
             composable<Screen.UsuarioLoginScreen>{
+                val viewModel: UsuarioViewModel = hiltViewModel()
+                val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+                // sonar-ignore: launcher is used indirectly in onSignUsuarioClick
+                val launcher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.StartIntentSenderForResult(),
+                    onResult = {result ->
+                        if(result.resultCode == RESULT_OK){
+                            scope.launch {
+                                val signInResult =
+                                    googleAuthUiClient.signInWithIntent(
+                                        intent = result.data ?: return@launch
+                                    )
+                                viewModel.onSignInResult(signInResult)
+                                navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: ""))
+                            }
+                        }
+                    }
+                )
+
+                LaunchedEffect(key1 = state.isSignInSuccessful){
+                    if(state.isSignInSuccessful){
+                        Toast.makeText(
+                            context,
+                            "Sign in successful",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
                 UsuarioLoginScreen(
                     onRegisterUsuario = {
                         navHostController.navigate(Screen.UsuarioRegisterScreen)
+                    },
+                    onSignUsuarioClick = {
+                        scope.launch {
+                            val signInIntentSender = googleAuthUiClient.signIn()
+                            launcher.launch(
+                                IntentSenderRequest.Builder(
+                                    signInIntentSender ?: return@launch
+                                ).build()
+                            )
+                        }
                     }
                 )
             }
@@ -144,7 +199,9 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.HomeScreen>{
+            composable<Screen.HomeScreen>{ argumentos ->
+                val correo = argumentos.toRoute<Screen.HomeScreen>().correo
+
                 HomeScreen(
                     goCategoria = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
@@ -152,7 +209,7 @@ fun ProyectoFinalAplicada2NavHost(
                     goProducto = {
                         navHostController.navigate(Screen.PedidoListScreen)
                     },
-                    usuarioId = 1,
+                    correo = correo,
                     navController = navHostController,
                     onDrawer = {
                         scope.launch {
@@ -198,7 +255,7 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.NotificacionScreen> {
                 NotificacionScreen(
                     goToHome = {
-                        navHostController.navigate(Screen.HomeScreen)
+                        navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: ""))
                     }
                 )
             }
