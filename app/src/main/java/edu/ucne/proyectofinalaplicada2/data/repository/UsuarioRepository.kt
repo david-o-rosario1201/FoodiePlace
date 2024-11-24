@@ -16,7 +16,7 @@ class UsuarioRepository @Inject constructor(
 ){
     suspend fun addUsuario(usuarioDto: UsuarioDto){
         remoteDataSource.addUsuario(usuarioDto)
-        usuarioDao.addUsuario(usuarioDto.toEntity())
+        addUsuarioLocal(usuarioDto)
     }
 
     suspend fun getUsuario(usuarioId: Int) = remoteDataSource.getUsuario(usuarioId)
@@ -25,7 +25,7 @@ class UsuarioRepository @Inject constructor(
 
     suspend fun updateUsuario(usuarioId: Int, usuario: UsuarioDto){
         remoteDataSource.updateUsuario(usuarioId, usuario)
-        usuarioDao.addUsuario(usuario.toEntity())
+        addUsuarioLocal(usuario)
     }
 
     suspend fun getUsuarioCorreo(correo: String) = usuarioDao.getUsuarioCorreo(correo)
@@ -61,6 +61,11 @@ class UsuarioRepository @Inject constructor(
             emit(Resource.Error("Error desconocido ${e.message}"))
         }
     }
+
+    private suspend fun addUsuarioLocal(usuarioDto: UsuarioDto){
+        if(usuarioDao.getUsuario(usuarioDto.usuarioId!!) == null)
+            usuarioDao.addUsuario(usuarioDto.toEntity())
+    }
 }
 
 private fun UsuarioDto.toEntity() = UsuarioEntity(
@@ -68,5 +73,6 @@ private fun UsuarioDto.toEntity() = UsuarioEntity(
     nombre = nombre,
     telefono = telefono,
     correo = correo,
-    contrasena = contrasena
+    contrasena = contrasena,
+    fotoPerfil = fotoPerfil
 )
