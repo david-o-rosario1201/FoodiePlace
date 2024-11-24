@@ -6,5 +6,6 @@
     <string name="drawer_aboutus">AboutUs</string>
     <string name="drawer_productos">Productos</string>
     <string name="drawer_Reviews">Reviews</string>
+    <string name="drawer_Profile">Profile</string>
     <string name="web_client_id">6042770831-9tltn4jvljm29st0oj3uggaheoatstc3.apps.googleusercontent.com</string>
 </resources>

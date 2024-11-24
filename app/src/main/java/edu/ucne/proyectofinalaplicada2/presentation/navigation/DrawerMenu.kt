@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -101,6 +102,13 @@ fun DrawerMenu(
                             isSelected = selectedItem.value == stringResource(R.string.drawer_Reviews)
                         ) {
                             handleItemClick(Screen.ReviewListScreen, it)
+                        }
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_Profile),
+                            icon = Icons.Filled.Person,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_Profile)
+                        ) {
+                            handleItemClick(Screen.ProfileScreen, it)
                         }
                     }
                 }
