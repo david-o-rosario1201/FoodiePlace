@@ -14,15 +14,23 @@ class UsuarioRepository @Inject constructor(
     private val remoteDataSource: UsuarioRemoteDataSource,
     private val usuarioDao: UsuarioDao
 ){
-    suspend fun addUsuario(usuarioDto: UsuarioDto) = remoteDataSource.addUsuario(usuarioDto)
+    suspend fun addUsuario(usuarioDto: UsuarioDto){
+        remoteDataSource.addUsuario(usuarioDto)
+        usuarioDao.addUsuario(usuarioDto.toEntity())
+    }
 
     suspend fun getUsuario(usuarioId: Int) = remoteDataSource.getUsuario(usuarioId)
 
     suspend fun deleteUsuario(usuarioId: Int) = remoteDataSource.deleteUsuario(usuarioId)
 
-    suspend fun updateUsuario(usuarioId: Int, usuario: UsuarioDto) = remoteDataSource.updateUsuario(usuarioId,usuario)
+    suspend fun updateUsuario(usuarioId: Int, usuario: UsuarioDto){
+        remoteDataSource.updateUsuario(usuarioId, usuario)
+        usuarioDao.addUsuario(usuario.toEntity())
+    }
 
     suspend fun getUsuarioCorreo(correo: String) = usuarioDao.getUsuarioCorreo(correo)
+
+    suspend fun getUsuarioId(correo: String) = usuarioDao.getUsuarioId(correo)
 
     fun getUsuarios(): Flow<Resource<List<UsuarioEntity>>> = flow {
         try{
