@@ -44,7 +44,7 @@ class GoogleAuthUiClient(
                         userId = uid,
                         userName = displayName,
                         profilePictureUrl = photoUrl?.toString(),
-                        phoneNumber = phoneNumber,
+                        phoneNumber = phoneNumber ?: "000-000-0000",
                         password = "123456",
                         email = email
                     )
@@ -76,7 +76,7 @@ class GoogleAuthUiClient(
             userId = uid,
             userName = displayName,
             profilePictureUrl = photoUrl?.toString(),
-            phoneNumber = phoneNumber,
+            phoneNumber = phoneNumber ?: "000-000-0000",
             password = "123456",
             email = email
         )
