@@ -47,7 +47,7 @@ import java.math.BigDecimal
 
 @Composable
 fun HomeScreen(
-    usuarioId: Int,
+    correo: String,
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
@@ -55,7 +55,7 @@ fun HomeScreen(
     onDrawer: () -> Unit
 ) {
 
-    homeViewModel.loadUsuario(usuarioId)
+    homeViewModel.loadUsuario(correo)
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeBodyScreen(
         uiState = uiState,
