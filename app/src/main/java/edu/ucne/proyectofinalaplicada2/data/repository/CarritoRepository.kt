@@ -17,10 +17,11 @@ class CarritoRepository @Inject constructor(
     private val carritoDao: CarritoDao,
     private val DetalleCarritoDao: CarritoDetalleDao
 ) {
-    suspend fun getCarrito() = carritoRemoteDataSource.getCarrito()
     suspend fun getCarritoById(id: Int) = carritoDao.getCarritoById(id)
-    suspend fun addCarrito(carrito: CarritoDto) = carritoRemoteDataSource.postCarrito(carrito)
+    suspend fun addCarritoApi(carrito: CarritoDto) = carritoRemoteDataSource.postCarrito(carrito)
+    suspend fun saveCarrito(carrito: CarritoEntity) = carritoDao.save(carrito)
     suspend fun deleteCarrito(id: Int) = carritoRemoteDataSource.deleteCarrito(id)
+    suspend fun getLastCarrito() = carritoDao.getLastCarrito()
 
     fun getCarritoss(): Flow<Resource<List<CarritoEntity>>> = flow {
         try{emit(Resource.Loading())
@@ -55,9 +56,19 @@ class CarritoRepository @Inject constructor(
         return DetalleCarritoDao.getCarritoDetalles(carritoId)
     }
 
+
+    suspend fun getLastCarritoByPersona(personaId: Int)= carritoDao.getLastCarritoByUsuario(personaId)
+
     suspend fun clearCarrito(carritoId: Int) {
         DetalleCarritoDao.clearCarrito(carritoId)
     }
+
+    suspend fun CarritoExiste(productoId: Int, carritoId: Int){
+        DetalleCarritoDao.carritoDetalleExit(productoId, carritoId)
+    }
+    suspend fun getCarritoDetalleByProductoId(productoId: Int, carritoId: Int) =
+        DetalleCarritoDao.getCarritoDetalleByProductoId(productoId, carritoId)
+
 }
 private fun CarritoDto.toCarritoEntity() = CarritoEntity(
     carritoId = carritoId,
