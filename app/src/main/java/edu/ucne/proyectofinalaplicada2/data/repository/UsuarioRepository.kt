@@ -22,6 +22,8 @@ class UsuarioRepository @Inject constructor(
 
     suspend fun updateUsuario(usuarioId: Int, usuario: UsuarioDto) = remoteDataSource.updateUsuario(usuarioId,usuario)
 
+    suspend fun getUsuarioCorreo(correo: String) = usuarioDao.getUsuarioCorreo(correo)
+
     fun getUsuarios(): Flow<Resource<List<UsuarioEntity>>> = flow {
         try{
             emit(Resource.Loading())
