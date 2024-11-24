@@ -68,5 +68,6 @@ private fun UsuarioDto.toEntity() = UsuarioEntity(
     nombre = nombre,
     telefono = telefono,
     correo = correo,
-    contrasena = contrasena
+    contrasena = contrasena,
+    fotoPerfil = fotoPerfil
 )

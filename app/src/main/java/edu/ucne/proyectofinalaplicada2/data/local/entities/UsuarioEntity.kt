@@ -10,5 +10,6 @@ data class UsuarioEntity(
     val nombre: String = "",
     val telefono: String = "",
     val correo: String = "",
-    val contrasena: String = ""
+    val contrasena: String = "",
+    val fotoPerfil: String? = null
 )
