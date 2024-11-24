@@ -69,6 +69,7 @@ fun ProyectoFinalAplicada2NavHost(
                 val viewModel: UsuarioViewModel = hiltViewModel()
                 val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+                // sonar-ignore: launcher is used indirectly in onSignUsuarioClick
                 val launcher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.StartIntentSenderForResult(),
                     onResult = {result ->
