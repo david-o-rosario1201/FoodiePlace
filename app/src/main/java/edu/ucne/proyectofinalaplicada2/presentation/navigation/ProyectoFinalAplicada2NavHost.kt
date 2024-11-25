@@ -81,7 +81,9 @@ fun ProyectoFinalAplicada2NavHost(
                                         intent = result.data ?: return@launch
                                     )
                                 viewModel.onSignInResult(signInResult)
-                                navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: ""))
+                                navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: "")){
+                                    popUpTo(Screen.UsuarioLoginScreen) { inclusive = true }
+                                }
                             }
                         }
                     }
@@ -101,7 +103,10 @@ fun ProyectoFinalAplicada2NavHost(
                     onRegisterUsuario = {
                         navHostController.navigate(Screen.UsuarioRegisterScreen)
                     },
-                    onSignUsuarioClick = {
+                    onSignClickNative = {
+                        navHostController.navigate(Screen.HomeScreen(it))
+                    },
+                    onSignClickWithGoogle = {
                         scope.launch {
                             val signInIntentSender = googleAuthUiClient.signIn()
                             launcher.launch(
@@ -117,6 +122,11 @@ fun ProyectoFinalAplicada2NavHost(
                 UsuarioRegisterScreen(
                     onLoginUsuario = {
                         navHostController.navigate(Screen.UsuarioLoginScreen)
+                    },
+                    onNavigateToHome = {
+                        navHostController.navigate(Screen.HomeScreen(it)) {
+                            popUpTo(Screen.UsuarioRegisterScreen) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -299,7 +309,7 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.ProfileScreen> {
+            composable<Screen.ProfileScreen> { argumentos ->
                 ProfileScreen(
                     userData = googleAuthUiClient.getSignedInUser(),
                     onDrawer = {
