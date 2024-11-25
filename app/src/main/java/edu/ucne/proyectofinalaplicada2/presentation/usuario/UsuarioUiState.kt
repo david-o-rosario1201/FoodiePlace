@@ -8,6 +8,7 @@ data class UsuarioUiState(
     val telefono: String? = "",
     val correo: String? = "",
     val contrasena: String? = "",
+    val fotoPerfil: String? = "",
     val confirmarContrasena: String? = "",
     val usuarios: List<UsuarioEntity> = emptyList(),
     val errorNombre: String? = "",

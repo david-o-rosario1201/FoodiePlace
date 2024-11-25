@@ -315,8 +315,7 @@ fun ProyectoFinalAplicada2NavHost(
                                 "Signed out",
                                 Toast.LENGTH_LONG
                             ).show()
-
-                            navHostController.popBackStack()
+                            navHostController.navigate(Screen.UsuarioLoginScreen)
                         }
                     }
                 )

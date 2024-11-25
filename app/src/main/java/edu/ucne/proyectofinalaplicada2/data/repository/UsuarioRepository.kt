@@ -62,10 +62,7 @@ class UsuarioRepository @Inject constructor(
         }
     }
 
-    private suspend fun addUsuarioLocal(usuarioDto: UsuarioDto){
-        if(usuarioDao.getUsuario(usuarioDto.usuarioId!!) == null)
-            usuarioDao.addUsuario(usuarioDto.toEntity())
-    }
+    private suspend fun addUsuarioLocal(usuarioDto: UsuarioDto) = usuarioDao.addUsuario(usuarioDto.toEntity())
 }
 
 private fun UsuarioDto.toEntity() = UsuarioEntity(

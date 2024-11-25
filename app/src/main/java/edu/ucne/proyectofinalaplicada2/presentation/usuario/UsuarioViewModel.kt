@@ -31,7 +31,8 @@ class UsuarioViewModel @Inject constructor(
                     nombre = result.data?.userName,
                     telefono = result.data?.phoneNumber,
                     correo = result.data?.email,
-                    contrasena = result.data?.password
+                    contrasena = result.data?.password,
+                    fotoPerfil = result.data?.profilePictureUrl
                 )
             }
             if(usuarioRepository.getUsuarioCorreo(_uiState.value.correo ?: "") == null){
@@ -180,7 +181,8 @@ class UsuarioViewModel @Inject constructor(
                     nombre = usuario.nombre,
                     telefono = usuario.telefono,
                     correo = usuario.correo,
-                    contrasena = usuario.contrasena
+                    contrasena = usuario.contrasena,
+                    fotoPerfil = usuario.fotoPerfil
                 )
             }
         }
@@ -206,6 +208,7 @@ class UsuarioViewModel @Inject constructor(
         nombre = nombre ?: "",
         contrasena = contrasena ?: "",
         correo = correo ?: "",
-        telefono = telefono ?: ""
+        telefono = telefono ?: "",
+        fotoPerfil = fotoPerfil
     )
 }
