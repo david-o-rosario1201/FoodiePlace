@@ -18,7 +18,7 @@ class ProductoRepository @Inject constructor(
 
     suspend fun addProducto(productoDto: ProductoDto) = productoRemoteDataSource.addProducto(productoDto)
 
-    suspend fun getProducto(productoId: Int) = productoRemoteDataSource.getProductoById(productoId)
+    suspend fun getProducto(productoId: Int) = productoDao.getProductoById(productoId)
 
     suspend fun deleteProducto(productoId: Int) = productoRemoteDataSource.deleteProducto(productoId)
 
