@@ -191,6 +191,7 @@ fun ProductoItem(
                     fontSize = 14.sp,
                     color = if (item.disponibilidad) Color(0xFF4CAF50) else Color(0xFFFF0000)
                 )
+                Text(text = "Tiempo:  ${item.tiempo}", fontSize = 16.sp, color = Color.Gray)
             }
         }
     }
@@ -206,8 +207,8 @@ fun ProductosListScreenPreview() {
             categoriaId = 1,
             descripcion = "Descripción de producto A",
             precio = BigDecimal("19.99"),
-            disponibilidad = true,
-            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png"
+            disponibilidad = true,imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png",
+            tiempo = "15 minutos"
         ),
         ProductoEntity(
             productoId = 2,
@@ -216,7 +217,8 @@ fun ProductosListScreenPreview() {
             descripcion = "Descripción de producto B",
             precio = BigDecimal("29.99"),
             disponibilidad = false,
-            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png"
+            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png",
+            tiempo = "10 minutos"
         )
     )
 

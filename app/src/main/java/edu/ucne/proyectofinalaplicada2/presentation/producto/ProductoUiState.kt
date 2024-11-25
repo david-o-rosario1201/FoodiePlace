@@ -12,6 +12,7 @@ data class ProductoUiState(
     val precio: BigDecimal? = BigDecimal.ZERO,
     val disponibilidad: Boolean? = true,
     val imagen: String? = "",
+    val tiempo: String? = "",
     val productos: List<ProductoEntity> = emptyList(),
     val categoria: List<CategoriaEntity> = emptyList(),
     val errorNombre: String? = "",

@@ -238,7 +238,8 @@ fun ProductoScreen(
                             descripcion = uiState.descripcion ?: "",
                             precio = uiState.precio ?: BigDecimal.ZERO,
                             disponibilidad = uiState.disponibilidad ?: false,
-                            imagen = uiState.imagen ?: ""
+                            imagen = uiState.imagen ?: "",
+                            tiempo = uiState.tiempo ?: ""
                         )
                         onProductoCreado(nuevoProducto)
                         // Restablecer los valores de los campos

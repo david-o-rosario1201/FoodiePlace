@@ -95,6 +95,9 @@ class ProductoViewModel @Inject constructor(
             is ProductoUiEvent.ImagenChange -> {
                 _uiState.update { it.copy(imagen = event.imagen) }
             }
+            is ProductoUiEvent.TiempoChange -> {
+                _uiState.update { it.copy(tiempo = event.tiempo) }
+            }
             is ProductoUiEvent.IsRefreshingChanged -> {
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
             }
@@ -172,6 +175,7 @@ class ProductoViewModel @Inject constructor(
         descripcion = descripcion ?: "",
         precio = precio ?: BigDecimal.ZERO,
         disponibilidad = disponibilidad ?: false,
-        imagen = imagen ?: ""
+        imagen = imagen ?: "",
+        tiempo = tiempo ?:""
     )
 }
