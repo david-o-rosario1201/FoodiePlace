@@ -108,6 +108,13 @@ fun DrawerMenu(
                         ) {
                             handleItemClick(Screen.ProfileScreen, it)
                         }
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_Reservaciones),
+                            icon = Icons.Filled.Info,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_Reservaciones)
+                        ) {
+                            handleItemClick(Screen.ReservacionListScreen, it)
+                        }
                     }
                 }
             }

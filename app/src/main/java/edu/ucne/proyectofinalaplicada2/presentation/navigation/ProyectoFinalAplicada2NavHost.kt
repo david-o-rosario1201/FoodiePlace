@@ -37,6 +37,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosPorCategoriaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenCliente
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.tarjeta.TarjetaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.ProfileScreen
@@ -305,8 +306,9 @@ fun ProyectoFinalAplicada2NavHost(
             }
             composable<Screen.ReservacionListScreen> {
                 ReservacionesListScreen(
-                    goToAddReservacion = {},
-                    goToReservacion = {},
+                    goToReservacion = {
+                        navHostController.navigate(Screen.ReservacionesScreenCliente)  // Navegar a la pantalla de crear reservación
+                    },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
                     },
@@ -317,6 +319,15 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+
+            composable<Screen.ReservacionesScreenCliente> {
+                ReservacionesScreenCliente(
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.ReservacionListScreen)
+                    }
+                )
+            }
+
             composable<Screen.ProfileScreen> {
                 ProfileScreen(
                     onDrawer = {
