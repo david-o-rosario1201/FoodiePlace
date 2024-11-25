@@ -12,6 +12,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,13 +40,15 @@ import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 @Composable
 fun UsuarioRegisterScreen(
     viewModel: UsuarioViewModel = hiltViewModel(),
-    onLoginUsuario: () -> Unit
+    onLoginUsuario: () -> Unit,
+    onNavigateToHome: (String) -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     UsuarioRegisterBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
-        onLoginUsuario = onLoginUsuario
+        onLoginUsuario = onLoginUsuario,
+        onNavigateToHome = onNavigateToHome
     )
 }
 
@@ -53,9 +56,12 @@ fun UsuarioRegisterScreen(
 private fun UsuarioRegisterBodyScreen(
     uiState: UsuarioUiState,
     onEvent: (UsuarioUiEvent) -> Unit,
-    onLoginUsuario: () -> Unit
+    onLoginUsuario: () -> Unit,
+    onNavigateToHome: (String) -> Unit
 ){
     var passwordVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = true) { if(uiState.isSignInSuccessful) onNavigateToHome(uiState.correo ?: "")}
 
     Scaffold { innerPadding ->
         Column(
@@ -190,7 +196,8 @@ private fun UsuarioScreenPreview() {
         UsuarioRegisterBodyScreen(
             uiState = UsuarioUiState(),
             onEvent = {},
-            onLoginUsuario = {}
+            onLoginUsuario = {},
+            onNavigateToHome = {}
         )
     }
 }
