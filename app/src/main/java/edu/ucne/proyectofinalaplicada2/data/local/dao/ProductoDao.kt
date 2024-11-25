@@ -20,7 +20,7 @@ interface ProductoDao {
         
     """
     )
-    suspend fun getProductoById(id: Int): ProductoEntity?
+    suspend fun getProductoById(id: Int): ProductoEntity
 
     @Delete
     suspend fun deleteProducto(producto: ProductoEntity)
