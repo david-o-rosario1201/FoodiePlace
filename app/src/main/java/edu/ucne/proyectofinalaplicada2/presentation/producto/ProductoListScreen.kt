@@ -108,44 +108,42 @@ fun ProductosListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.productos.distinct(), // Asegura que no haya elementos duplicados
-                content = {
-                    if (uiState.productos.isEmpty()) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.empty_icon),
-                                contentDescription = "Lista vacía"
-                            )
-                            Text(
-                                text = "Lista vacía",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    } else {
-                        uiState.productos.forEach { producto ->
-                            ProductoItem(
-                                item = producto,
-                                goToProducto = goToProducto
-                            )
-                        }
-                    }
-                },
                 isRefreshing = isRefreshing,
-                onRefresh = { event ->
+                onRefresh = {
                     scope.launch {
                         isRefreshing = true
-                        onEvent(event)
-                        delay(3000L) // Simula el retraso de la actualización
+                        onEvent(ProductoUiEvent.Refresh)
+                        delay(3000L)
                         isRefreshing = false
                     }
-                },
-                event = ProductoUiEvent.Refresh
-            )
+                }
+            ){
+                if (uiState.productos.isEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    uiState.productos.forEach { producto ->
+                        ProductoItem(
+                            item = producto,
+                            goToProducto = goToProducto
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -209,8 +207,7 @@ fun ProductosListScreenPreview() {
             categoriaId = 1,
             descripcion = "Descripción de producto A",
             precio = BigDecimal("19.99"),
-            disponibilidad = true,
-            imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png",
+            disponibilidad = true,imagen = "android.resource://edu.ucne.proyectofinalaplicada2/drawable/pizza.png",
             tiempo = "15 minutos"
         ),
         ProductoEntity(
