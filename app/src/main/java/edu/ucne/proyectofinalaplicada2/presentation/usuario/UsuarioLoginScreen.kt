@@ -18,7 +18,6 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -202,7 +201,7 @@ private fun UsuarioLoginBodyScreen(
                     painter = painterResource(id = R.drawable.google_icon),
                     contentDescription = "Google Login",
                     modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified // Usa el color original del ícono
+                    tint = Color.Unspecified
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
