@@ -15,6 +15,8 @@ class ReservacionesRepository @Inject constructor(
     private val reservacionesRemoteDataSource: ReservacionesRemoteDataSource,
     private val reservacionesDao: ReservacionesDao
 ) {
+
+    private var reservacionesCargadas: List<ReservacionesEntity> = emptyList()
     suspend fun addReservacion(reservacionesDto: ReservacionesDto) = reservacionesRemoteDataSource.addReservacion(reservacionesDto)
 
     suspend fun getReservacion(reservacionId: Int) = reservacionesRemoteDataSource.getReservacionById(reservacionId)
@@ -48,6 +50,16 @@ class ReservacionesRepository @Inject constructor(
             }
         }
     }
+
+    fun searchReservaciones(query: String): List<ReservacionesEntity> {
+        val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+        return reservacionesCargadas.filter { reservaciones ->
+            reservaciones.fechaReservacion?.let { date ->
+                dateFormat.format(date).contains(query, ignoreCase = true)
+            } == true
+        }
+    }
+
 }
 
 fun ReservacionesDto.toReservacionesEntity(): ReservacionesEntity {

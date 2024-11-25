@@ -132,10 +132,10 @@ class ReservacionesViewModel @Inject constructor(
     fun ReservacionesUiState.toEntity() = ReservacionesDto(
         reservacionId = reservacionId ?: 0,
         usuarioId = usuarioId ?: 0,
-        fechaReservacion = (fechaReservacion ?: Date()),
-        numeroPersonas = numeroPersonas ?: 0,
-        estado = estado ?: "",
-        numeroMesa = numeroMesa ?: 0,
+        fechaReservacion = (fechaReservacion),
+        numeroPersonas = numeroPersonas,
+        estado = estado ,
+        numeroMesa = numeroMesa ,
         horaReservacion = (horaReservacion ?: Date())
     )
 }

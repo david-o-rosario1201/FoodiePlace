@@ -37,7 +37,10 @@ class ProductoViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         _uiState.update {
-                            it.copy(productos = result.data ?: emptyList(), isLoading = false)
+                            it.copy(
+                                productos = result.data ?: emptyList(),
+                                isLoading = false
+                            )
                         }
                     }
                     is Resource.Error -> {
