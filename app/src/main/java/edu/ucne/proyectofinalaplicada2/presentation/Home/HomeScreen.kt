@@ -19,10 +19,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,13 +38,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
+import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiEvent
+import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiState
+import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @Composable
@@ -50,19 +57,28 @@ fun HomeScreen(
     correo: String,
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavHostController,
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    carritoViewModel: CarritoViewModel = hiltViewModel(),
     onDrawer: () -> Unit
 ) {
 
     homeViewModel.loadUsuario(correo)
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val carritoUiState by carritoViewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
     HomeBodyScreen(
         uiState = uiState,
+        carritoUiState =carritoUiState,
         goProducto = goProducto,
         goCategoria = goCategoria,
         onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
         navController = navController,
+        onCarritoEvent = { event ->
+            coroutineScope.launch {
+                carritoViewModel.onUiEvent(event)
+            }
+        },
         onDrawer = onDrawer
     )
 }
@@ -71,10 +87,12 @@ fun HomeScreen(
 @Composable
 fun HomeBodyScreen(
     uiState: HomeUiState,
+    carritoUiState: CarritoUiState,
     goProducto: () -> Unit,
     goCategoria: () -> Unit,
     navController: NavHostController,
     onSearchQueryChanged: (String) -> Unit,
+    onCarritoEvent: (CarritoUiEvent) -> Unit,
     onDrawer: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
@@ -84,18 +102,17 @@ fun HomeBodyScreen(
         topBar = {
             TopBarComponent(
                 title = " ",
-                onClickMenu = onDrawer,
+                onClickMenu = {},
                 onClickNotifications = {},
                 notificationCount = 0
             )
         },
-
         bottomBar = {
             BottomBarNavigation(
                 navController = navController
             )
         }
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -120,7 +137,7 @@ fun HomeBodyScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            // Actualizar el SearchBar con el query
+
             TextField(
                 value = searchQuery,
                 onValueChange = { query ->
@@ -136,7 +153,7 @@ fun HomeBodyScreen(
                         modifier = Modifier.size(30.dp)
                     )
                 },
-                colors = androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors(
+                colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.Gray.copy(alpha = 0.2f),
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.Gray,
@@ -183,14 +200,28 @@ fun HomeBodyScreen(
                         descripcion = "Precio: ${producto.precio}",
                         imagen = producto.imagen,
                         showButton = true,
-                        onButtonClick = { goProducto() },
-                        color = Color.White
+                        onButtonClick = {
+                            val carritoDetalle = CarritoDetalleEntity(
+                                carritoDetalleId = 0,
+                                carritoId = 0,
+                                productoId = producto.productoId,
+                                cantidad = 1,
+                                precioUnitario = producto.precio,
+                                impuesto = BigDecimal.ZERO,
+                                subTotal = producto.precio,
+                                propina = BigDecimal.ZERO
+                            )
+                            onCarritoEvent(CarritoUiEvent.AgregarProducto(carritoDetalle, 1))
+                        },
+                        color = Color.White,
+                        modifier2 = Modifier.padding(vertical = 8.dp)
                     )
                 }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -203,16 +234,16 @@ fun HomeBodyScreenPreview() {
             )
         ),
         productoUiState = ProductoUiState(
-            productos = listOf(ProductoEntity(
-                productoId = 1,
-                nombre = "Producto 1",
-                categoriaId = 1,
-                descripcion = "Descripción del Producto 1",
-                precio = BigDecimal(100),
-                disponibilidad = true,
-                imagen = "https://via.placeholder.com/150",
-                tiempo = "10 minutos"
-            ),
+            productos = listOf(
+                ProductoEntity(
+                    productoId = 1,
+                    nombre = "Producto 1",
+                    categoriaId = 1,
+                    descripcion = "Descripción del Producto 1",
+                    precio = BigDecimal(100),
+                    disponibilidad = true,
+                    imagen = "https://via.placeholder.com/150"
+                ),
                 ProductoEntity(
                     productoId = 2,
                     nombre = "Producto 2",
@@ -220,8 +251,7 @@ fun HomeBodyScreenPreview() {
                     descripcion = "Descripción del Producto 2",
                     precio = BigDecimal(200),
                     disponibilidad = true,
-                    imagen = "https://via.placeholder.com/150",
-                    tiempo = "20 minutos"
+                    imagen = "https://via.placeholder.com/150"
                 )
             )
         )
@@ -229,10 +259,13 @@ fun HomeBodyScreenPreview() {
 
     HomeBodyScreen(
         uiState = uiState,
+        carritoUiState = CarritoUiState(),
         goProducto = {},
         goCategoria = {},
         onSearchQueryChanged = {},
         navController = NavHostController(LocalContext.current),
+        onCarritoEvent = {},
         onDrawer = {}
     )
 }
+
