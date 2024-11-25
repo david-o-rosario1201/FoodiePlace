@@ -54,14 +54,16 @@ import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 fun UsuarioLoginScreen(
     viewModel: UsuarioViewModel = hiltViewModel(),
     onRegisterUsuario: () -> Unit,
-    onSignUsuarioClick: () -> Unit
+    onSignClickNative: (String) -> Unit,
+    onSignClickWithGoogle: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     UsuarioLoginBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         onRegisterUsuario = onRegisterUsuario,
-        onSignUsuarioClick = onSignUsuarioClick
+        onSignClickNative = onSignClickNative,
+        onSignClickWithGoogle = onSignClickWithGoogle
     )
 }
 
@@ -70,13 +72,26 @@ private fun UsuarioLoginBodyScreen(
     uiState: UsuarioUiState,
     onEvent: (UsuarioUiEvent) -> Unit,
     onRegisterUsuario: () -> Unit,
-    onSignUsuarioClick: () -> Unit
+    onSignClickNative: (String) -> Unit,
+    onSignClickWithGoogle: () -> Unit
 ){
     var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
+    LaunchedEffect(key1 = uiState.isSignInSuccessful) {
+        if (uiState.isSignInSuccessful) {
+            Toast.makeText(
+                context,
+                "Inicio de sesión exitoso",
+                Toast.LENGTH_LONG
+            ).show()
+
+            onSignClickNative(uiState.correo ?: "")
+        }
+    }
+
     LaunchedEffect(key1 = uiState.signInError) {
-        uiState.signInError?.let { error->
+        uiState.signInError?.let { error ->
             Toast.makeText(
                 context,
                 error,
@@ -140,7 +155,7 @@ private fun UsuarioLoginBodyScreen(
                     .clickable {}
             )
             Button(
-                onClick = { onEvent(UsuarioUiEvent.Register) },
+                onClick = { onEvent(UsuarioUiEvent.Login) },
                 colors = ButtonColors(
                     containerColor = color_oro,
                     contentColor = color_oro,
@@ -191,7 +206,7 @@ private fun UsuarioLoginBodyScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = onSignUsuarioClick,
+                onClick = onSignClickWithGoogle,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.White
@@ -235,7 +250,8 @@ fun UsuarioLoginScreenPreview() {
             uiState = UsuarioUiState(),
             onEvent = {},
             onRegisterUsuario = {},
-            onSignUsuarioClick = {}
+            onSignClickNative = {},
+            onSignClickWithGoogle = {}
         )
     }
 }
