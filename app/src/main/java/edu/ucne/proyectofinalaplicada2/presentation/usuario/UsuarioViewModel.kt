@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.usuario
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
@@ -20,6 +21,8 @@ class UsuarioViewModel @Inject constructor(
 ): ViewModel(){
     private val _uiState = MutableStateFlow(UsuarioUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     fun onSignInResult(result: SignInResult) {
         viewModelScope.launch {
@@ -108,6 +111,28 @@ class UsuarioViewModel @Inject constructor(
                     if (validarCampos()) {
                         guardarUsuario()
                         _uiState.update { it.copy(isSuccess = true) }
+
+                        auth.createUserWithEmailAndPassword(
+                            _uiState.value.correo ?: "",
+                            _uiState.value.contrasena ?: ""
+                        )
+                            .addOnCompleteListener { task ->
+                                if(task.isSuccessful){
+                                    _uiState.update {
+                                        it.copy(
+                                            isSignInSuccessful = true,
+                                            signInError = null
+                                        )
+                                    }
+                                } else {
+                                    _uiState.update {
+                                        it.copy(
+                                            isSignInSuccessful = false,
+                                            signInError = task.exception?.message ?: "Something went wrong"
+                                        )
+                                    }
+                                }
+                            }
                     }
                 }
             }
@@ -116,7 +141,29 @@ class UsuarioViewModel @Inject constructor(
                     usuarioRepository.deleteUsuario(_uiState.value.usuarioId ?: 0)
                 }
             }
-            UsuarioUiEvent.Login -> TODO()
+            UsuarioUiEvent.Login -> {
+                auth.signInWithEmailAndPassword(
+                    _uiState.value.correo ?: "",
+                    _uiState.value.contrasena ?: ""
+                )
+                    .addOnCompleteListener { task->
+                        if(task.isSuccessful){
+                            _uiState.update {
+                                it.copy(
+                                    isSignInSuccessful = true,
+                                    signInError = null
+                                )
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    isSignInSuccessful = false,
+                                    signInError = task.exception?.message ?: "Something went wrong"
+                                )
+                            }
+                        }
+                    }
+            }
             UsuarioUiEvent.Refresh -> {
                 getUsuarios()
             }
