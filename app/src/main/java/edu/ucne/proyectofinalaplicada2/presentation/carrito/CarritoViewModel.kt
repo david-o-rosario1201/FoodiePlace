@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
+import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.CarritoDetalleDto
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.CarritoDto
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
 import edu.ucne.proyectofinalaplicada2.data.repository.CarritoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.PagosRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,26 +23,17 @@ import java.math.BigDecimal
 @HiltViewModel
 class CarritoViewModel @Inject constructor(
     private val repository: CarritoRepository,
-    private val pagoRepository: PagosRepository
+    private val pagoRepository: PagosRepository,
+    private val productoRepository: ProductoRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CarritoUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        getCarritos()
         calcularTotales()
-        val carritoId = _uiState.value.id ?: 0
-        getCarritoDetalles(carritoId)
-        //getCarrito(carritoId)
+        getCarritoDetalles(1)
     }
-
-    private fun getCarrito(id: Int) {
-        viewModelScope.launch {
-            repository.getCarritoById(id)
-        }
-    }
-
 
     private fun getCarritos() {
         viewModelScope.launch {
@@ -105,50 +99,56 @@ class CarritoViewModel @Inject constructor(
         }
     }
 
-    fun agregarProducto(productoId: Int, cantidad: Int, precioUnitario: BigDecimal) {
-        val carritoId = _uiState.value.id ?: 0
-        val nuevoDetalle = CarritoDetalleEntity(
-            carritoDetalleId = 0,
-            carritoId = carritoId,
-            productoId = productoId,
-            cantidad = cantidad,
-            precioUnitario = precioUnitario,
-            impuesto = BigDecimal.ZERO,
-            subTotal = cantidad.toBigDecimal() * precioUnitario,
-            propina = BigDecimal.ZERO
-        )
-
-        // Trabajar con una copia de la lista actual
-        val nuevaLista = _uiState.value.carritoDetalle.toMutableList()
-
-        // Buscar si el producto ya existe en la lista
-        val detalleExistenteIndex = nuevaLista.indexOfFirst { it.productoId == productoId }
-
-        if (detalleExistenteIndex != -1) {
-            // Si existe, actualizar la cantidad y el subtotal
-            val detalleExistente = nuevaLista[detalleExistenteIndex]
-            nuevaLista[detalleExistenteIndex] = detalleExistente.copy(
-                cantidad = detalleExistente.cantidad + cantidad,
-                subTotal = (detalleExistente.cantidad + cantidad).toBigDecimal() * precioUnitario
-            )
-        } else {
-            // Si no existe, agregar el nuevo detalle
-            nuevaLista.add(nuevoDetalle)
+    fun agregarProductoNoSuspendido(item: CarritoDetalleEntity, cantidad: Int) {
+        viewModelScope.launch {
+            agregarProducto(item, cantidad)
         }
-
-        // Actualizar el estado con la nueva lista
-        _uiState.update { it.copy(carritoDetalle = nuevaLista) }
-
-        // Guardar en la base de datos
-        addCarritoDetalle(nuevoDetalle)
-
-        // Recalcular los totales
-        calcularTotales()
     }
 
-
-
-
+    suspend fun agregarProducto(carridetalle: CarritoDetalleEntity, cantidad: Int) {
+        var CarritoAnterior = repository.getLastCarrito()
+        if (CarritoAnterior == null) {
+            repository.saveCarrito(
+                CarritoEntity(
+                    usuarioId = 1,
+                    fechaCreacion = System.currentTimeMillis().toString(),
+                    pagado = false,
+                    carritoDetalle = mutableListOf()
+                )
+            )
+            CarritoAnterior = repository.getLastCarrito()
+        }
+        val ExisteCarrito = repository.CarritoExiste(carridetalle.productoId ?: 0, CarritoAnterior?.carritoId ?: 0)
+        val producto  = productoRepository.getProducto(carridetalle.productoId ?:0)
+        if (ExisteCarrito.equals(false)) {
+            repository.addCarritoDetalle(
+                CarritoDetalleEntity(
+                    carritoId = CarritoAnterior?.carritoId ?: 0,
+                    productoId = carridetalle.productoId ?: 0,
+                    cantidad = cantidad,
+                    precioUnitario = producto.precio,
+                    impuesto = BigDecimal.ZERO,
+                    subTotal = cantidad.toBigDecimal() * producto.precio,
+                    propina = BigDecimal.ZERO
+                )
+            )
+        }else{
+            val carriDetalleRepetido = repository.getCarritoDetalleByProductoId(carridetalle.productoId ?: 0, CarritoAnterior?.carritoId ?: 0)
+            val cantidad =( carriDetalleRepetido?.cantidad ?: 0) + (carridetalle.cantidad!!)
+            repository.addCarritoDetalle(
+                CarritoDetalleEntity(
+                    carritoDetalleId = carriDetalleRepetido?.carritoDetalleId,
+                    carritoId = CarritoAnterior?.carritoId ?: 0,
+                    productoId = carridetalle.productoId ?: 0,
+                    cantidad = cantidad,
+                    precioUnitario = producto.precio,
+                    impuesto = BigDecimal.ZERO,
+                    subTotal = cantidad.toBigDecimal() * producto.precio,
+                    propina = BigDecimal.ZERO
+                )
+            )
+        }
+    }
 
     fun limpiarCarrito() {
         _uiState.update {
@@ -159,12 +159,6 @@ class CarritoViewModel @Inject constructor(
                 propina = BigDecimal.ZERO,
                 total = BigDecimal.ZERO
             )
-        }
-    }
-
-    fun addCarritoDetalle(detalle: CarritoDetalleEntity) {
-        viewModelScope.launch {
-            repository.addCarritoDetalle(detalle)
         }
     }
 
@@ -180,14 +174,29 @@ class CarritoViewModel @Inject constructor(
     }
 
 
-    fun onUiEvent(event: CarritoUiEvent) {
+    suspend fun onUiEvent(event: CarritoUiEvent) {
         when (event) {
-            CarritoUiEvent.Save -> saveCarrito()
-            CarritoUiEvent.Delete -> deleteCarrito()
-            is CarritoUiEvent.IsRefreshingChanged -> _uiState.update {
-                it.copy(isRefreshing = event.isRefreshing)
+            CarritoUiEvent.SaveCarrito -> {
+                saveCarrito()
             }
-            CarritoUiEvent.Refresh -> getCarritos()
+            CarritoUiEvent.DeleteCarrito -> {
+                deleteCarrito()
+            }
+            is CarritoUiEvent.IsRefreshingChanged -> {
+                _uiState.update {
+                    it.copy(isRefreshing = event.isRefreshing)
+                }
+            }
+            CarritoUiEvent.Refresh -> {
+                getCarritos()
+            }
+
+            is CarritoUiEvent.AgregarProducto -> agregarProducto(event.producto, event.cantidad)
+            is CarritoUiEvent.EliminarProducto -> deleteCarrito()
+            CarritoUiEvent.LimpiarCarrito -> limpiarCarrito()
+            CarritoUiEvent.LoadCarritoDetalles -> TODO()
+            CarritoUiEvent.LoadCarritos -> TODO()
+            is CarritoUiEvent.RealizarPago -> realizarPago(event.tarjetaId, event.pedidoId)
         }
     }
 
@@ -201,7 +210,7 @@ class CarritoViewModel @Inject constructor(
                     pagado = _uiState.value.pagado,
                     carritoDetalle = _uiState.value.carritoDetalle.map { it.toDto() }
                 )
-                repository.addCarrito(carritoDto)
+                repository.addCarritoApi(carritoDto)
                 _uiState.update { it.copy(success = true) }
                 limpiarCarrito()
             } catch (e: Exception) {
@@ -231,11 +240,10 @@ class CarritoViewModel @Inject constructor(
     )
 
     private fun calcularTotales() {
-        val total = _uiState.value.carritoDetalle.sumOf { it.subTotal }
+        val total = _uiState.value.carritoDetalle.sumOf { it.subTotal ?: BigDecimal.ZERO }
         val impuesto = total * BigDecimal.valueOf(0.18)  // Por ejemplo, un 18% de impuesto
         val propina = total * BigDecimal.valueOf(0.10)   // Por ejemplo, un 10% de propina
 
-        // Actualizar el estado con los totales recalculados
         _uiState.update {
             it.copy(
                 total = total + impuesto + propina,
