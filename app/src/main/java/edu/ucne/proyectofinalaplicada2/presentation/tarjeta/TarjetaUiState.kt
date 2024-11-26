@@ -12,5 +12,6 @@ data class TarjetaUiState(
     val tarjetas: List<TarjetaDto> = emptyList(),
     val isLoading: Boolean = false,
     val success: Boolean = false,
+    val errorMessge: String = "",
     val isRefreshing: Boolean = false
 )
