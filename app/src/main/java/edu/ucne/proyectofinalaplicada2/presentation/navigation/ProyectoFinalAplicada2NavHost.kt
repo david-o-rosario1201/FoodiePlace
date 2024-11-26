@@ -23,6 +23,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.Home.HomeScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.Reseñas.ReviewListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.aboutus.AboutUsScreen
+import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaCreateScreen
 import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionScreen
 import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaListScreen
@@ -57,7 +58,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.UsuarioLoginScreen
+            startDestination = Screen.HomeScreen("miguel@gmail.com")
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
@@ -156,6 +157,11 @@ fun ProyectoFinalAplicada2NavHost(
                     goToOfertaList = {
                         navHostController.navigate(Screen.OfertaListScreen)
                     }
+                )
+            }
+            composable<Screen.CarritoListScreen>{
+                CarritoScreen(
+                    navController = navHostController,
                 )
             }
             composable<Screen.PedidoListScreen>{
