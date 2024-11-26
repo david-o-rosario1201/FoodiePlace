@@ -1,6 +1,7 @@
 package edu.ucne.proyectofinalaplicada2.presentation.carrito
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,16 +9,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,28 +44,37 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.TotalRow
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @Composable
 fun CarritoScreen(
     viewModel: CarritoViewModel = hiltViewModel(),
     navController: NavHostController,
-    goToCarritoList: () -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+
     CarritoBodyScreen(
         uiState = uiState,
-        goToPago = goToCarritoList,
-        navController = navController
+        navController = navController,
+        onCarritoEvent = { event ->
+            coroutineScope.launch {
+                viewModel.onUiEvent(event)
+            }
+        }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CarritoBodyScreen(
     uiState: CarritoUiState,
-    goToPago: () -> Unit,
     navController: NavHostController,
+    onCarritoEvent: (CarritoUiEvent) -> Unit
 ) {
+    var isModalVisible by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopBarComponent(
@@ -125,7 +145,7 @@ private fun CarritoBodyScreen(
                         )
                     }
                     Button(
-                        onClick = {goToPago()},
+                        onClick = {isModalVisible = true },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF738AFF),
                             contentColor = Color.White
@@ -142,8 +162,89 @@ private fun CarritoBodyScreen(
                 }
             }
         }
+
+        if (isModalVisible) {
+            ModalBottomSheet(
+                onDismissRequest = { isModalVisible = false },
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            ) {
+                CardSelectionContent(
+                    uiState = uiState,
+                    onCardSelected = { tarjetaId ->
+                        onCarritoEvent(CarritoUiEvent.RealizarPago(tarjetaId, uiState.id ?: 0))
+                        if (uiState.success) {
+                            onCarritoEvent(CarritoUiEvent.LimpiarCarrito)
+                            isModalVisible = false
+                        }
+                    }
+                )
+            }
+        }
+
+
+
     }
 }
+
+@Composable
+fun CardSelectionContent(
+    uiState: CarritoUiState,
+    onCardSelected: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Selecciona una tarjeta",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val tarjetas = uiState.tarjetas
+
+        if (tarjetas.isEmpty()) {
+            Text("No se encontraron tarjetas disponibles.")
+        } else {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                tarjetas.forEachIndexed { index, tarjeta ->
+                    item {
+                        Card(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(120.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFE7E7E7)),
+                            onClick = {
+                                onCardSelected(tarjeta.tarjetaId)
+                            }
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "****${tarjeta.numeroTarjeta?.takeLast(4)}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
 
 @Composable
 fun CarritoRow(carrito: CarritoDetalleEntity) {
@@ -228,7 +329,7 @@ fun CarritoScreenPreview() {
 
     CarritoBodyScreen(
         uiState = uiState,
-        goToPago = {},
-        navController = NavHostController(LocalContext.current)
+        navController = NavHostController(LocalContext.current),
+        onCarritoEvent = {}
     )
 }
