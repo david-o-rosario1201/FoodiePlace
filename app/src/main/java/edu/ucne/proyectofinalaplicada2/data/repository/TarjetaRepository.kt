@@ -62,6 +62,7 @@ fun TarjetaDto.toTarjetaEntity(): TarjetaEntity {
         tipoTarjeta = this.tipoTarjeta,
         numeroTarjeta = this.numeroTarjeta,
         fechaExpiracion = this.fechaExpiracion,
-        cvv = this.cvv
+        cvv = this.cvv,
+        nombreTitular = this.nombreTitular
     )
 }

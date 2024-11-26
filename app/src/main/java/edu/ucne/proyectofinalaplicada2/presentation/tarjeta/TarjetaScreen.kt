@@ -63,16 +63,19 @@ fun TarjetaBodyScreen(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) {Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                elevation = CardDefaults.cardElevation(5.dp)
-            ){}
+            ) {
+                CustomTextField(
+                    opcion = OpcionTextField(
+                        label = "Nombre Titular",
+                        value = uiState.nombreTitular,
+                        error = uiState.errorMessge,
+                        maxLines = 5
+                    ),
+                    onValueChange = { onEvent(TarjetaUiEvent.NombreTitularChanged(it)) },
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Text,
+                    onImeAction = {}
+                )
                 CustomTextField(
                     opcion = OpcionTextField(
                         label = "Tipo Tarjeta",
@@ -121,6 +124,7 @@ fun TarjetaBodyScreen(
                     keyboardType = KeyboardType.Text,
                     onImeAction = {}
                 )
+
 
 
 
