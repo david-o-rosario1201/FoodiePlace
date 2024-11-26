@@ -22,6 +22,14 @@ interface ProductoDao {
     )
     suspend fun getProductoById(id: Int): ProductoEntity
 
+    @Query("""
+        SELECT * 
+        FROM Productos
+        WHERE categoriaId=:id        
+    """
+    )
+    suspend fun getProductoByCategoriaId(id: Int): ProductoEntity
+
     @Delete
     suspend fun deleteProducto(producto: ProductoEntity)
 
