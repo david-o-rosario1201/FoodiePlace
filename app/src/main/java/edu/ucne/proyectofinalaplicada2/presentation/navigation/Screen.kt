@@ -75,4 +75,5 @@ sealed class Screen {
 
     @Serializable
     data object TarjetaScreen: Screen()
-}
+
+    }
