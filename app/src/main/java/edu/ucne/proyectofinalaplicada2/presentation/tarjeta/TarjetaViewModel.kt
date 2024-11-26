@@ -41,7 +41,8 @@ class TarjetaViewModel @Inject constructor(
                                 tipoTarjeta = entity.tipoTarjeta,
                                 numeroTarjeta = entity.numeroTarjeta,
                                 fechaExpiracion = entity.fechaExpiracion,
-                                cvv = entity.cvv
+                                cvv = entity.cvv,
+                                nombreTitular = entity.nombreTitular
                             )
                         } ?: emptyList()
 
@@ -63,7 +64,8 @@ class TarjetaViewModel @Inject constructor(
                                         tipoTarjeta = entity.tipoTarjeta,
                                         numeroTarjeta = entity.numeroTarjeta,
                                         fechaExpiracion = entity.fechaExpiracion,
-                                        cvv = entity.cvv
+                                        cvv = entity.cvv,
+                                        nombreTitular = entity.nombreTitular
                                     )
                                 } ?: emptyList(),
                                 isLoading = false
@@ -91,6 +93,9 @@ class TarjetaViewModel @Inject constructor(
             }
             is TarjetaUiEvent.CvvChanged -> {
                 _uiState.update { it.copy(cvv = event.cvv) }
+            }
+            is TarjetaUiEvent.NombreTitularChanged -> {
+                _uiState.update { it.copy(nombreTitular = event.nombreTitular) }
             }
             is TarjetaUiEvent.IsRefreshingChanged -> {
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
@@ -140,6 +145,7 @@ class TarjetaViewModel @Inject constructor(
         tipoTarjeta = tipoTarjeta ?: "",
         numeroTarjeta = numeroTarjeta ?: "",
         fechaExpiracion = fechaExpiracion ?: "",
-        cvv = cvv ?: ""
+        cvv = cvv ?: "",
+        nombreTitular = nombreTitular ?: ""
     )
 }
