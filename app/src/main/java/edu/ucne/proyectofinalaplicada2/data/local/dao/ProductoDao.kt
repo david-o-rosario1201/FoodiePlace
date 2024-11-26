@@ -25,10 +25,10 @@ interface ProductoDao {
     @Query("""
         SELECT * 
         FROM Productos
-        WHERE categoriaId=:id        
+        WHERE categoriaId=:categoriaId        
     """
     )
-    suspend fun getProductoByCategoriaId(id: Int): ProductoEntity
+    suspend fun getProductoByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>>
 
     @Delete
     suspend fun deleteProducto(producto: ProductoEntity)
