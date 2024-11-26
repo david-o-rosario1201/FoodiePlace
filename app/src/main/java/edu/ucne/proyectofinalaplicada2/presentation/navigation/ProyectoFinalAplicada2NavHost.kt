@@ -34,6 +34,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
+import edu.ucne.proyectofinalaplicada2.presentation.tarjeta.TarjetaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.ProfileScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioLoginScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioRegisterScreen
@@ -330,6 +331,15 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+
+            composable<Screen.TarjetaScreen> {
+                TarjetaScreen(
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.TarjetaScreen)
+                    }
+                )
+            }
+
         }
     }
 }
