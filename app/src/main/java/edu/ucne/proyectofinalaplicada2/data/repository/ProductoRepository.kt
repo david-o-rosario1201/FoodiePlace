@@ -1,5 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
+import androidx.lifecycle.viewModelScope
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ProductoRemoteDataSource
@@ -7,6 +8,7 @@ import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -21,6 +23,11 @@ class ProductoRepository @Inject constructor(
     suspend fun getProducto(productoId: Int) = productoDao.getProductoById(productoId)
 
     suspend fun deleteProducto(productoId: Int) = productoRemoteDataSource.deleteProducto(productoId)
+
+    suspend fun getProductosByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>> {
+        return productoDao.getProductoByCategoriaId(categoriaId)
+    }
+
 
     suspend fun updateProducto(productoId: Int, productoDto: ProductoDto) = productoRemoteDataSource.updateProducto(productoId, productoDto)
 
@@ -49,6 +56,7 @@ class ProductoRepository @Inject constructor(
             }
         }
     }
+
 
     fun searchProductos(query: String): List<ProductoEntity> {
         return productosCargados.filter { producto ->
