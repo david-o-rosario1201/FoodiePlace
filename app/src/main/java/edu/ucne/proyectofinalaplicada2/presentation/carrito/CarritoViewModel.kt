@@ -12,6 +12,7 @@ import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
 import edu.ucne.proyectofinalaplicada2.data.repository.CarritoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.PagosRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.TarjetaRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +26,7 @@ class CarritoViewModel @Inject constructor(
     private val repository: CarritoRepository,
     private val pagoRepository: PagosRepository,
     private val productoRepository: ProductoRepository,
+    private val tarjetaRepository: TarjetaRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CarritoUiState())
@@ -33,6 +35,8 @@ class CarritoViewModel @Inject constructor(
     init {
         calcularTotales()
         getCarritoDetalles(1)
+        getTarjetas()
+        getTarjeta(1)
     }
 
     private fun getCarritos() {
@@ -99,11 +103,42 @@ class CarritoViewModel @Inject constructor(
         }
     }
 
-    fun agregarProductoNoSuspendido(item: CarritoDetalleEntity, cantidad: Int) {
+    fun getTarjeta(tarjetaId: Int){
         viewModelScope.launch {
-            agregarProducto(item, cantidad)
+            tarjetaRepository.getTarjeta(tarjetaId)
         }
     }
+
+    fun getTarjetas() {
+        viewModelScope.launch {
+            tarjetaRepository.getTarjetas().collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                tarjetas = result.data ?: mutableListOf(),
+                                isLoading = false
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessge = result.message ?: "Error al cargar las tarjetas.",
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     suspend fun agregarProducto(carridetalle: CarritoDetalleEntity, cantidad: Int) {
         var CarritoAnterior = repository.getLastCarrito()
@@ -241,8 +276,8 @@ class CarritoViewModel @Inject constructor(
 
     private fun calcularTotales() {
         val total = _uiState.value.carritoDetalle.sumOf { it.subTotal ?: BigDecimal.ZERO }
-        val impuesto = total * BigDecimal.valueOf(0.18)  // Por ejemplo, un 18% de impuesto
-        val propina = total * BigDecimal.valueOf(0.10)   // Por ejemplo, un 10% de propina
+        val impuesto = total * BigDecimal.valueOf(0.18)
+        val propina = total * BigDecimal.valueOf(0.10)
 
         _uiState.update {
             it.copy(
