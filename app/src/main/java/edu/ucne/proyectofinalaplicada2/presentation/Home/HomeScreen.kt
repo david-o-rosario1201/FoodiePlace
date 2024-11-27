@@ -55,22 +55,17 @@ import java.math.BigDecimal
 @Composable
 fun HomeScreen(
     correo: String,
-    goProducto: () -> Unit,
     goCategoria: () -> Unit,
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
     carritoViewModel: CarritoViewModel = hiltViewModel(),
-    onDrawer: () -> Unit
 ) {
 
     homeViewModel.loadUsuario(correo)
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val carritoUiState by carritoViewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     HomeBodyScreen(
         uiState = uiState,
-        carritoUiState =carritoUiState,
-        goProducto = goProducto,
         goCategoria = goCategoria,
         onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
         navController = navController,
@@ -79,7 +74,6 @@ fun HomeScreen(
                 carritoViewModel.onUiEvent(event)
             }
         },
-        onDrawer = onDrawer
     )
 }
 
@@ -87,13 +81,10 @@ fun HomeScreen(
 @Composable
 fun HomeBodyScreen(
     uiState: HomeUiState,
-    carritoUiState: CarritoUiState,
-    goProducto: () -> Unit,
     goCategoria: () -> Unit,
     navController: NavHostController,
     onSearchQueryChanged: (String) -> Unit,
     onCarritoEvent: (CarritoUiEvent) -> Unit,
-    onDrawer: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
 
@@ -261,13 +252,10 @@ fun HomeBodyScreenPreview() {
 
     HomeBodyScreen(
         uiState = uiState,
-        carritoUiState = CarritoUiState(),
-        goProducto = {},
         goCategoria = {},
         onSearchQueryChanged = {},
         navController = NavHostController(LocalContext.current),
         onCarritoEvent = {},
-        onDrawer = {}
     )
 }
 

@@ -32,7 +32,9 @@ import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosPorCategoriaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.ProfileScreen
@@ -221,18 +223,10 @@ fun ProyectoFinalAplicada2NavHost(
 
                 HomeScreen(
                     goCategoria = {
-                        navHostController.navigate(Screen.UsuarioLoginScreen)
-                    },
-                    goProducto = {
-                        navHostController.navigate(Screen.PedidoListScreen)
+                        navHostController.navigate(Screen.ProductosPorCategoriaScreen)
                     },
                     correo = correo,
                     navController = navHostController,
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
                 )
             }
             composable<Screen.CategoriaListScreen>{
@@ -336,6 +330,19 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
+
+            composable<Screen.ProductosPorCategoriaScreen> {
+                val viewModel = hiltViewModel<ProductoViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                ProductosPorCategoriaScreen(
+                    uiState = uiState,
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.CategoriaListScreen)
+                    }
+                )
+            }
+
         }
     }
 }
