@@ -13,7 +13,6 @@ import edu.ucne.proyectofinalaplicada2.data.repository.CarritoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.PagosRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.TarjetaRepository
-import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -141,8 +140,8 @@ class CarritoViewModel @Inject constructor(
 
 
     suspend fun agregarProducto(carridetalle: CarritoDetalleEntity, cantidad: Int) {
-        var CarritoAnterior = repository.getLastCarrito()
-        if (CarritoAnterior == null) {
+        var carritoAnterior = repository.getLastCarrito()
+        if (carritoAnterior == null) {
             repository.saveCarrito(
                 CarritoEntity(
                     usuarioId = 1,
@@ -151,14 +150,14 @@ class CarritoViewModel @Inject constructor(
                     carritoDetalle = mutableListOf()
                 )
             )
-            CarritoAnterior = repository.getLastCarrito()
+            carritoAnterior = repository.getLastCarrito()
         }
-        val ExisteCarrito = repository.CarritoExiste(carridetalle.productoId ?: 0, CarritoAnterior?.carritoId ?: 0)
+        val existeCarrito = repository.CarritoExiste(carridetalle.productoId ?: 0, carritoAnterior?.carritoId ?: 0)
         val producto  = productoRepository.getProducto(carridetalle.productoId ?:0)
-        if (ExisteCarrito.equals(false)) {
+        if (existeCarrito.equals(false)) {
             repository.addCarritoDetalle(
                 CarritoDetalleEntity(
-                    carritoId = CarritoAnterior?.carritoId ?: 0,
+                    carritoId = carritoAnterior?.carritoId ?: 0,
                     productoId = carridetalle.productoId ?: 0,
                     cantidad = cantidad,
                     precioUnitario = producto.precio,
@@ -168,12 +167,12 @@ class CarritoViewModel @Inject constructor(
                 )
             )
         }else{
-            val carriDetalleRepetido = repository.getCarritoDetalleByProductoId(carridetalle.productoId ?: 0, CarritoAnterior?.carritoId ?: 0)
+            val carriDetalleRepetido = repository.getCarritoDetalleByProductoId(carridetalle.productoId ?: 0, carritoAnterior?.carritoId ?: 0)
             val cantidad =( carriDetalleRepetido?.cantidad ?: 0) + (carridetalle.cantidad!!)
             repository.addCarritoDetalle(
                 CarritoDetalleEntity(
                     carritoDetalleId = carriDetalleRepetido?.carritoDetalleId,
-                    carritoId = CarritoAnterior?.carritoId ?: 0,
+                    carritoId = carritoAnterior?.carritoId ?: 0,
                     productoId = carridetalle.productoId ?: 0,
                     cantidad = cantidad,
                     precioUnitario = producto.precio,
