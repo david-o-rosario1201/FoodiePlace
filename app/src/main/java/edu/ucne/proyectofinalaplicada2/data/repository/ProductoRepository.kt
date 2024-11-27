@@ -24,7 +24,7 @@ class ProductoRepository @Inject constructor(
 
     suspend fun deleteProducto(productoId: Int) = productoRemoteDataSource.deleteProducto(productoId)
 
-    suspend fun getProductosByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>> {
+    fun getProductosByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>> {
         return productoDao.getProductoByCategoriaId(categoriaId)
     }
 
