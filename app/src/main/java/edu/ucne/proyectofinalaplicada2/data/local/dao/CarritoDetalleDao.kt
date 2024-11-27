@@ -20,19 +20,14 @@ interface CarritoDetalleDao {
     @Query(
         """
             SELECT * FROM CarritoDetalle
-            WHERE carritoDetalleId=:id
-            LIMIT 1
+            WHERE carritoId=:carritoId
         """
     )
-    suspend fun getCarritoDetalleById(id: Int): CarritoDetalleEntity?
+    fun getCarritoDetalles(carritoId: Int): Flow<List<CarritoDetalleEntity>>
 
-    @Query(
-        """
-            SELECT * FROM CarritoDetalle
-            WHERE carritoId=:id
-        """
-    )
-    suspend fun carritoItem(id: Int): List<CarritoDetalleEntity>
+
+    @Query("DELETE FROM CarritoDetalle WHERE carritoId = :carritoId")
+    suspend fun clearCarrito(carritoId: Int)
 
     @Query(
         """
@@ -52,24 +47,5 @@ interface CarritoDetalleDao {
         """
     )
     suspend fun carritoDetalleExit(productoId: Int, carritoId: Int): Boolean
-
-    @Query(
-        """
-        SELECT SUM((cantidad * precioUnitario) + impuesto + propina) AS total
-        FROM CarritoDetalle
-        WHERE carritoId = :carritoId
-    """
-    )
-    suspend fun getTotalCarrito(carritoId: Int): BigDecimal?
-
-    @Query(
-        """
-        SELECT SUM(cantidad * precioUnitario) AS subTotal
-        FROM CarritoDetalle
-        WHERE carritoId = :carritoId
-    """
-    )
-    suspend fun getSubTotalCarrito(carritoId: Int): BigDecimal?
-
 
 }

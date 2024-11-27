@@ -72,6 +72,17 @@ class ProductoViewModel @Inject constructor(
         }
     }
 
+    fun getProductosByCategoriaId(categoriaId: Int) {
+        viewModelScope.launch {
+            productoRepository.getProductosByCategoriaId(categoriaId).collect { productos ->
+                _uiState.value = _uiState.value.copy(
+                    productos = productos,
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun onEvent(event: ProductoUiEvent) {
         when (event) {
             is ProductoUiEvent.ProductoIdChange -> {

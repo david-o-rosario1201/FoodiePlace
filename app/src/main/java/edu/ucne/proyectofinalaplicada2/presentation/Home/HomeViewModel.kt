@@ -152,11 +152,9 @@ fun CardItem(
     color: Color = MaterialTheme.colorScheme.primary,
     showButton: Boolean = false,
     buttonText: String = "Add",
-    onButtonClick: (() -> Unit)? = null
+    onButtonClick: (() -> Unit)? = null,
 ) {
     Card(
-        modifier = Modifier
-            .width(150.dp),
         colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

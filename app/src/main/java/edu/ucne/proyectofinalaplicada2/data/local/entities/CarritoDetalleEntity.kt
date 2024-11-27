@@ -7,12 +7,12 @@ import java.math.BigDecimal
 @Entity(tableName = "CarritoDetalle")
 data class CarritoDetalleEntity (
     @PrimaryKey
-    val carritoDetalleId : Int,
-    val carritoId : Int,
-    val productoId : Int,
-    val cantidad : Int,
-    val precioUnitario : BigDecimal,
-    val impuesto : BigDecimal,
-    val subTotal : BigDecimal,
-    val propina : BigDecimal
+    val carritoDetalleId : Int? = null,
+    val carritoId : Int? = null,
+    val productoId : Int? = null,
+    val cantidad : Int? = null,
+    val precioUnitario : BigDecimal? = null,
+    val impuesto : BigDecimal? = null,
+    val subTotal : BigDecimal? = null,
+    val propina : BigDecimal? = null,
 )
