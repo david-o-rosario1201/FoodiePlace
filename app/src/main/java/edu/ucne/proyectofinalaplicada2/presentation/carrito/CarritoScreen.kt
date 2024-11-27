@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -51,7 +52,7 @@ import java.math.BigDecimal
 fun CarritoScreen(
     viewModel: CarritoViewModel = hiltViewModel(),
     navController: NavHostController,
-){
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
 
@@ -84,83 +85,20 @@ private fun CarritoBodyScreen(
                 notificationCount = 0
             )
         },
-        bottomBar = {
-            BottomBarNavigation(
-                navController = navController
-            )
-        }
-    ){paddingValues ->
+        bottomBar = { BottomBarNavigation(navController = navController) }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             verticalArrangement = Arrangement.SpaceBetween
-        ){
-            Column(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    uiState.carritoDetalle.forEach {
-                        CarritoRow(carrito = it)
-                    }
-                }
-            }
+        ) {
+            CarritoListaProductos(uiState)
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                elevation = CardDefaults.cardElevation(10.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-                    TotalRow(label = "Tiempo:", amount = "$${uiState.tiempo}")
-                    TotalRow(label = "Subtotal:", amount = "$${uiState.subTotal}")
-                    TotalRow(label = "Propina:", amount = "$${uiState.propina}")
-                    TotalRow(label = "ITBS:", amount = "$${uiState.impuesto}")
-
-                    Divider(modifier = Modifier.padding(vertical = 8.dp), color = Color.Black, thickness = 1.dp)
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Total:",
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "$${uiState.total}",
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Button(
-                        onClick = {isModalVisible = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF738AFF),
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Pagar $${uiState.total}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp
-                        )
-                    }
-                }
-            }
+            CarritoResumen(
+                uiState = uiState,
+                onPagarClick = { isModalVisible = true }
+            )
         }
 
         if (isModalVisible) {
@@ -181,60 +119,81 @@ private fun CarritoBodyScreen(
                 )
             }
         }
-
-
-
     }
 }
 
 @Composable
-fun CardSelectionContent(
-    uiState: CarritoUiState,
-    onCardSelected: (Int) -> Unit
-) {
+fun CarritoListaProductos(uiState: CarritoUiState) {
+    Column(modifier = Modifier.padding(10.dp)) {
+        uiState.carritoDetalle.forEach {
+            CarritoRow(carrito = it)
+        }
+    }
+}
+
+@Composable
+fun CarritoResumen(uiState: CarritoUiState, onPagarClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(10.dp)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            TotalRow("Tiempo:", "$${uiState.tiempo}")
+            TotalRow("Subtotal:", "$${uiState.subTotal}")
+            TotalRow("Propina:", "$${uiState.propina}")
+            TotalRow("ITBS:", "$${uiState.impuesto}")
+
+            Divider(modifier = Modifier.padding(vertical = 8.dp), color = Color.Black, thickness = 1.dp)
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Total:", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
+                Text("$${uiState.total}", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
+            }
+
+            Button(
+                onClick = onPagarClick,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF738AFF)),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth()
+            ) {
+                Text("Pagar $${uiState.total}", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, fontSize = 25.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun CardSelectionContent(uiState: CarritoUiState, onCardSelected: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Selecciona una tarjeta",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
+        Text("Selecciona una tarjeta", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
 
-        val tarjetas = uiState.tarjetas
-
-        if (tarjetas.isEmpty()) {
+        if (uiState.tarjetas.isEmpty()) {
             Text("No se encontraron tarjetas disponibles.")
         } else {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                tarjetas.forEachIndexed { index, tarjeta ->
-                    item {
-                        Card(
-                            modifier = Modifier
-                                .width(200.dp)
-                                .height(120.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFE7E7E7)),
-                            onClick = {
-                                onCardSelected(tarjeta.tarjetaId)
-                            }
-                        ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                Text(
-                                    text = "****${tarjeta.numeroTarjeta?.takeLast(4)}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                items(uiState.tarjetas) { tarjeta ->
+                    Card(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(120.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE7E7E7)),
+                        onClick = { onCardSelected(tarjeta.tarjetaId) }
+                    ) {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                            Text("****${tarjeta.numeroTarjeta?.takeLast(4)}", style = MaterialTheme.typography.bodyLarge)
                         }
                     }
                 }
@@ -242,7 +201,6 @@ fun CardSelectionContent(
         }
     }
 }
-
 
 
 
