@@ -114,7 +114,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadUsuario(correo: String) {
         viewModelScope.launch {
-            val usuario = usuarioRepository.getUsuarioId(
+            val usuario = usuarioRepository.getUsuarioByCorreo(
                 correo = correo
             )
             _uiState.value = _uiState.value.copy(
