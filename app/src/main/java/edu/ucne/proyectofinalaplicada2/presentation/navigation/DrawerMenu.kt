@@ -35,7 +35,8 @@ fun DrawerMenu(
     drawerState: DrawerState,
     navHostController: NavHostController,
     userEmail: GoogleAuthUiClient,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    showDrawer: Boolean
 ){
     val selectedItem = remember { mutableStateOf("Home") }
     val scope = rememberCoroutineScope()
@@ -45,7 +46,7 @@ fun DrawerMenu(
         selectedItem.value = item
         scope.launch { drawerState.close() }
     }
-
+if (showDrawer) {
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
@@ -70,7 +71,11 @@ fun DrawerMenu(
                             icon = Icons.Filled.Home,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_pedidos)
                         ) {
-                            handleItemClick(Screen.HomeScreen(userEmail.getSignedInUser()?.email ?: ""), it)
+                            handleItemClick(
+                                Screen.HomeScreen(
+                                    userEmail.getSignedInUser()?.email ?: ""
+                                ), it
+                            )
                         }
                         DrawerItem(
                             title = stringResource(R.string.drawer_pedidos),
@@ -115,7 +120,11 @@ fun DrawerMenu(
             }
         },
         drawerState = drawerState
-    ){
+    ) {
         content()
     }
+}else {
+    content()
+
+}
 }

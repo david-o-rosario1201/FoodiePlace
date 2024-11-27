@@ -11,7 +11,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,287 +52,308 @@ fun ProyectoFinalAplicada2NavHost(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    var showDrawer by remember { mutableStateOf(false) } // Control centralizado del Drawer
+
+    // Efecto lanzado para sincronizar estado del Drawer
+    LaunchedEffect(showDrawer) {
+        if (showDrawer) {
+            drawerState.open()
+        } else {
+            drawerState.close()
+        }
+    }
 
     DrawerMenu(
         userEmail = googleAuthUiClient,
         drawerState = drawerState,
-        navHostController = navHostController
-    ) {
-        NavHost(
-            navController = navHostController,
-            startDestination = Screen.UsuarioLoginScreen
-        ) {
-            composable<Screen.WelcomeScreen>{
-                WelcomeScreen(
-                    onNavigateToLogin = {
-                        navHostController.navigate(Screen.UsuarioLoginScreen)
-                    }
-                )
-            }
-            composable<Screen.UsuarioLoginScreen>{
-                val viewModel: UsuarioViewModel = hiltViewModel()
-                val state by viewModel.uiState.collectAsStateWithLifecycle()
+        navHostController = navHostController,
+        showDrawer = showDrawer,
+        content = {
 
-                // sonar-ignore: launcher is used indirectly in onSignUsuarioClick
-                val launcher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.StartIntentSenderForResult(),
-                    onResult = {result ->
-                        if(result.resultCode == RESULT_OK){
-                            scope.launch {
-                                val signInResult =
-                                    googleAuthUiClient.signInWithIntent(
-                                        intent = result.data ?: return@launch
-                                    )
-                                viewModel.onSignInResult(signInResult)
-                                navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: "")){
-                                    popUpTo(Screen.UsuarioLoginScreen) { inclusive = true }
+            NavHost(
+                navController = navHostController,
+                startDestination = Screen.UsuarioLoginScreen
+            ) {
+                composable<Screen.WelcomeScreen>{
+                    showDrawer = false
+                    WelcomeScreen(
+                        onNavigateToLogin = {
+                            navHostController.navigate(Screen.UsuarioLoginScreen)
+                        }
+                    )
+                }
+                composable<Screen.UsuarioLoginScreen>{
+                    showDrawer = false
+
+                    val viewModel: UsuarioViewModel = hiltViewModel()
+                    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    // sonar-ignore: launcher is used indirectly in onSignUsuarioClick
+                    val launcher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.StartIntentSenderForResult(),
+                        onResult = {result ->
+                            if(result.resultCode == RESULT_OK){
+                                scope.launch {
+                                    val signInResult =
+                                        googleAuthUiClient.signInWithIntent(
+                                            intent = result.data ?: return@launch
+                                        )
+                                    viewModel.onSignInResult(signInResult)
+                                    navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: "")){
+                                        popUpTo(Screen.UsuarioLoginScreen) { inclusive = true }
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
 
-                LaunchedEffect(key1 = state.isSignInSuccessful){
-                    if(state.isSignInSuccessful){
-                        Toast.makeText(
-                            context,
-                            "Sign in successful",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                UsuarioLoginScreen(
-                    onRegisterUsuario = {
-                        navHostController.navigate(Screen.UsuarioRegisterScreen)
-                    },
-                    onSignClickNative = {
-                        navHostController.navigate(Screen.HomeScreen(it))
-                    },
-                    onSignClickWithGoogle = {
-                        scope.launch {
-                            val signInIntentSender = googleAuthUiClient.signIn()
-                            launcher.launch(
-                                IntentSenderRequest.Builder(
-                                    signInIntentSender ?: return@launch
-                                ).build()
-                            )
-                        }
-                    }
-                )
-            }
-            composable<Screen.UsuarioRegisterScreen>{
-                UsuarioRegisterScreen(
-                    onLoginUsuario = {
-                        navHostController.navigate(Screen.UsuarioLoginScreen)
-                    },
-                    onNavigateToHome = {
-                        navHostController.navigate(Screen.HomeScreen(it)) {
-                            popUpTo(Screen.UsuarioRegisterScreen) { inclusive = true }
-                        }
-                    }
-                )
-            }
-            composable<Screen.OfertaListScreen>{
-                OfertaListScreen(
-                    onAddOferta = {
-                        navHostController.navigate(Screen.OfertaScreen(0))
-                    },
-                    onClickOferta = {
-                        navHostController.navigate(Screen.OfertaScreen(it))
-                    },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
-                )
-            }
-            composable<Screen.OfertaScreen> { argumentos ->
-                val id = argumentos.toRoute<Screen.OfertaScreen>().ofertaId
-
-                OfertaScreen(
-                    ofertaId = id,
-                    goToOfertaList = {
-                        navHostController.navigate(Screen.OfertaListScreen)
-                    }
-                )
-            }
-            composable<Screen.PedidoListScreen>{
-               PedidoListScreen(
-                   onClickPedido = {
-                       navHostController.navigate(Screen.ReviewListScreen)
-                   },
-                   onClickNotifications = {
-                       navHostController.navigate(Screen.NotificacionScreen)
-                   },
-                   navHostController = navHostController,
-                   onDrawer = {
-                       scope.launch {
-                           drawerState.open()
-                       }
-                   }
-               )
-            }
-            composable<Screen.PedidoAdminScreen>{
-                PedidoAdminScreen(
-                    goToPedidoList = {
-                        navHostController.navigate(Screen.PedidoListScreen)
-                    }
-                )
-            }
-            composable<Screen.PedidoClienteScreen>{
-                PedidoClienteScreen(
-                    goToPedidoList = {
-                        navHostController.navigate(Screen.PedidoListScreen)
-                    }
-                )
-            }
-            composable<Screen.ReviewListScreen>{
-                ReviewListScreen(
-                    goToAddReview = {
-                        navHostController.navigate(Screen.ReviewCreateScreen)
-                    },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
-                )
-            }
-            composable<Screen.ReviewCreateScreen>{
-                ReviewCreateScreen(
-                    onNavigateToList = {
-                        navHostController.navigate(Screen.ReviewListScreen)
-                    }
-                )
-            }
-            composable<Screen.HomeScreen>{ argumentos ->
-                val correo = argumentos.toRoute<Screen.HomeScreen>().correo
-
-                HomeScreen(
-                    goCategoria = {
-                        navHostController.navigate(Screen.UsuarioLoginScreen)
-                    },
-                    goProducto = {
-                        navHostController.navigate(Screen.PedidoListScreen)
-                    },
-                    correo = correo,
-                    navController = navHostController,
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
-                )
-            }
-            composable<Screen.CategoriaListScreen>{
-                CategoriaListScreen(
-                    goToAddCategoria = {
-                        navHostController.navigate(Screen.CategoriaCreateScreen)
-                    },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
-                )
-            }
-            composable<Screen.CategoriaCreateScreen> {
-                CategoriaCreateScreen(
-                    onNavigateToList = {
-                        navHostController.navigate(Screen.CategoriaListScreen)
-                    }
-                )
-            }
-            composable<Screen.AboutUsScreen> {
-                AboutUsScreen(
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    }
-                )
-            }
-            composable<Screen.NotificacionScreen> {
-                NotificacionScreen(
-                    goToHome = {
-                        navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: ""))
-                    }
-                )
-            }
-            composable<Screen.ProductoScreen> {
-                ProductoScreen(
-                    onProductoCreado = {
-                        navHostController.navigate(Screen.ProductoScreen)
-                    },
-                    onBackClick = {
-                        navHostController.navigate(Screen.ProductoListScreen)
-                    }
-                )
-            }
-            composable<Screen.ProductoListScreen> {
-                ProductosListScreen(
-                    onAddProducto = {
-                        navHostController.navigate(Screen.ProductoScreen)
-                    },
-                    goToProducto = {
-                        navHostController.navigate(Screen.ProductoScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
-                )
-            }
-            composable<Screen.ReservacionListScreen> {
-                ReservacionesListScreen(
-                    goToAddReservacion = {},
-                    goToReservacion = {},
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }
-                )
-            }
-            composable<Screen.ProfileScreen> { argumentos ->
-                ProfileScreen(
-                    userData = googleAuthUiClient.getSignedInUser(),
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onSignedOut = {
-                        scope.launch {
-                            googleAuthUiClient.signOut()
+                    LaunchedEffect(key1 = state.isSignInSuccessful){
+                        if(state.isSignInSuccessful){
                             Toast.makeText(
                                 context,
-                                "Signed out",
+                                "Sign in successful",
                                 Toast.LENGTH_LONG
                             ).show()
-                            navHostController.navigate(Screen.UsuarioLoginScreen)
                         }
                     }
-                )
+
+                    UsuarioLoginScreen(
+                        onRegisterUsuario = {
+                            navHostController.navigate(Screen.UsuarioRegisterScreen)
+                        },
+                        onSignClickNative = {
+                            navHostController.navigate(Screen.HomeScreen(it))
+                        },
+                        onSignClickWithGoogle = {
+                            scope.launch {
+                                val signInIntentSender = googleAuthUiClient.signIn()
+                                launcher.launch(
+                                    IntentSenderRequest.Builder(
+                                        signInIntentSender ?: return@launch
+                                    ).build()
+                                )
+                            }
+                        }
+                    )
+                }
+                composable<Screen.UsuarioRegisterScreen>{
+                    showDrawer = false
+                    UsuarioRegisterScreen(
+                        onLoginUsuario = {
+                            navHostController.navigate(Screen.UsuarioLoginScreen)
+                        },
+                        onNavigateToHome = {
+                            navHostController.navigate(Screen.HomeScreen(it)) {
+                                popUpTo(Screen.UsuarioRegisterScreen) { inclusive = true }
+                            }
+                        }
+                    )
+                }
+                composable<Screen.OfertaListScreen>{
+                    OfertaListScreen(
+                        onAddOferta = {
+                            navHostController.navigate(Screen.OfertaScreen(0))
+                        },
+                        onClickOferta = {
+                            navHostController.navigate(Screen.OfertaScreen(it))
+                        },
+                        onClickNotifications = {
+                            navHostController.navigate(Screen.NotificacionScreen)
+                        },
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.OfertaScreen> { argumentos ->
+                    val id = argumentos.toRoute<Screen.OfertaScreen>().ofertaId
+
+                    OfertaScreen(
+                        ofertaId = id,
+                        goToOfertaList = {
+                            navHostController.navigate(Screen.OfertaListScreen)
+                        }
+                    )
+                }
+                composable<Screen.PedidoListScreen>{
+                    PedidoListScreen(
+                        onClickPedido = {
+                            navHostController.navigate(Screen.ReviewListScreen)
+                        },
+                        onClickNotifications = {
+                            navHostController.navigate(Screen.NotificacionScreen)
+                        },
+                        navHostController = navHostController,
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.PedidoAdminScreen>{
+                    PedidoAdminScreen(
+                        goToPedidoList = {
+                            navHostController.navigate(Screen.PedidoListScreen)
+                        }
+                    )
+                }
+                composable<Screen.PedidoClienteScreen>{
+                    PedidoClienteScreen(
+                        goToPedidoList = {
+                            navHostController.navigate(Screen.PedidoListScreen)
+                        }
+                    )
+                }
+                composable<Screen.ReviewListScreen>{
+                    ReviewListScreen(
+                        goToAddReview = {
+                            navHostController.navigate(Screen.ReviewCreateScreen)
+                        },
+                        onClickNotifications = {
+                            navHostController.navigate(Screen.NotificacionScreen)
+                        },
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.ReviewCreateScreen>{
+                    ReviewCreateScreen(
+                        onNavigateToList = {
+                            navHostController.navigate(Screen.ReviewListScreen)
+                        }
+                    )
+                }
+                composable<Screen.HomeScreen>{ argumentos ->
+                    val correo = argumentos.toRoute<Screen.HomeScreen>().correo
+
+                    HomeScreen(
+                        goCategoria = {
+                            navHostController.navigate(Screen.UsuarioLoginScreen)
+                        },
+                        goProducto = {
+                            navHostController.navigate(Screen.PedidoListScreen)
+                        },
+                        correo = correo,
+                        navController = navHostController,
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.CategoriaListScreen>{
+                    CategoriaListScreen(
+                        goToAddCategoria = {
+                            navHostController.navigate(Screen.CategoriaCreateScreen)
+                        },
+                        onClickNotifications = {
+                            navHostController.navigate(Screen.NotificacionScreen)
+                        },
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.CategoriaCreateScreen> {
+                    CategoriaCreateScreen(
+                        onNavigateToList = {
+                            navHostController.navigate(Screen.CategoriaListScreen)
+                        }
+                    )
+                }
+                composable<Screen.AboutUsScreen> {
+                    AboutUsScreen(
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        onClickNotifications = {
+                            navHostController.navigate(Screen.NotificacionScreen)
+                        }
+                    )
+                }
+                composable<Screen.NotificacionScreen> {
+                    NotificacionScreen(
+                        goToHome = {
+                            navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: ""))
+                        }
+                    )
+                }
+                composable<Screen.ProductoScreen> {
+                    ProductoScreen(
+                        onProductoCreado = {
+                            navHostController.navigate(Screen.ProductoScreen)
+                        },
+                        onBackClick = {
+                            navHostController.navigate(Screen.ProductoListScreen)
+                        }
+                    )
+                }
+                composable<Screen.ProductoListScreen> {
+                    ProductosListScreen(
+                        onAddProducto = {
+                            navHostController.navigate(Screen.ProductoScreen)
+                        },
+                        goToProducto = {
+                            navHostController.navigate(Screen.ProductoScreen)
+                        },
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.ReservacionListScreen> {
+                    ReservacionesListScreen(
+                        goToAddReservacion = {},
+                        goToReservacion = {},
+                        onClickNotifications = {
+                            navHostController.navigate(Screen.NotificacionScreen)
+                        },
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }
+                    )
+                }
+                composable<Screen.ProfileScreen> { argumentos ->
+                    ProfileScreen(
+                        userData = googleAuthUiClient.getSignedInUser(),
+                        onDrawer = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        onSignedOut = {
+                            scope.launch {
+                                googleAuthUiClient.signOut()
+                                Toast.makeText(
+                                    context,
+                                    "Signed out",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                navHostController.navigate(Screen.UsuarioLoginScreen)
+                            }
+                        }
+                    )
+                }
             }
         }
-    }
+    )
+
 }
+
+
+
