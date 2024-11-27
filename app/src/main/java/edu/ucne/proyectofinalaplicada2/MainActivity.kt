@@ -6,6 +6,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.ProyectoFinalAplicada2NavHost
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        installSplashScreen()
         setContent {
             ProyectoFinalAplicada2Theme {
                 val navHost = rememberNavController()
