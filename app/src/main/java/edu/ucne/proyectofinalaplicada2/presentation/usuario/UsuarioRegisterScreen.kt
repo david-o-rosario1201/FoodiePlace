@@ -61,7 +61,11 @@ private fun UsuarioRegisterBodyScreen(
 ){
     var passwordVisible by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = true) { if(uiState.isSignInSuccessful) onNavigateToHome(uiState.correo ?: "")}
+    LaunchedEffect(key1 = uiState.isSignInSuccessful) {
+        if(uiState.isSignInSuccessful){
+            onNavigateToHome(uiState.correo ?: "")
+        }
+    }
 
     Scaffold { innerPadding ->
         Column(

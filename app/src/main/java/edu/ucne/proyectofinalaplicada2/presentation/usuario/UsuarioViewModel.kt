@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
@@ -24,6 +25,10 @@ class UsuarioViewModel @Inject constructor(
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    init {
+        getUsuarios()
+    }
+
     fun onSignInResult(result: SignInResult) {
         viewModelScope.launch {
             _uiState.update {
@@ -38,8 +43,11 @@ class UsuarioViewModel @Inject constructor(
                     fotoPerfil = result.data?.profilePictureUrl
                 )
             }
-            if(usuarioRepository.getUsuarioCorreo(_uiState.value.correo ?: "") == null){
-                guardarUsuario()
+            val usuario = _uiState.value.usuarios.find { result ->
+                result.correo == _uiState.value.correo
+            }
+            if (usuario == null) {
+                usuarioRepository.addUsuario(_uiState.value.toDto())
             }
         }
     }
@@ -76,99 +84,83 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: UsuarioUiEvent){
-        when(event){
-            is UsuarioUiEvent.UsuarioIdChanged -> {
-                _uiState.update { it.copy(usuarioId = event.usuarioId) }
-            }
-            is UsuarioUiEvent.NombreChanged -> {
-                _uiState.update { it.copy(nombre = event.nombre) }
-            }
-            is UsuarioUiEvent.TelefonoChanged -> {
-                _uiState.update { it.copy(telefono = formatPhoneNumber(event.telefono)) }
-            }
-            is UsuarioUiEvent.CorreoChanged -> {
-                _uiState.update { it.copy(correo = event.correo) }
-            }
-            is UsuarioUiEvent.ContrasenaChanged -> {
-                _uiState.update { it.copy(contrasena = event.contrasena) }
-            }
-            is UsuarioUiEvent.ConfirmarContrasenaChanged -> {
-                _uiState.update { it.copy(confirmarContrasena = event.confirmarContrasena) }
-            }
-            is UsuarioUiEvent.SelectedUsuario -> {
-                viewModelScope.launch {
-                    cargarUsuarioSeleccionado(event.usuarioId)
-                }
-            }
-            is UsuarioUiEvent.IsRefreshingChanged -> {
-                _uiState.update {
-                    it.copy(isRefreshing = event.isRefreshing)
-                }
-            }
-            UsuarioUiEvent.Register -> {
-                viewModelScope.launch {
-                    if (validarCampos()) {
-                        guardarUsuario()
-                        _uiState.update { it.copy(isSuccess = true) }
+    fun onEvent(event: UsuarioUiEvent) {
+        when (event) {
+            is UsuarioUiEvent.UsuarioIdChanged -> updateUiState { it.copy(usuarioId = event.usuarioId) }
+            is UsuarioUiEvent.NombreChanged -> updateUiState { it.copy(nombre = event.nombre) }
+            is UsuarioUiEvent.TelefonoChanged -> updateUiState { it.copy(telefono = formatPhoneNumber(event.telefono)) }
+            is UsuarioUiEvent.CorreoChanged -> updateUiState { it.copy(correo = event.correo) }
+            is UsuarioUiEvent.ContrasenaChanged -> updateUiState { it.copy(contrasena = event.contrasena) }
+            is UsuarioUiEvent.ConfirmarContrasenaChanged -> updateUiState { it.copy(confirmarContrasena = event.confirmarContrasena) }
+            is UsuarioUiEvent.SelectedUsuario -> handleSelectedUsuario(event.usuarioId)
+            is UsuarioUiEvent.IsRefreshingChanged -> updateUiState { it.copy(isRefreshing = event.isRefreshing) }
+            UsuarioUiEvent.Register -> handleRegisterEvent()
+            UsuarioUiEvent.Delete -> handleDeleteEvent()
+            UsuarioUiEvent.Login -> handleLoginEvent()
+            UsuarioUiEvent.Refresh -> getUsuarios()
+        }
+    }
 
-                        auth.createUserWithEmailAndPassword(
-                            _uiState.value.correo ?: "",
-                            _uiState.value.contrasena ?: ""
-                        )
-                            .addOnCompleteListener { task ->
-                                if(task.isSuccessful){
-                                    _uiState.update {
-                                        it.copy(
-                                            isSignInSuccessful = true,
-                                            signInError = null
-                                        )
-                                    }
-                                } else {
-                                    _uiState.update {
-                                        it.copy(
-                                            isSignInSuccessful = false,
-                                            signInError = task.exception?.message ?: "Something went wrong"
-                                        )
-                                    }
-                                }
-                            }
-                    }
-                }
-            }
-            UsuarioUiEvent.Delete -> {
-                viewModelScope.launch {
-                    usuarioRepository.deleteUsuario(_uiState.value.usuarioId ?: 0)
-                }
-            }
-            UsuarioUiEvent.Login -> {
-                auth.signInWithEmailAndPassword(
-                    _uiState.value.correo ?: "",
-                    _uiState.value.contrasena ?: ""
-                )
-                    .addOnCompleteListener { task->
-                        if(task.isSuccessful){
-                            _uiState.update {
-                                it.copy(
-                                    isSignInSuccessful = true,
-                                    signInError = null
-                                )
-                            }
-                        } else {
-                            _uiState.update {
-                                it.copy(
-                                    isSignInSuccessful = false,
-                                    signInError = task.exception?.message ?: "Something went wrong"
-                                )
-                            }
-                        }
-                    }
-            }
-            UsuarioUiEvent.Refresh -> {
-                getUsuarios()
+    private fun updateUiState(update: (UsuarioUiState) -> UsuarioUiState) {
+        _uiState.update(update)
+    }
+
+    private fun handleSelectedUsuario(usuarioId: Int) {
+        viewModelScope.launch {
+            cargarUsuarioSeleccionado(usuarioId)
+        }
+    }
+
+    private fun handleRegisterEvent() {
+        viewModelScope.launch {
+            if (validarCampos()) {
+                guardarUsuario()
+                updateUiState { it.copy(isSuccess = true) }
+                createUserWithEmailAndPassword()
             }
         }
     }
+
+    private fun createUserWithEmailAndPassword() {
+        auth.createUserWithEmailAndPassword(
+            _uiState.value.correo.orEmpty(),
+            _uiState.value.contrasena.orEmpty()
+        ).addOnCompleteListener { task ->
+            updateUiState {
+                it.copy(
+                    isSignInSuccessful = task.isSuccessful,
+                    signInError = task.exception?.message ?: if (task.isSuccessful) null else "Something went wrong"
+                )
+            }
+        }
+    }
+
+    private fun handleDeleteEvent() {
+        viewModelScope.launch {
+            usuarioRepository.deleteUsuario(_uiState.value.usuarioId ?: 0)
+        }
+    }
+
+    private fun handleLoginEvent() {
+        viewModelScope.launch {
+            auth.signInWithEmailAndPassword(
+                _uiState.value.correo.orEmpty(),
+                _uiState.value.contrasena.orEmpty()
+            ).addOnCompleteListener { task ->
+                updateUiState {
+                    it.copy(
+                        isSignInSuccessful = task.isSuccessful,
+                        signInError = task.exception?.message ?: if (task.isSuccessful) null else "Something went wrong"
+                    )
+                }
+            }
+            if (!_uiState.value.isSignInSuccessful) {
+                val usuario = _uiState.value.usuarios.find { it.correo == _uiState.value.correo }
+                usuario?.let { usuarioRepository.addUsuarioLocal(it.toDto()) }
+            }
+        }
+    }
+
 
     private suspend fun guardarUsuario() {
         if (_uiState.value.usuarioId == null) {
@@ -179,45 +171,83 @@ class UsuarioViewModel @Inject constructor(
     }
 
     private fun validarCampos(): Boolean {
+        val usuario = _uiState.value.usuarios.find { result ->
+            result.nombre == _uiState.value.nombre
+                    || result.correo == _uiState.value.correo
+                    || result.telefono == _uiState.value.telefono
+        }
+
         var isValid = true
         _uiState.update {
             it.copy(
-                errorNombre = if (it.nombre.isNullOrBlank()) {
-                    isValid = false
-                    "El campo nombre no puede estar vacío"
-                } else null,
-                errorTelefono = if (it.telefono.isNullOrBlank()) {
-                    isValid = false
-                    "El campo teléfono no puede estar vacío"
-                } else if (it.telefono.length != 12) {
-                    isValid = false
-                    "El campo teléfono debe tener 10 caracteres"
-                } else null,
-                errorCorreo = if (it.correo.isNullOrBlank()) {
-                    isValid = false
-                    "El campo correo no puede estar vacío"
-                } else if (!isValidEmail(it.correo)) {
-                    isValid = false
-                    "El campo correo no es válido"
-                } else null,
-                errorContrasena = if (it.contrasena.isNullOrBlank()) {
-                    isValid = false
-                    "El campo contraseña no puede estar vacío"
-                } else if (it.contrasena.length !in 5..21) {
-                    isValid = false
-                    "El campo contraseña debe tener al menos 6 caracteres y máximo 20"
-                } else null,
-                errorConfirmarContrasena = if (it.confirmarContrasena.isNullOrBlank()) {
-                    isValid = false
-                    "El campo confirmar contraseña no puede estar vacío"
-                } else if (it.contrasena != it.confirmarContrasena) {
-                    isValid = false
-                    "Las contraseñas no coinciden"
-                } else null
+                errorNombre = when {
+                    it.nombre.isNullOrBlank() -> {
+                        isValid = false
+                        "El campo nombre no puede estar vacío"
+                    }
+                    usuario?.nombre == it.nombre -> {
+                        isValid = false
+                        "Ya existe un usuario con ese nombre"
+                    }
+                    else -> null
+                },
+                errorTelefono = when {
+                    it.telefono.isNullOrBlank() -> {
+                        isValid = false
+                        "El campo teléfono no puede estar vacío"
+                    }
+                    it.telefono.length != 12 -> {
+                        isValid = false
+                        "El campo teléfono debe tener 10 caracteres"
+                    }
+                    usuario?.telefono == it.telefono -> {
+                        isValid = false
+                        "Ya existe un usuario con ese teléfono"
+                    }
+                    else -> null
+                },
+                errorCorreo = when {
+                    it.correo.isNullOrBlank() -> {
+                        isValid = false
+                        "El campo correo no puede estar vacío"
+                    }
+                    !isValidEmail(it.correo) -> {
+                        isValid = false
+                        "El campo correo no es válido"
+                    }
+                    usuario?.correo == it.correo -> {
+                        isValid = false
+                        "Ya existe un usuario con ese correo"
+                    }
+                    else -> null
+                },
+                errorContrasena = when {
+                    it.contrasena.isNullOrBlank() -> {
+                        isValid = false
+                        "El campo contraseña no puede estar vacío"
+                    }
+                    it.contrasena.length !in 5..21 -> {
+                        isValid = false
+                        "El campo contraseña debe tener al menos 6 caracteres y máximo 20"
+                    }
+                    else -> null
+                },
+                errorConfirmarContrasena = when {
+                    it.confirmarContrasena.isNullOrBlank() -> {
+                        isValid = false
+                        "El campo confirmar contraseña no puede estar vacío"
+                    }
+                    it.contrasena != it.confirmarContrasena -> {
+                        isValid = false
+                        "Las contraseñas no coinciden"
+                    }
+                    else -> null
+                }
             )
         }
         return isValid
     }
+
 
     private fun cargarUsuarioSeleccionado(usuarioId: Int) = viewModelScope.launch {
         if (usuarioId > 0) {
@@ -256,6 +286,14 @@ class UsuarioViewModel @Inject constructor(
         contrasena = contrasena ?: "",
         correo = correo ?: "",
         telefono = telefono ?: "",
+        fotoPerfil = fotoPerfil
+    )
+    private fun UsuarioEntity.toDto() = UsuarioDto(
+        usuarioId = usuarioId,
+        nombre = nombre,
+        contrasena = contrasena,
+        correo = correo,
+        telefono = telefono,
         fotoPerfil = fotoPerfil
     )
 }
