@@ -42,7 +42,6 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiEvent
-import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiState
 import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
@@ -205,7 +204,6 @@ fun HomeBodyScreen(
                             onCarritoEvent(CarritoUiEvent.AgregarProducto(carritoDetalle, 1))
                         },
                         color = Color.White,
-                        modifier2 = Modifier.padding(vertical = 8.dp)
                     )
                 }
             }
