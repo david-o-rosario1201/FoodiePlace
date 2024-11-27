@@ -28,9 +28,7 @@ class UsuarioRepository @Inject constructor(
         addUsuarioLocal(usuario)
     }
 
-    suspend fun getUsuarioCorreo(correo: String) = usuarioDao.getUsuarioCorreo(correo)
-
-    suspend fun getUsuarioId(correo: String) = usuarioDao.getUsuarioId(correo)
+    suspend fun getUsuarioByCorreo(correo: String) = usuarioDao.getUsuarioByCorreo(correo)
 
     fun getUsuarios(): Flow<Resource<List<UsuarioEntity>>> = flow {
         try{
@@ -62,7 +60,7 @@ class UsuarioRepository @Inject constructor(
         }
     }
 
-    private suspend fun addUsuarioLocal(usuarioDto: UsuarioDto) = usuarioDao.addUsuario(usuarioDto.toEntity())
+    suspend fun addUsuarioLocal(usuarioDto: UsuarioDto) = usuarioDao.addUsuario(usuarioDto.toEntity())
 }
 
 private fun UsuarioDto.toEntity() = UsuarioEntity(
