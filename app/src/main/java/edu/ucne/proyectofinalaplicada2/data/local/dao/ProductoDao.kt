@@ -28,7 +28,7 @@ interface ProductoDao {
         WHERE categoriaId=:categoriaId        
     """
     )
-    suspend fun getProductoByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>>
+    fun getProductoByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>>
 
     @Delete
     suspend fun deleteProducto(producto: ProductoEntity)
