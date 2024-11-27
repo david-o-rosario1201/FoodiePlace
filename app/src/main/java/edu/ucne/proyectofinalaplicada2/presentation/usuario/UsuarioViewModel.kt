@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
@@ -24,6 +25,10 @@ class UsuarioViewModel @Inject constructor(
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    init {
+        getUsuarios()
+    }
+
     fun onSignInResult(result: SignInResult) {
         viewModelScope.launch {
             _uiState.update {
@@ -38,8 +43,11 @@ class UsuarioViewModel @Inject constructor(
                     fotoPerfil = result.data?.profilePictureUrl
                 )
             }
-            if(usuarioRepository.getUsuarioCorreo(_uiState.value.correo ?: "") == null){
-                guardarUsuario()
+            val usuario = _uiState.value.usuarios.find { result ->
+                result.correo == _uiState.value.correo
+            }
+            if (usuario == null) {
+                usuarioRepository.addUsuario(_uiState.value.toDto())
             }
         }
     }
@@ -142,27 +150,37 @@ class UsuarioViewModel @Inject constructor(
                 }
             }
             UsuarioUiEvent.Login -> {
-                auth.signInWithEmailAndPassword(
-                    _uiState.value.correo ?: "",
-                    _uiState.value.contrasena ?: ""
-                )
-                    .addOnCompleteListener { task->
-                        if(task.isSuccessful){
-                            _uiState.update {
-                                it.copy(
-                                    isSignInSuccessful = true,
-                                    signInError = null
-                                )
-                            }
-                        } else {
-                            _uiState.update {
-                                it.copy(
-                                    isSignInSuccessful = false,
-                                    signInError = task.exception?.message ?: "Something went wrong"
-                                )
+                viewModelScope.launch {
+                    auth.signInWithEmailAndPassword(
+                        _uiState.value.correo ?: "",
+                        _uiState.value.contrasena ?: ""
+                    )
+                        .addOnCompleteListener { task->
+                            if(task.isSuccessful){
+                                _uiState.update {
+                                    it.copy(
+                                        isSignInSuccessful = true,
+                                        signInError = null
+                                    )
+                                }
+                            } else {
+                                _uiState.update {
+                                    it.copy(
+                                        isSignInSuccessful = false,
+                                        signInError = task.exception?.message ?: "Something went wrong"
+                                    )
+                                }
                             }
                         }
+                    if(!_uiState.value.isSignInSuccessful){
+                        val usuario = _uiState.value.usuarios.find { result ->
+                            result.correo == _uiState.value.correo
+                        }
+                        usuario?.let {
+                            usuarioRepository.addUsuarioLocal(it.toDto())
+                        }
                     }
+                }
             }
             UsuarioUiEvent.Refresh -> {
                 getUsuarios()
@@ -179,12 +197,21 @@ class UsuarioViewModel @Inject constructor(
     }
 
     private fun validarCampos(): Boolean {
+        val usuario = _uiState.value.usuarios.find { result ->
+            result.nombre == _uiState.value.nombre
+                    || result.correo == _uiState.value.correo
+                    || result.telefono == _uiState.value.telefono
+        }
+
         var isValid = true
         _uiState.update {
             it.copy(
                 errorNombre = if (it.nombre.isNullOrBlank()) {
                     isValid = false
                     "El campo nombre no puede estar vacío"
+                } else if(usuario?.nombre == it.nombre) {
+                    isValid = false
+                    "Ya existe un usuario con ese nombre"
                 } else null,
                 errorTelefono = if (it.telefono.isNullOrBlank()) {
                     isValid = false
@@ -192,6 +219,9 @@ class UsuarioViewModel @Inject constructor(
                 } else if (it.telefono.length != 12) {
                     isValid = false
                     "El campo teléfono debe tener 10 caracteres"
+                } else if(usuario?.telefono == it.telefono) {
+                    isValid = false
+                    "Ya existe un usuario con ese teléfono"
                 } else null,
                 errorCorreo = if (it.correo.isNullOrBlank()) {
                     isValid = false
@@ -199,6 +229,9 @@ class UsuarioViewModel @Inject constructor(
                 } else if (!isValidEmail(it.correo)) {
                     isValid = false
                     "El campo correo no es válido"
+                } else if(usuario?.correo == it.correo) {
+                    isValid = false
+                    "Ya existe un usuario con ese correo"
                 } else null,
                 errorContrasena = if (it.contrasena.isNullOrBlank()) {
                     isValid = false
@@ -256,6 +289,14 @@ class UsuarioViewModel @Inject constructor(
         contrasena = contrasena ?: "",
         correo = correo ?: "",
         telefono = telefono ?: "",
+        fotoPerfil = fotoPerfil
+    )
+    private fun UsuarioEntity.toDto() = UsuarioDto(
+        usuarioId = usuarioId,
+        nombre = nombre,
+        contrasena = contrasena,
+        correo = correo,
+        telefono = telefono,
         fotoPerfil = fotoPerfil
     )
 }
