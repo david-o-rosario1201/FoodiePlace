@@ -58,7 +58,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.HomeScreen("miguel@gmail.com")
+            startDestination = Screen.WelcomeScreen
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
