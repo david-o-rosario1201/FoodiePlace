@@ -31,6 +31,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.oferta.OfertaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoAdminScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoClienteScreen
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.PedidoListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoAddCarritoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
@@ -343,6 +344,16 @@ fun ProyectoFinalAplicada2NavHost(
                 )
             }
 
+
+            composable<Screen.ProductoAddCarritoScreen>
+            {
+                ProductoAddCarritoScreen(
+                    onBackClick = {
+                        navHostController.navigate(Screen.ProductoListScreen)
+                    },
+                    onAddToCart = { _, _ -> }
+                )
+            }
         }
     }
 }

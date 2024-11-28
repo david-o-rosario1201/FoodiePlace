@@ -70,7 +70,7 @@ fun ProductosListScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ProductosListBodyScreen(
     uiState: ProductoUiState,
