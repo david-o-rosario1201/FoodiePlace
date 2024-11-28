@@ -70,9 +70,7 @@ fun ProductoAddBodyScreen(
                 uiState.productos.forEach { producto ->
                     ProductoAddItem(
                         item = producto,
-                        onIncrease = { count++ },
-                        onDecrease = { if (count > 1) count-- },
-                        onAddToCart = { onAddToCart(uiState.productoId!!, count) }
+
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f)) // Empuja los botones hacia el final
@@ -140,9 +138,7 @@ fun ProductoAddBodyScreen(
 @Composable
 fun ProductoAddItem(
     item: ProductoEntity,
-    onIncrease: () -> Unit,
-    onDecrease: () -> Unit,
-    onAddToCart: () -> Unit
+
 ) {
     Column(
         modifier = Modifier
