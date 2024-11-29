@@ -154,10 +154,8 @@ class UsuarioViewModel @Inject constructor(
                     )
                 }
             }
-            if (!_uiState.value.isSignInSuccessful) {
-                val usuario = _uiState.value.usuarios.find { it.correo == _uiState.value.correo }
-                usuario?.let { usuarioRepository.addUsuarioLocal(it.toDto()) }
-            }
+            val usuario = _uiState.value.usuarios.find { it.correo == _uiState.value.correo }
+            usuario?.let { usuarioRepository.addUsuarioLocal(it.toDto()) }
         }
     }
 
