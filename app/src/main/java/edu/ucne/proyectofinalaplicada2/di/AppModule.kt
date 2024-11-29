@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -39,6 +40,11 @@ object AppModule {
             .add(KotlinJsonAdapterFactory())
             .add(Adapter())
             .build()
+
+    //Firebase
+    @Provides
+    @Singleton
+    fun providesFirebaseAuth() = FirebaseAuth.getInstance()
 
     //FoodiPlaceDb
     @Provides
