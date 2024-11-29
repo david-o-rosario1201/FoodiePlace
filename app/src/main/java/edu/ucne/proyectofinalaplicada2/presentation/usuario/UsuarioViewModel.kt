@@ -2,11 +2,11 @@ package edu.ucne.proyectofinalaplicada2.presentation.usuario
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.SignInResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,12 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UsuarioViewModel @Inject constructor(
-    private val usuarioRepository: UsuarioRepository
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository,
 ): ViewModel(){
     private val _uiState = MutableStateFlow(UsuarioUiState())
     val uiState = _uiState.asStateFlow()
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     init {
         getUsuarios()
@@ -98,6 +97,13 @@ class UsuarioViewModel @Inject constructor(
             UsuarioUiEvent.Delete -> handleDeleteEvent()
             UsuarioUiEvent.Login -> handleLoginEvent()
             UsuarioUiEvent.Refresh -> getUsuarios()
+            UsuarioUiEvent.Logout -> logout()
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
         }
     }
 
@@ -122,15 +128,38 @@ class UsuarioViewModel @Inject constructor(
     }
 
     private fun createUserWithEmailAndPassword() {
-        auth.createUserWithEmailAndPassword(
-            _uiState.value.correo.orEmpty(),
-            _uiState.value.contrasena.orEmpty()
-        ).addOnCompleteListener { task ->
-            updateUiState {
-                it.copy(
-                    isSignInSuccessful = task.isSuccessful,
-                    signInError = task.exception?.message ?: if (task.isSuccessful) null else "Something went wrong"
-                )
+        viewModelScope.launch {
+            authRepository.registerUser(
+                _uiState.value.correo.orEmpty(),
+                _uiState.value.contrasena.orEmpty()
+            ).collect{ result ->
+                when(result){
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isSuccess = true,
+                                isSignInSuccessful = true,
+                                signInError = null
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isSuccess = false,
+                                isSignInSuccessful = false,
+                                signInError = result.message
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -143,19 +172,36 @@ class UsuarioViewModel @Inject constructor(
 
     private fun handleLoginEvent() {
         viewModelScope.launch {
-            auth.signInWithEmailAndPassword(
+            authRepository.loginUser(
                 _uiState.value.correo.orEmpty(),
                 _uiState.value.contrasena.orEmpty()
-            ).addOnCompleteListener { task ->
-                updateUiState {
-                    it.copy(
-                        isSignInSuccessful = task.isSuccessful,
-                        signInError = task.exception?.message ?: if (task.isSuccessful) null else "Something went wrong"
-                    )
+            ).collect{ result ->
+                when(result){
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isSignInSuccessful = true,
+                                signInError = null
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isSignInSuccessful = false,
+                                signInError = result.message
+                            )
+                        }
+                    }
                 }
             }
-            val usuario = _uiState.value.usuarios.find { it.correo == _uiState.value.correo }
-            usuario?.let { usuarioRepository.addUsuarioLocal(it.toDto()) }
         }
     }
 
