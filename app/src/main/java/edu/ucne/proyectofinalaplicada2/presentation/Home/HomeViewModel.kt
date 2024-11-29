@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -28,6 +27,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.CategoriaRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
@@ -46,7 +46,8 @@ import kotlin.math.absoluteValue
 class HomeViewModel @Inject constructor(
     private val productoRepository: ProductoRepository,
     private val categoriaRepository: CategoriaRepository,
-    private val usuarioRepository: UsuarioRepository
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> get() = _uiState
@@ -111,18 +112,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
-    fun loadUsuario(correo: String) {
+    fun getCurrentUser(){
         viewModelScope.launch {
-            val usuario = usuarioRepository.getUsuarioByCorreo(
-                correo = correo
-            )
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
             _uiState.value = _uiState.value.copy(
-                usuarioNombre = usuario?.nombre ?: "Usuario no encontrado"
+                usuarioNombre = usuarioActual?.nombre ?: "Usuario no encontrado"
             )
         }
     }
-
 
     private fun searchProductos(query: String) {
         viewModelScope.launch {
