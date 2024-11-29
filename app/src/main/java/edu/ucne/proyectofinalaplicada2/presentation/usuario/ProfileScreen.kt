@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
@@ -36,8 +37,24 @@ import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 @Composable
 fun ProfileScreen(
     userData: UserData?,
-    onSignedOut: () -> Unit,
-    onDrawer: () -> Unit
+    onDrawer: () -> Unit,
+    onSignOut: () -> Unit,
+    viewModel: UsuarioViewModel = hiltViewModel()
+){
+    ProfileBodyScreen(
+        userData = userData,
+        onDrawer = onDrawer,
+        onEvent = viewModel::onEvent,
+        onSignOut = onSignOut
+    )
+}
+
+@Composable
+private fun ProfileBodyScreen(
+    userData: UserData?,
+    onDrawer: () -> Unit,
+    onEvent: (UsuarioUiEvent) -> Unit,
+    onSignOut: () -> Unit
 ){
     Scaffold(
         topBar = {
@@ -87,7 +104,10 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             Button(
-                onClick = onSignedOut,
+                onClick = {
+                    onEvent(UsuarioUiEvent.Logout)
+                    onSignOut()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.White
@@ -123,8 +143,8 @@ fun ProfileScreenPreview(){
                 email = "",
                 phoneNumber = ""
             ),
-            onSignedOut = {},
-            onDrawer = {}
+            onDrawer = {},
+            onSignOut = {}
         )
     }
 }

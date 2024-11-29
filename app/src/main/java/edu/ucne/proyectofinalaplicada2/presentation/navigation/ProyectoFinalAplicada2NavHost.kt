@@ -55,7 +55,6 @@ fun ProyectoFinalAplicada2NavHost(
     val context = LocalContext.current
 
     DrawerMenu(
-        userEmail = googleAuthUiClient,
         drawerState = drawerState,
         navHostController = navHostController
     ) {
@@ -85,7 +84,7 @@ fun ProyectoFinalAplicada2NavHost(
                                         intent = result.data ?: return@launch
                                     )
                                 viewModel.onSignInResult(signInResult)
-                                navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: "")){
+                                navHostController.navigate(Screen.HomeScreen){
                                     popUpTo(Screen.UsuarioLoginScreen) { inclusive = true }
                                 }
                             }
@@ -108,7 +107,7 @@ fun ProyectoFinalAplicada2NavHost(
                         navHostController.navigate(Screen.UsuarioRegisterScreen)
                     },
                     onSignClickNative = {
-                        navHostController.navigate(Screen.HomeScreen(it))
+                        navHostController.navigate(Screen.HomeScreen)
                     },
                     onSignClickWithGoogle = {
                         scope.launch {
@@ -128,7 +127,7 @@ fun ProyectoFinalAplicada2NavHost(
                         navHostController.navigate(Screen.UsuarioLoginScreen)
                     },
                     onNavigateToHome = {
-                        navHostController.navigate(Screen.HomeScreen(it)) {
+                        navHostController.navigate(Screen.HomeScreen) {
                             popUpTo(Screen.UsuarioRegisterScreen) { inclusive = true }
                         }
                     }
@@ -220,13 +219,10 @@ fun ProyectoFinalAplicada2NavHost(
                 )
             }
             composable<Screen.HomeScreen>{ argumentos ->
-                val correo = argumentos.toRoute<Screen.HomeScreen>().correo
-
                 HomeScreen(
                     goCategoria = {
                         navHostController.navigate(Screen.ProductosPorCategoriaScreen)
                     },
-                    correo = correo,
                     navController = navHostController,
                 )
             }
@@ -267,7 +263,7 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.NotificacionScreen> {
                 NotificacionScreen(
                     goToHome = {
-                        navHostController.navigate(Screen.HomeScreen(googleAuthUiClient.getSignedInUser()?.email ?: ""))
+                        navHostController.navigate(Screen.HomeScreen)
                     }
                 )
             }
@@ -318,16 +314,13 @@ fun ProyectoFinalAplicada2NavHost(
                             drawerState.open()
                         }
                     },
-                    onSignedOut = {
-                        scope.launch {
-                            googleAuthUiClient.signOut()
-                            Toast.makeText(
-                                context,
-                                "Signed out",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            navHostController.navigate(Screen.UsuarioLoginScreen)
-                        }
+                    onSignOut = {
+                        Toast.makeText(
+                            context,
+                            "Signed out",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        navHostController.navigate(Screen.UsuarioLoginScreen)
                     }
                 )
             }
