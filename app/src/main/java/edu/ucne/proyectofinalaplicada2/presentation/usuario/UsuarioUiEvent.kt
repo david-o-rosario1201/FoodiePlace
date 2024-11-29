@@ -13,4 +13,5 @@ sealed interface UsuarioUiEvent {
     data object Delete: UsuarioUiEvent
     data object Refresh: UsuarioUiEvent
     data object Login: UsuarioUiEvent
+    data object Logout: UsuarioUiEvent
 }
