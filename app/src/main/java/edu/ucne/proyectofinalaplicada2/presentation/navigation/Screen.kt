@@ -69,4 +69,7 @@ sealed class Screen {
 
     @Serializable
     data object ProfileScreen: Screen()
+
+    @Serializable
+    data object ProductoAddCarritoScreen: Screen()
 }
