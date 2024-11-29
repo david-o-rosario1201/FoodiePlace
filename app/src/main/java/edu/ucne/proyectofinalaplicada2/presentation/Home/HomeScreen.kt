@@ -53,14 +53,12 @@ import java.math.BigDecimal
 
 @Composable
 fun HomeScreen(
-    correo: String,
     goCategoria: () -> Unit,
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
     carritoViewModel: CarritoViewModel = hiltViewModel(),
 ) {
-
-    homeViewModel.loadUsuario(correo)
+    homeViewModel.getCurrentUser()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     HomeBodyScreen(
