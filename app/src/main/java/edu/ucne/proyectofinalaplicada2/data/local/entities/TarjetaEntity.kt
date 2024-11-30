@@ -25,4 +25,5 @@ data class TarjetaEntity(
     val numeroTarjeta: String,
     val fechaExpiracion: String,
     val cvv: String,
+    val nombreTitular: String
 )
