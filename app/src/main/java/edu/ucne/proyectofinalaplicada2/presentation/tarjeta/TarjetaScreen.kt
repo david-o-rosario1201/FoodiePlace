@@ -35,6 +35,7 @@ fun TarjetaScreen(
     onNavigateToList: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     TarjetaBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,

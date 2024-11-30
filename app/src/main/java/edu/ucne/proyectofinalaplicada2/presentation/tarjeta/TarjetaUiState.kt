@@ -4,7 +4,7 @@ import edu.ucne.proyectofinalaplicada2.data.remote.dto.TarjetaDto
 
 data class TarjetaUiState(
     val tarjetaId: Int? = null,
-    val usuarioId: Int = 2,
+    val usuarioId: Int? = null,
     val tipoTarjeta: String? = "",
     val numeroTarjeta: String? = "",
     val fechaExpiracion: String? = "",

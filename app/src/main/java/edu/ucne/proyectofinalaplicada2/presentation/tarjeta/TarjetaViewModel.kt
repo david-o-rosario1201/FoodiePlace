@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.TarjetaDto
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.TarjetaRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -15,7 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TarjetaViewModel @Inject constructor(
-    private val tarjetaRepository: TarjetaRepository
+    private val tarjetaRepository: TarjetaRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TarjetaUiState())
@@ -77,6 +81,17 @@ class TarjetaViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.value = _uiState.value.copy(
+                usuarioId = usuarioActual?.usuarioId ?: 0
+            )
+        }
+    }
+
     fun onEvent(event: TarjetaUiEvent) {
         when (event) {
             is TarjetaUiEvent.UsuarioIdChanged -> {
@@ -120,8 +135,10 @@ class TarjetaViewModel @Inject constructor(
             }
             TarjetaUiEvent.Save -> {
                 viewModelScope.launch {
+                    getCurrentUser()
                     if (_uiState.value.tarjetaId == null) {
                         tarjetaRepository.addTarjeta(_uiState.value.toEntity())
+
                     } else {
                         tarjetaRepository.updateTarjeta(
                             _uiState.value.tarjetaId ?: 0,
