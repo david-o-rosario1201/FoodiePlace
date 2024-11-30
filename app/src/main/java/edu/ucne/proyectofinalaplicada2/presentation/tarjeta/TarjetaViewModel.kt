@@ -37,7 +37,7 @@ class TarjetaViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
-                        // Mapear de TarjetaEntity a TarjetaDto
+
                         val tarjetaDtoList = result.data?.map { entity ->
                             TarjetaDto(
                                 tarjetaId = entity.tarjetaId,
@@ -50,7 +50,7 @@ class TarjetaViewModel @Inject constructor(
                             )
                         } ?: emptyList()
 
-                        // Actualizar el estado con la lista de DTOs
+
                         _uiState.update {
                             it.copy(
                                 tarjetas = tarjetaDtoList,
