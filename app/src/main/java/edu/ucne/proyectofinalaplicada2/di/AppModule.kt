@@ -30,7 +30,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object AppModule {
-    const val BASE_URL = "https://foodieplaceapi.azurewebsites.net/"
+    const val BASE_URL = "https://foodieplaceapinew-gdg6f4avfmbxctf0.eastus2-01.azurewebsites.net/"
 
     //Moshi
     @Provides
