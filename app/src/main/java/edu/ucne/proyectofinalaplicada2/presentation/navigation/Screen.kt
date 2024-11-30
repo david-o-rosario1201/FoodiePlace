@@ -77,3 +77,4 @@ sealed class Screen {
     data object TarjetaScreen: Screen()
 
     }
+
