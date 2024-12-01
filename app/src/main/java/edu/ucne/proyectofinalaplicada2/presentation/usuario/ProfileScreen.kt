@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,21 +29,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
-import edu.ucne.proyectofinalaplicada2.presentation.sign_in.UserData
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 
 @Composable
 fun ProfileScreen(
-    userData: UserData?,
     onDrawer: () -> Unit,
     onSignOut: () -> Unit,
     viewModel: UsuarioViewModel = hiltViewModel()
 ){
+    viewModel.getCurrentUser()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ProfileBodyScreen(
-        userData = userData,
+        uiState = uiState,
         onDrawer = onDrawer,
         onEvent = viewModel::onEvent,
         onSignOut = onSignOut
@@ -51,7 +53,7 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileBodyScreen(
-    userData: UserData?,
+    uiState: UsuarioUiState,
     onDrawer: () -> Unit,
     onEvent: (UsuarioUiEvent) -> Unit,
     onSignOut: () -> Unit
@@ -73,9 +75,9 @@ private fun ProfileBodyScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            if(userData?.profilePictureUrl != null) {
+            if(!uiState.fotoPerfil.isNullOrBlank()) {
                 AsyncImage(
-                    model = userData.profilePictureUrl,
+                    model = uiState.fotoPerfil,
                     contentDescription = "Profile picture",
                     modifier = Modifier
                         .size(150.dp)
@@ -94,15 +96,23 @@ private fun ProfileBodyScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            if(userData?.userName != null) {
-                Text(
-                    text = userData.userName,
-                    textAlign = TextAlign.Center,
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+            Text(
+                text = uiState.nombre ?: "",
+                textAlign = TextAlign.Center,
+                fontSize = 36.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = uiState.correo ?: "",
+                textAlign = TextAlign.Center,
+                fontSize = 36.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+
             Button(
                 onClick = {
                     onEvent(UsuarioUiEvent.Logout)
@@ -134,15 +144,9 @@ private fun ProfileBodyScreen(
 @Composable
 fun ProfileScreenPreview(){
     ProyectoFinalAplicada2Theme {
-        ProfileScreen(
-            userData = UserData(
-                userId = "user",
-                userName = "user",
-                profilePictureUrl = "",
-                password = "",
-                email = "",
-                phoneNumber = ""
-            ),
+        ProfileBodyScreen(
+            uiState = UsuarioUiState(),
+            onEvent = {},
             onDrawer = {},
             onSignOut = {}
         )
