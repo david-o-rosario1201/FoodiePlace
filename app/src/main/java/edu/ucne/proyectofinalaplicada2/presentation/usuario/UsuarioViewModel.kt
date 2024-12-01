@@ -205,7 +205,6 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
-
     private suspend fun guardarUsuario() {
         if (_uiState.value.usuarioId == null) {
             usuarioRepository.addUsuario(_uiState.value.toDto())
@@ -292,7 +291,6 @@ class UsuarioViewModel @Inject constructor(
         return isValid
     }
 
-
     private fun cargarUsuarioSeleccionado(usuarioId: Int) = viewModelScope.launch {
         if (usuarioId > 0) {
             val usuario = usuarioRepository.getUsuario(usuarioId)
@@ -322,7 +320,6 @@ class UsuarioViewModel @Inject constructor(
             phoneNumber
         }
     }
-
 
     private fun UsuarioUiState.toDto() = UsuarioDto(
         usuarioId = usuarioId,

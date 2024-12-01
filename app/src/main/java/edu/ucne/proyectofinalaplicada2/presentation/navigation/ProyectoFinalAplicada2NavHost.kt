@@ -219,12 +219,12 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.HomeScreen>{ argumentos ->
+            composable<Screen.HomeScreen>{
                 HomeScreen(
                     goCategoria = {
                         navHostController.navigate(Screen.ProductosPorCategoriaScreen)
                     },
-                    navController = navHostController,
+                    navController = navHostController
                 )
             }
             composable<Screen.CategoriaListScreen>{
