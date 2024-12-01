@@ -307,9 +307,8 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-            composable<Screen.ProfileScreen> { argumentos ->
+            composable<Screen.ProfileScreen> {
                 ProfileScreen(
-                    userData = googleAuthUiClient.getSignedInUser(),
                     onDrawer = {
                         scope.launch {
                             drawerState.open()
@@ -337,7 +336,6 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-
 
             composable<Screen.ProductoAddCarritoScreen>
             {

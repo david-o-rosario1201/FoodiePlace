@@ -83,6 +83,21 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.update {
+                it.copy(
+                    nombre = usuarioActual?.nombre,
+                    correo = usuarioActual?.correo,
+                    fotoPerfil = usuarioActual?.fotoPerfil
+                )
+            }
+        }
+    }
+
     fun onEvent(event: UsuarioUiEvent) {
         when (event) {
             is UsuarioUiEvent.UsuarioIdChanged -> updateUiState { it.copy(usuarioId = event.usuarioId) }
