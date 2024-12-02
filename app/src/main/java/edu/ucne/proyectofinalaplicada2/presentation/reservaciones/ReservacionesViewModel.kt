@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ReservacionesRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -16,7 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReservacionesViewModel @Inject constructor(
-    private val reservacionesRepository: ReservacionesRepository
+    private val reservacionesRepository: ReservacionesRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ReservacionesUiState())
@@ -53,6 +57,17 @@ class ReservacionesViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.value = _uiState.value.copy(
+                usuarioId = usuarioActual?.usuarioId ?: 0
+            )
         }
     }
 
@@ -108,6 +123,7 @@ class ReservacionesViewModel @Inject constructor(
             }
             ReservacionesUiEvent.Save -> {
                 viewModelScope.launch {
+                    getCurrentUser()
                     if (_uiState.value.reservacionId == null)
                         reservacionesRepository.addReservacion(_uiState.value.toEntity())
                     else
