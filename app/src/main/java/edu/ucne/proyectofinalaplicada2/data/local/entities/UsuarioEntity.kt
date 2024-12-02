@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class UsuarioEntity(
     @PrimaryKey
     val usuarioId: Int? = null,
+    val rol: String = "",
     val nombre: String = "",
     val telefono: String = "",
     val correo: String = "",

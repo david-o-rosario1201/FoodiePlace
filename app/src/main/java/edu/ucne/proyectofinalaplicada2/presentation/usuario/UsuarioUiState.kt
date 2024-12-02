@@ -4,6 +4,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 
 data class UsuarioUiState(
     val usuarioId: Int? = null,
+    val rol: String? = "Client",
     val nombre: String? = "",
     val telefono: String? = "",
     val correo: String? = "",
