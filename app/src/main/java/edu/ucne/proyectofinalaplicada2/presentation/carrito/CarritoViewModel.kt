@@ -9,10 +9,12 @@ import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.CarritoDetalleDto
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.CarritoDto
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PagosDTO
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.CarritoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.PagosRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.TarjetaRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -25,38 +27,52 @@ class CarritoViewModel @Inject constructor(
     private val repository: CarritoRepository,
     private val pagoRepository: PagosRepository,
     private val productoRepository: ProductoRepository,
-    private val tarjetaRepository: TarjetaRepository
+    private val tarjetaRepository: TarjetaRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CarritoUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        calcularTotales()
-        getCarritoDetalles(1)
-        getTarjetas()
-        getTarjeta(1)
+        obtenerUsuarioActual()
     }
 
-    private fun getCarritos() {
+    private fun obtenerUsuarioActual() {
         viewModelScope.launch {
-            repository.getCarritoss().collect { result ->
+            val currentUserEmail = authRepository.getUser()
+            val usuario = usuarioRepository.getUsuarioByCorreo(currentUserEmail ?: "")
+            if (usuario != null) {
+                _uiState.update { it.copy(usuarioId = usuario.usuarioId ?: 0) }
+                cargarDatosDelCarrito(usuario.usuarioId ?: 0)
+            } else {
+                _uiState.update { it.copy(errorMessge = "Usuario no encontrado") }
+            }
+        }
+    }
+
+    private fun cargarDatosDelCarrito(usuarioId: Int) {
+        getCarritos(usuarioId)
+        getCarritoDetalles(usuarioId)
+        getTarjetas(usuarioId)
+    }
+
+    private fun getCarritos(usuarioId: Int) {
+        viewModelScope.launch {
+            repository.getCarritosPorUsuario(usuarioId).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _uiState.update {
-                            it.copy( isLoading = true )
-                        }
+                        _uiState.update { it.copy(isLoading = true) }
                     }
-
                     is Resource.Success -> {
                         _uiState.update {
                             it.copy(
-                                carritos = (result.data ?: mutableListOf()).toMutableList(),
+                                carritos = result.data ?: mutableListOf(),
                                 isLoading = false
                             )
                         }
                     }
-
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
@@ -70,53 +86,32 @@ class CarritoViewModel @Inject constructor(
         }
     }
 
-    fun realizarPago(tarjetaId: Int, pedidoId: Int) {
+    private fun getCarritoDetalles(usuarioId: Int) {
         viewModelScope.launch {
-            try {
-                val total = _uiState.value.total
-                if (total == BigDecimal.ZERO) {
-                    _uiState.update { it.copy(errorMessge = "El total no puede ser 0.") }
-                    return@launch
+            val carrito = repository.getLastCarritoByPersona(usuarioId)
+            if (carrito != null) {
+                repository.getCarritoDetallesPorCarritoId(carrito.carritoId!!).collect { detalles ->
+                    _uiState.update {
+                        it.copy(carritoDetalle = detalles.toMutableList())
+                    }
+                    calcularTotales()
                 }
-
-                val pagoDto = PagosDTO(
-                    pagoId = 0,
-                    tarjetaId = tarjetaId,
-                    pedidoId = pedidoId,
-                    fechaPago = System.currentTimeMillis().toString(),
-                    monto = total
-                )
-
-                pagoRepository.addPago(pagoDto)
-
+            } else {
                 _uiState.update {
-                    it.copy(
-                        success = true,
-                        errorMessge = null
-                    )
+                    it.copy(errorMessge = "No se encontró ningún carrito para este usuario.")
                 }
-                limpiarCarrito()
-            } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessge = "Error al realizar el pago: ${e.localizedMessage}") }
             }
         }
     }
 
-    fun getTarjeta(tarjetaId: Int){
+    private fun getTarjetas(usuarioId: Int) {
         viewModelScope.launch {
-            tarjetaRepository.getTarjeta(tarjetaId)
-        }
-    }
-
-    fun getTarjetas() {
-        viewModelScope.launch {
-            tarjetaRepository.getTarjetas().collect { result ->
+            tarjetaRepository.getTarjetasPorUsuario(usuarioId).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
-                        }
+                        _uiState.update { it.copy(isLoading = true) }
                     }
+
                     is Resource.Success -> {
                         _uiState.update {
                             it.copy(
@@ -125,6 +120,7 @@ class CarritoViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
@@ -139,12 +135,12 @@ class CarritoViewModel @Inject constructor(
     }
 
 
-    suspend fun agregarProducto(carridetalle: CarritoDetalleEntity, cantidad: Int) {
+    private suspend fun agregarProducto(carridetalle: CarritoDetalleEntity, cantidad: Int) {
         var carritoAnterior = repository.getLastCarrito()
         if (carritoAnterior == null) {
             repository.saveCarrito(
                 CarritoEntity(
-                    usuarioId = 1,
+                    usuarioId = _uiState.value.usuarioId,
                     fechaCreacion = System.currentTimeMillis().toString(),
                     pagado = false,
                     carritoDetalle = mutableListOf()
@@ -184,7 +180,9 @@ class CarritoViewModel @Inject constructor(
         }
     }
 
-    fun limpiarCarrito() {
+
+
+    private fun limpiarCarrito() {
         _uiState.update {
             it.copy(
                 carritoDetalle = mutableListOf(),
@@ -193,17 +191,6 @@ class CarritoViewModel @Inject constructor(
                 propina = BigDecimal.ZERO,
                 total = BigDecimal.ZERO
             )
-        }
-    }
-
-    fun getCarritoDetalles(carritoId: Int) {
-        viewModelScope.launch {
-            repository.getCarritoDetalles(carritoId).collect { detalles ->
-                _uiState.update {
-                    it.copy(carritoDetalle = detalles.toMutableList())
-                }
-                calcularTotales()
-            }
         }
     }
 
@@ -222,7 +209,7 @@ class CarritoViewModel @Inject constructor(
                 }
             }
             CarritoUiEvent.Refresh -> {
-                getCarritos()
+                getCarritos(_uiState.value.usuarioId)
             }
 
             is CarritoUiEvent.AgregarProducto -> agregarProducto(event.producto, event.cantidad)
@@ -230,7 +217,9 @@ class CarritoViewModel @Inject constructor(
             CarritoUiEvent.LimpiarCarrito -> limpiarCarrito()
             CarritoUiEvent.LoadCarritoDetalles -> TODO()
             CarritoUiEvent.LoadCarritos -> TODO()
-            is CarritoUiEvent.RealizarPago -> realizarPago(event.tarjetaId, event.pedidoId)
+            is CarritoUiEvent.RealizarPago -> {
+                realizarPago(event.tarjetaId, event.pedidoId)
+            }
         }
     }
 
@@ -249,6 +238,39 @@ class CarritoViewModel @Inject constructor(
                 limpiarCarrito()
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessge = "Error al guardar el carrito: ${e.localizedMessage}") }
+            }
+        }
+    }
+
+    private fun realizarPago(tarjetaId: Int, pedidoId: Int) {
+        viewModelScope.launch {
+            try {
+                val total = _uiState.value.total
+                if (total == BigDecimal.ZERO) {
+                    _uiState.update { it.copy(errorMessge = "El total no puede ser 0.") }
+                    return@launch
+                }
+
+                val pagoDto = PagosDTO(
+                    pagoId = 0,
+                    tarjetaId = tarjetaId,
+                    pedidoId = pedidoId,
+                    fechaPago = System.currentTimeMillis().toString(),
+                    monto = total
+                )
+
+                // Realiza el pago
+                pagoRepository.addPago(pagoDto)
+
+                _uiState.update {
+                    it.copy(
+                        success = true,
+                        errorMessge = null
+                    )
+                }
+                limpiarCarrito()
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessge = "Error al realizar el pago: ${e.localizedMessage}") }
             }
         }
     }
@@ -288,3 +310,4 @@ class CarritoViewModel @Inject constructor(
         }
     }
 }
+
