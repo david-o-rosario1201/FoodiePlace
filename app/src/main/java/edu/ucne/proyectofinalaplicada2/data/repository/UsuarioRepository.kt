@@ -65,6 +65,7 @@ class UsuarioRepository @Inject constructor(
 
 private fun UsuarioDto.toEntity() = UsuarioEntity(
     usuarioId = usuarioId,
+    rol = rol,
     nombre = nombre,
     telefono = telefono,
     correo = correo,

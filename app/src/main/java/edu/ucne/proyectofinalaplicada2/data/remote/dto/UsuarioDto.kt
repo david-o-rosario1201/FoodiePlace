@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.data.remote.dto
 
 data class UsuarioDto(
     val usuarioId: Int?,
+    val rol: String,
     val nombre: String,
     val telefono: String,
     val correo: String,
