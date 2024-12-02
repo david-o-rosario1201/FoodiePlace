@@ -118,21 +118,7 @@ class TarjetaViewModel @Inject constructor(
             TarjetaUiEvent.Refresh -> {
                 getTarjetas()
             }
-            is TarjetaUiEvent.SelectedTarjeta -> {
-                viewModelScope.launch {
-                    val tarjeta = tarjetaRepository.getTarjeta(event.tarjetaId)
-                    _uiState.update {
-                        it.copy(
-                            tarjetaId = tarjeta.tarjetaId,
-                            usuarioId = tarjeta.usuarioId,
-                            tipoTarjeta = tarjeta.tipoTarjeta,
-                            numeroTarjeta = tarjeta.numeroTarjeta,
-                            fechaExpiracion = tarjeta.fechaExpiracion,
-                            cvv = tarjeta.cvv
-                        )
-                    }
-                }
-            }
+
             TarjetaUiEvent.Save -> {
                 viewModelScope.launch {
                     getCurrentUser()
