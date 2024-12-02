@@ -3,7 +3,6 @@ package edu.ucne.proyectofinalaplicada2.presentation.usuario
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.UsuarioDto
 import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
@@ -35,6 +34,7 @@ class UsuarioViewModel @Inject constructor(
                     isSignInSuccessful = result.data != null,
                     signInError = result.errorMessage,
                     usuarioId = null,
+                    rol = "Client",
                     nombre = result.data?.userName,
                     telefono = result.data?.phoneNumber,
                     correo = result.data?.email,
@@ -338,18 +338,11 @@ class UsuarioViewModel @Inject constructor(
 
     private fun UsuarioUiState.toDto() = UsuarioDto(
         usuarioId = usuarioId,
+        rol = rol ?: "",
         nombre = nombre ?: "",
         contrasena = contrasena ?: "",
         correo = correo ?: "",
         telefono = telefono ?: "",
-        fotoPerfil = fotoPerfil
-    )
-    private fun UsuarioEntity.toDto() = UsuarioDto(
-        usuarioId = usuarioId,
-        nombre = nombre,
-        contrasena = contrasena,
-        correo = correo,
-        telefono = telefono,
         fotoPerfil = fotoPerfil
     )
 }
