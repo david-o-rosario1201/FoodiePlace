@@ -54,7 +54,6 @@ import java.util.Locale
 fun ReservacionesListScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
     goToReservacion: () -> Unit,
-    modifier: Modifier = Modifier,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
@@ -63,7 +62,6 @@ fun ReservacionesListScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         goToReservacion = goToReservacion,
-        modifier = modifier,
         onClickNotifications = onClickNotifications,
         onDrawer = onDrawer
     )
@@ -73,7 +71,6 @@ fun ReservacionesListBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
     goToReservacion: () -> Unit,
-    modifier: Modifier = Modifier,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
