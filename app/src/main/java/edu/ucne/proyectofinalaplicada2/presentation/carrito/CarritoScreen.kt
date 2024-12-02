@@ -21,7 +21,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -46,7 +45,6 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.TotalRow
-import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
