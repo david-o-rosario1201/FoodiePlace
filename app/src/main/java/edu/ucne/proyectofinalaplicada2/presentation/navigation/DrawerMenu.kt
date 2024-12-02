@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -102,18 +103,25 @@ fun DrawerMenu(
                             handleItemClick(Screen.ReviewListScreen, it)
                         }
                         DrawerItem(
-                            title = stringResource(R.string.drawer_Profile),
-                            icon = Icons.Filled.Person,
-                            isSelected = selectedItem.value == stringResource(R.string.drawer_Profile)
-                        ) {
-                            handleItemClick(Screen.ProfileScreen, it)
-                        }
-                        DrawerItem(
                             title = stringResource(R.string.drawer_Reservaciones),
                             icon = Icons.Filled.Info,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_Reservaciones)
                         ) {
                             handleItemClick(Screen.ReservacionListScreen, it)
+                        }
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_Ofertas),
+                            icon = Icons.Filled.DateRange,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_Ofertas)
+                        ) {
+                            handleItemClick(Screen.OfertaListScreen, it)
+                        }
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_Profile),
+                            icon = Icons.Filled.Person,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_Profile)
+                        ) {
+                            handleItemClick(Screen.ProfileScreen, it)
                         }
                     }
                 }
