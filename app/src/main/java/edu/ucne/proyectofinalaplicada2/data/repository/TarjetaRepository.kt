@@ -16,7 +16,10 @@ class TarjetaRepository @Inject constructor(
 ) {
     suspend fun addTarjeta(tarjetaDto: TarjetaDto) = tarjetaRemoteDataSource.addTarjeta(tarjetaDto)
 
-    suspend fun getTarjeta(tarjetaId: Int) = tarjetaRemoteDataSource.getTarjeta(tarjetaId)
+    fun getTarjeta(usuarioId: Int) : Flow<List<TarjetaEntity>> {
+        return tarjetaDao.getTarjetasPorUsuario(usuarioId)
+    }
+
 
     suspend fun deleteTarjeta(tarjetaId: Int) {
         tarjetaRemoteDataSource.deleteTarjeta(tarjetaId)
@@ -49,6 +52,19 @@ class TarjetaRepository @Inject constructor(
             emit(Resource.Error("Error desconocido ${e.message}"))
 
 
+        }
+    }
+
+    fun getTarjetasPorUsuario(usuarioId: Int): Flow<Resource<List<TarjetaEntity>>> = flow {
+        try {
+            emit(Resource.Loading()) // Emite un estado de carga
+
+            tarjetaDao.getTarjetasPorUsuario(usuarioId).collect { tarjetasLocal ->
+                emit(Resource.Success(tarjetasLocal))
+            }
+
+        } catch (e: Exception) {
+            emit(Resource.Error("Error al obtener tarjetas: ${e.message}")) // Emite error en caso de excepción
         }
     }
 

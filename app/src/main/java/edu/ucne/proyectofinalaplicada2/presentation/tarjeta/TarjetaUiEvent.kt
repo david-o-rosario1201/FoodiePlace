@@ -12,5 +12,4 @@ sealed interface TarjetaUiEvent {
     object Save: TarjetaUiEvent
     object Delete: TarjetaUiEvent
     object Refresh: TarjetaUiEvent
-    data class SelectedTarjeta(val tarjetaId: Int): TarjetaUiEvent
 }

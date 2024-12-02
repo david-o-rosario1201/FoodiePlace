@@ -24,7 +24,8 @@ class CarritoRepository @Inject constructor(
     suspend fun getLastCarrito() = carritoDao.getLastCarrito()
 
     fun getCarritoss(): Flow<Resource<List<CarritoEntity>>> = flow {
-        try{emit(Resource.Loading())
+        try {
+            emit(Resource.Loading())
             val carrito = carritoRemoteDataSource.getCarrito()
 
             carrito.forEach {
@@ -33,13 +34,13 @@ class CarritoRepository @Inject constructor(
                 )
             }
 
-            carritoDao.getAll().collect{carritoLocal ->
+            carritoDao.getAll().collect { carritoLocal ->
                 emit(Resource.Success(carritoLocal))
             }
 
-        }catch (e: HttpException){
+        } catch (e: HttpException) {
             emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Verificar conexion a internet"))
 
             carritoDao.getAll().collect { carritoLocal ->
@@ -48,24 +49,33 @@ class CarritoRepository @Inject constructor(
         }
     }
 
+    fun getCarritosPorUsuario(usuarioId: Int): Flow<Resource<List<CarritoEntity>>> {
+        return flow {
+            emit(Resource.Loading())
+            try {
+                val carritos = carritoDao.getCarritosPorUsuario(usuarioId)
+                emit(Resource.Success(carritos))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.localizedMessage ?: "Error al obtener carritos"))
+            }
+        }
+    }
+
+    fun getCarritoDetallesPorCarritoId(carritoId: Int): Flow<List<CarritoDetalleEntity>> {
+        return carritoDao.getCarritoDetallesPorCarritoId(carritoId)
+    }
+
     suspend fun addCarritoDetalle(detalle: CarritoDetalleEntity) {
         detalleCarritoDao.save(detalle)
     }
 
-    fun getCarritoDetalles(carritoId: Int): Flow<List<CarritoDetalleEntity>> {
-        return detalleCarritoDao.getCarritoDetalles(carritoId)
-    }
+    suspend fun getLastCarritoByPersona(personaId: Int) =
+        carritoDao.getLastCarritoByUsuario(personaId)
 
-
-    suspend fun getLastCarritoByPersona(personaId: Int)= carritoDao.getLastCarritoByUsuario(personaId)
-
-    suspend fun clearCarrito(carritoId: Int) {
-        detalleCarritoDao.clearCarrito(carritoId)
-    }
-
-    suspend fun CarritoExiste(productoId: Int, carritoId: Int){
+    suspend fun CarritoExiste(productoId: Int, carritoId: Int) {
         detalleCarritoDao.carritoDetalleExit(productoId, carritoId)
     }
+
     suspend fun getCarritoDetalleByProductoId(productoId: Int, carritoId: Int) =
         detalleCarritoDao.getCarritoDetalleByProductoId(productoId, carritoId)
 

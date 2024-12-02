@@ -16,7 +16,7 @@ data class CarritoUiState (
     val carritos: List<CarritoEntity> = emptyList(),
     val isRefreshing: Boolean =false,
     val carritoDetalle: List<CarritoDetalleEntity> = emptyList(),
-    val tarjetas: List<TarjetaEntity> = emptyList(),
+    val tarjetas: List<TarjetaEntity>? = emptyList(),
     val total: BigDecimal? = BigDecimal.valueOf(0.0),
     val precioUnitario : BigDecimal? = BigDecimal.ZERO,
     val impuesto : BigDecimal? = BigDecimal.ZERO,
