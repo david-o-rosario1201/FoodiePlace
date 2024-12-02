@@ -43,6 +43,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.presentation.components.UnAuthorizedUser
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import kotlinx.coroutines.delay
@@ -61,15 +62,24 @@ fun OfertaListScreen(
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ){
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    OfertaListBodyScreen(
-        uiState = uiState,
-        onAddOferta = onAddOferta,
-        onClickOferta = onClickOferta,
-        onEvent = viewModel::onEvent,
-        onClickNotifications = onClickNotifications,
-        onDrawer = onDrawer
-    )
+
+    if(uiState.usuarioRol == "Admin"){
+        OfertaListBodyScreen(
+            uiState = uiState,
+            onAddOferta = onAddOferta,
+            onClickOferta = onClickOferta,
+            onEvent = viewModel::onEvent,
+            onClickNotifications = onClickNotifications,
+            onDrawer = onDrawer
+        )
+    } else {
+        UnAuthorizedUser(
+            onDrawer = onDrawer,
+            onClickNotifications = onClickNotifications
+        )
+    }
 }
 
 @Composable
