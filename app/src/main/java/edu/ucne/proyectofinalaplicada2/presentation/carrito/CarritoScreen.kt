@@ -21,6 +21,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -45,6 +46,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.pedido.TotalRow
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -111,10 +113,15 @@ private fun CarritoBodyScreen(
                     uiState = uiState,
                     onCardSelected = { tarjetaId ->
                         onCarritoEvent(CarritoUiEvent.RealizarPago(tarjetaId, uiState.id ?: 0))
+                        onCarritoEvent(CarritoUiEvent.LimpiarCarrito)
                         if (uiState.success) {
                             onCarritoEvent(CarritoUiEvent.LimpiarCarrito)
                             isModalVisible = false
                         }
+                    },
+                    onAgregarTarjetaClick = {
+                        isModalVisible = false
+                        navController.navigate("tarjeta_screen")
                     }
                 )
             }
@@ -170,30 +177,72 @@ fun CarritoResumen(uiState: CarritoUiState, onPagarClick: () -> Unit) {
 }
 
 @Composable
-fun CardSelectionContent(uiState: CarritoUiState, onCardSelected: (Int) -> Unit) {
+fun CardSelectionContent(
+    uiState: CarritoUiState,
+    onCardSelected: (Int) -> Unit,
+    onAgregarTarjetaClick: () -> Unit // Nueva función para manejar el clic en "Agregar Tarjeta"
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Selecciona una tarjeta", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(
+            text = "Selecciona una tarjeta",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (uiState.tarjetas.isEmpty()) {
-            Text("No se encontraron tarjetas disponibles.")
-        } else {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(uiState.tarjetas) { tarjeta ->
-                    Card(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(120.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE7E7E7)),
-                        onClick = { onCardSelected(tarjeta.tarjetaId) }
-                    ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                            Text("****${tarjeta.numeroTarjeta?.takeLast(4)}", style = MaterialTheme.typography.bodyLarge)
+        // Mostrar las tarjetas si existen, y el botón de agregar tarjeta al final en una fila
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // Tarjeta para agregar una nueva tarjeta estará siempre visible
+            Card(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(120.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.LightGray),
+                onClick = { onAgregarTarjetaClick() }
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = "+ Agregar Tarjeta",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Black
+                    )
+                }
+            }
+
+            // Si hay tarjetas disponibles, las mostramos en un LazyRow
+            if (uiState.tarjetas?.isEmpty() == true) {
+                Text("No se encontraron tarjetas disponibles.")
+            } else {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    items(uiState.tarjetas ?: emptyList()) { tarjeta ->
+                        Card(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(120.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFE7E7E7)),
+                            onClick = { onCardSelected(tarjeta.tarjetaId)}
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "****${tarjeta.numeroTarjeta?.takeLast(4)}",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
                         }
                     }
                 }
@@ -201,6 +250,9 @@ fun CardSelectionContent(uiState: CarritoUiState, onCardSelected: (Int) -> Unit)
         }
     }
 }
+
+
+
 
 
 
