@@ -3,19 +3,24 @@ package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.ucne.proyectofinalaplicada2.data.local.dto.ReservacionesDto
+import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ReservacionesRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class ReservacionesViewModel @Inject constructor(
-    private val reservacionesRepository: ReservacionesRepository
+    private val reservacionesRepository: ReservacionesRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ReservacionesUiState())
@@ -55,6 +60,17 @@ class ReservacionesViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.value = _uiState.value.copy(
+                usuarioId = usuarioActual?.usuarioId ?: 0
+            )
+        }
+    }
+
     fun onEvent(event: ReservacionesUiEvent) {
         when (event) {
             is ReservacionesUiEvent.ReservacionIdChange -> {
@@ -72,6 +88,15 @@ class ReservacionesViewModel @Inject constructor(
             is ReservacionesUiEvent.EstadoChange -> {
                 _uiState.update { it.copy(estado = event.estado) }
             }
+            is ReservacionesUiEvent.NumeroMesaChange -> {
+                _uiState.update { it.copy(numeroMesa = event.numeroMesa) }
+                }
+            is ReservacionesUiEvent.HoraReservacionChange -> {
+                _uiState.update { it.copy(horaReservacion = event.horaReservacion) }
+            }
+            is ReservacionesUiEvent.RestablecerCampos -> {
+                _uiState.value = ReservacionesUiState()
+            }
             is ReservacionesUiEvent.IsRefreshingChanged -> {
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
             }
@@ -88,7 +113,9 @@ class ReservacionesViewModel @Inject constructor(
                                 usuarioId = reservacion.usuarioId,
                                 fechaReservacion = reservacion.fechaReservacion,
                                 numeroPersonas = reservacion.numeroPersonas,
-                                estado = reservacion.estado
+                                estado = reservacion.estado,
+                                numeroMesa = reservacion.numeroMesa,
+                                horaReservacion = reservacion.horaReservacion
                             )
                         }
                     }
@@ -96,6 +123,7 @@ class ReservacionesViewModel @Inject constructor(
             }
             ReservacionesUiEvent.Save -> {
                 viewModelScope.launch {
+                    getCurrentUser()
                     if (_uiState.value.reservacionId == null)
                         reservacionesRepository.addReservacion(_uiState.value.toEntity())
                     else
@@ -120,8 +148,10 @@ class ReservacionesViewModel @Inject constructor(
     fun ReservacionesUiState.toEntity() = ReservacionesDto(
         reservacionId = reservacionId ?: 0,
         usuarioId = usuarioId ?: 0,
-        fechaReservacion = fechaReservacion ?: "",
-        numeroPersonas = numeroPersonas ?: 0,
-        estado = estado ?: ""
+        fechaReservacion = (fechaReservacion),
+        numeroPersonas = numeroPersonas,
+        estado = estado ,
+        numeroMesa = numeroMesa ,
+        horaReservacion = (horaReservacion ?: Date())
     )
 }

@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,26 +43,25 @@ import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ReservacionesListScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
-    goToReservacion: (Int) -> Unit,
-    goToAddReservacion: () -> Unit,
-    modifier: Modifier = Modifier,
+    goToReservacion: () -> Unit,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     ReservacionesListBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         goToReservacion = goToReservacion,
-        goToAddReservacion = goToAddReservacion,
-        modifier = modifier,
         onClickNotifications = onClickNotifications,
         onDrawer = onDrawer
     )
@@ -69,9 +70,7 @@ fun ReservacionesListScreen(
 fun ReservacionesListBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
-    goToReservacion: (Int) -> Unit,
-    goToAddReservacion: () -> Unit,
-    modifier: Modifier = Modifier,
+    goToReservacion: () -> Unit,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
@@ -81,12 +80,23 @@ fun ReservacionesListBodyScreen(
     Scaffold(
         topBar = {
             TopBarComponent(
-                title = "",
+                title = "Reservaciones",
                 onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = goToReservacion,
+                containerColor = color_oro,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Agregar nuevas Reservacion"
+                )
+            }
+        }
     ) {
         Box(
             modifier = Modifier
@@ -138,8 +148,16 @@ fun ReservacionesListBodyScreen(
 @Composable
 fun ReservacionItem(
     item: ReservacionesEntity,
-    goToReservacion: (Int) -> Unit
+    goToReservacion: () -> Unit
 ) {
+    // Crear el formato para fecha y hora
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    // Formatear fecha y hora
+    val formattedDate = dateFormat.format(item.fechaReservacion)
+    val formattedTime = timeFormat.format(item.horaReservacion)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -155,7 +173,7 @@ fun ReservacionItem(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Día: ${item.reservacionId}",
+                    text = "ID: ${item.reservacionId}",
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
@@ -165,7 +183,12 @@ fun ReservacionItem(
                     color = if (item.estado == "Activo") Color(0xFF4CAF50) else Color(0xFFFF0000)
                 )
                 Text(
-                    text = "Día: ${item.fechaReservacion}",
+                    text = "Fecha: $formattedDate",
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = "Hora: $formattedTime",
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
@@ -174,10 +197,15 @@ fun ReservacionItem(
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
+                Text(
+                    text = "Mesa: ${item.numeroMesa}",
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
             }
 
             IconButton(
-                onClick = { goToReservacion(item.reservacionId ?: 0) },
+                onClick = { goToReservacion() },
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(
@@ -190,30 +218,44 @@ fun ReservacionItem(
     }
 }
 
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ReservacionesListScreenPreview() {
+    // Crear el formato para fecha
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    // Crear el formato para hora si es necesario
+    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
     val sampleReservaciones = listOf(
         ReservacionesEntity(
             reservacionId = 1,
             usuarioId = 1,
             estado = "Activo",
-            fechaReservacion = "2024-11-12",
-            numeroPersonas = 4
+            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(), // Conversión a Date
+            numeroPersonas = 4,
+            horaReservacion = timeFormat.parse("18:00") ?: Date() ,// Conversión a Date
+            numeroMesa = 3
         ),
+
         ReservacionesEntity(
             reservacionId = 2,
             usuarioId = 2,
             estado = "Cancelado",
-            fechaReservacion = "2024-11-13",
-            numeroPersonas = 2
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
+            numeroPersonas = 2,
+            horaReservacion = timeFormat.parse("19:00") ?: Date(),
+            numeroMesa = 4// Conversión a Date
         ),
         ReservacionesEntity(
             reservacionId = 3,
             usuarioId = 6,
             estado = "Cancelado",
-            fechaReservacion = "2024-11-13",
-            numeroPersonas = 2
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
+            numeroPersonas = 2,
+            horaReservacion = timeFormat.parse("20:00") ?: Date(),
+            numeroMesa = 9
+
         )
     )
 
@@ -221,7 +263,6 @@ fun ReservacionesListScreenPreview() {
         uiState = ReservacionesUiState(reservaciones = sampleReservaciones),
         onEvent = {},
         goToReservacion = {},
-        goToAddReservacion = {},
         onClickNotifications = {},
         onDrawer = {}
     )
