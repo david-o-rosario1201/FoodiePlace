@@ -136,7 +136,7 @@ class CarritoViewModel @Inject constructor(
 
 
     private suspend fun agregarProducto(carridetalle: CarritoDetalleEntity, cantidad: Int) {
-        var carritoAnterior = repository.getLastCarrito()
+        var carritoAnterior = repository.getCarritoNoPagadoPorUsuario(_uiState.value.usuarioId)
         if (carritoAnterior == null) {
             repository.saveCarrito(
                 CarritoEntity(
@@ -146,10 +146,13 @@ class CarritoViewModel @Inject constructor(
                     carritoDetalle = mutableListOf()
                 )
             )
-            carritoAnterior = repository.getLastCarrito()
+            carritoAnterior = repository.getCarritoNoPagadoPorUsuario(_uiState.value.usuarioId)
         }
-        val existeCarrito = repository.CarritoExiste(carridetalle.productoId ?: 0, carritoAnterior?.carritoId ?: 0)
-        val producto  = productoRepository.getProducto(carridetalle.productoId ?:0)
+        val existeCarrito = repository.CarritoExiste(
+            carridetalle.productoId ?: 0,
+            carritoAnterior?.carritoId ?: 0
+        )
+        val producto = productoRepository.getProducto(carridetalle.productoId ?: 0)
         if (existeCarrito.equals(false)) {
             repository.addCarritoDetalle(
                 CarritoDetalleEntity(
@@ -162,18 +165,22 @@ class CarritoViewModel @Inject constructor(
                     propina = BigDecimal.ZERO
                 )
             )
-        }else{
-            val carriDetalleRepetido = repository.getCarritoDetalleByProductoId(carridetalle.productoId ?: 0, carritoAnterior?.carritoId ?: 0)
-            val cantidad =( carriDetalleRepetido?.cantidad ?: 0) + (carridetalle.cantidad!!)
+        } else {
+            val carriDetalleRepetido = repository.getCarritoDetalleByProductoId(
+                carridetalle.productoId ?: 0,
+                carritoAnterior?.carritoId ?: 0
+            )
+            val nuevaCantidad = (carriDetalleRepetido?.cantidad ?: 0) + (carridetalle.cantidad ?: 0)
+
             repository.addCarritoDetalle(
                 CarritoDetalleEntity(
                     carritoDetalleId = carriDetalleRepetido?.carritoDetalleId,
                     carritoId = carritoAnterior?.carritoId ?: 0,
                     productoId = carridetalle.productoId ?: 0,
-                    cantidad = cantidad,
+                    cantidad = nuevaCantidad,
                     precioUnitario = producto.precio,
                     impuesto = BigDecimal.ZERO,
-                    subTotal = cantidad.toBigDecimal() * producto.precio,
+                    subTotal = nuevaCantidad.toBigDecimal() * producto.precio,
                     propina = BigDecimal.ZERO
                 )
             )
