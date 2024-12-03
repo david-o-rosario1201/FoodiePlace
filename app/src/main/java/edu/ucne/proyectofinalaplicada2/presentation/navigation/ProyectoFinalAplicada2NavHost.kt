@@ -170,8 +170,11 @@ fun ProyectoFinalAplicada2NavHost(
             }
             composable<Screen.PedidoListScreen>{
                PedidoListScreen(
-                   onClickPedido = {
-                       navHostController.navigate(Screen.ReviewListScreen)
+                   onClickClientePedido = {
+                       navHostController.navigate(Screen.PedidoClienteScreen)
+                   },
+                   onClickAdminPedido = {
+                       navHostController.navigate(Screen.PedidoAdminScreen)
                    },
                    onClickNotifications = {
                        navHostController.navigate(Screen.NotificacionScreen)
