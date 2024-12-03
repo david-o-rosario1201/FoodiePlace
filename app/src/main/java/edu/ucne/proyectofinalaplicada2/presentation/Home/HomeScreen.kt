@@ -61,17 +61,30 @@ fun HomeScreen(
     homeViewModel.getCurrentUser()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
-    HomeBodyScreen(
-        uiState = uiState,
-        goCategoria = goCategoria,
-        onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
-        navController = navController,
-        onCarritoEvent = { event ->
-            coroutineScope.launch {
-                carritoViewModel.onUiEvent(event)
-            }
-        },
-    )
+
+    if (uiState.usuarioRol == "Admin") {
+        HomeAdminBodyScreen(
+            uiState = uiState,
+            goCategoria = goCategoria,
+            goProducto = {},
+            navController = navController,
+            goOferta = {}
+
+        )
+    } else {
+        // Vista del cliente
+        HomeBodyScreen(
+            uiState = uiState,
+            goCategoria = goCategoria,
+            onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
+            navController = navController,
+            onCarritoEvent = { event ->
+                coroutineScope.launch {
+                    carritoViewModel.onUiEvent(event)
+                }
+            },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -209,6 +222,35 @@ fun HomeBodyScreen(
     }
 }
 
+@Composable
+fun HomeAdminBodyScreen(
+    navController: NavHostController,
+    uiState: HomeUiState,
+    goCategoria: () -> Unit,
+    goProducto: () -> Unit,
+    goOferta: () -> Unit,
+
+){
+    Scaffold(
+
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(horizontal = 16.dp),
+        ){
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Hola, ${uiState.usuarioNombre}",
+                style = TextStyle(
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight(700),
+                )
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

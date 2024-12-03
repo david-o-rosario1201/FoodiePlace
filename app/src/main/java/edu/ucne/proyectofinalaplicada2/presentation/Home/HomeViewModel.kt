@@ -117,9 +117,12 @@ class HomeViewModel @Inject constructor(
             val currentUser = authRepository.getUser()
             val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
 
-            _uiState.value = _uiState.value.copy(
-                usuarioNombre = usuarioActual?.nombre ?: "Usuario no encontrado"
-            )
+            _uiState.update {
+                it.copy(
+                    usuarioNombre = usuarioActual?.nombre ?: "",
+                    usuarioRol = usuarioActual?.rol,
+                )
+            }
         }
     }
 
@@ -140,7 +143,8 @@ data class HomeUiState(
     val errorMessage: String = "",
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
-    val usuarioNombre: String = ""
+    val usuarioNombre: String = "",
+    val usuarioRol: String? = ""
 )
 
 @Composable
