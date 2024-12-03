@@ -79,5 +79,11 @@ sealed class Screen {
     @Serializable
     data object TarjetaScreen: Screen()
 
+    @Serializable
+    data object ReservacionesListScreenAdmin: Screen()
+
+    @Serializable
+    data object ReservacionesScreenAdmin: Screen()
+
     }
 
