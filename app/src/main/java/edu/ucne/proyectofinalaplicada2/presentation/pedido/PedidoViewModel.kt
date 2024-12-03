@@ -183,6 +183,7 @@ class PedidoViewModel @Inject constructor(
 
     private fun PedidoUiState.toDto() = PedidoDto(
         pedidoId = pedidoId,
+        tiempo = tiempo ?: "",
         usuarioId = usuarioId ?: 0,
         fechaPedido = fechaPedido ?: Date(),
         total = total ?: BigDecimal.valueOf(0.0),
