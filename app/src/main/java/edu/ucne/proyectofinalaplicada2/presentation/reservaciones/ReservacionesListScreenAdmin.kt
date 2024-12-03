@@ -220,16 +220,19 @@ fun ReservacionItemAdmin(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ReservacionesListScreenAdminPreview() {
+    // Crear el formato para fecha
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    // Crear el formato para hora si es necesario
+    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     val sampleReservaciones = listOf(
         ReservacionesEntity(
             reservacionId = 1,
             usuarioId = 1,
             estado = "Activo",
-            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(),
+            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(), // Conversión a Date
             numeroPersonas = 4,
-            horaReservacion = "12:00",
+            horaReservacion = timeFormat.parse("18:00") ?: Date() ,// Conversión a Date
             numeroMesa = 3
         ),
 
@@ -237,23 +240,24 @@ fun ReservacionesListScreenAdminPreview() {
             reservacionId = 2,
             usuarioId = 2,
             estado = "Cancelado",
-            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
             numeroPersonas = 2,
-            horaReservacion = "13:30",
-            numeroMesa = 4
+            horaReservacion = timeFormat.parse("19:00") ?: Date(),
+            numeroMesa = 4// Conversión a Date
         ),
         ReservacionesEntity(
             reservacionId = 3,
             usuarioId = 6,
             estado = "Cancelado",
-            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
             numeroPersonas = 2,
-            horaReservacion = "14:00",
+            horaReservacion = timeFormat.parse("20:00") ?: Date(),
             numeroMesa = 9
+
         )
     )
 
-    ReservacionesListBodyScreenAdmin(
+    ReservacionesListBodyScreen(
         uiState = ReservacionesUiState(reservaciones = sampleReservaciones),
         onEvent = {},
         goToReservacion = {},
