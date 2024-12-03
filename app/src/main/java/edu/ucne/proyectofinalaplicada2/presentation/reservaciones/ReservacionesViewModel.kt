@@ -59,6 +59,36 @@ class ReservacionesViewModel @Inject constructor(
             }
         }
     }
+    private fun getReservacionesPorUsuario(usuarioId: Int) {
+        viewModelScope.launch {
+            reservacionesRepository.getReservaciones().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                reservaciones = result.data?.filter { it.usuarioId == usuarioId } ?: emptyList(),
+                                isLoading = false,
+                                errorMensaje = ""
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                reservaciones = result.data?.filter { it.usuarioId == usuarioId } ?: emptyList(),
+                                isLoading = false,
+                                errorMensaje = result.message
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     fun getCurrentUser(){
         viewModelScope.launch {
@@ -66,7 +96,8 @@ class ReservacionesViewModel @Inject constructor(
             val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
 
             _uiState.value = _uiState.value.copy(
-                usuarioId = usuarioActual?.usuarioId ?: 0
+                usuarioId = usuarioActual?.usuarioId ?: 0,
+                usuarioRol = usuarioActual?.rol ?: ""
             )
         }
     }
@@ -119,6 +150,8 @@ class ReservacionesViewModel @Inject constructor(
                             )
                         }
                     }
+
+
                 }
             }
             ReservacionesUiEvent.Save -> {
