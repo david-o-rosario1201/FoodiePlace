@@ -24,9 +24,9 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        installSplashScreen()
         setContent {
             ProyectoFinalAplicada2Theme {
                 val navHost = rememberNavController()

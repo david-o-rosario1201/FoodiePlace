@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProyectoFinalAplicada2</string>
+    <string name="app_name">FoodiePlace</string>
     <string name="drawer_home">Home</string>
     <string name="drawer_pedidos">Pedidos</string>
     <string name="drawer_carrito">Carrito</string>
