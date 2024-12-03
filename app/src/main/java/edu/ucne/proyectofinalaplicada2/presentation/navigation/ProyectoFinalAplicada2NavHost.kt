@@ -225,10 +225,13 @@ fun ProyectoFinalAplicada2NavHost(
             }
             composable<Screen.HomeScreen>{
                 HomeScreen(
-                    goCategoria = {
-                        navHostController.navigate(Screen.ProductosPorCategoriaScreen)
+                    navController = navHostController,
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
                     },
-                    navController = navHostController
+                    onClickNotifications = {}
                 )
             }
             composable<Screen.CategoriaListScreen>{

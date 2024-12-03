@@ -53,8 +53,9 @@ import java.math.BigDecimal
 
 @Composable
 fun HomeScreen(
-    goCategoria: () -> Unit,
     navController: NavHostController,
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     carritoViewModel: CarritoViewModel = hiltViewModel(),
 ) {
@@ -65,17 +66,15 @@ fun HomeScreen(
     if (uiState.usuarioRol == "Admin") {
         HomeAdminBodyScreen(
             uiState = uiState,
-            goCategoria = goCategoria,
-            goProducto = {},
             navController = navController,
-            goOferta = {}
-
+            onDrawer = onDrawer,
+            onClickNotifications = onClickNotifications
         )
     } else {
         // Vista del cliente
         HomeBodyScreen(
             uiState = uiState,
-            goCategoria = goCategoria,
+            goCategoria = {},
             onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
             navController = navController,
             onCarritoEvent = { event ->
@@ -218,36 +217,6 @@ fun HomeBodyScreen(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun HomeAdminBodyScreen(
-    navController: NavHostController,
-    uiState: HomeUiState,
-    goCategoria: () -> Unit,
-    goProducto: () -> Unit,
-    goOferta: () -> Unit,
-
-){
-    Scaffold(
-
-    ){
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 16.dp),
-        ){
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Hola, ${uiState.usuarioNombre}",
-                style = TextStyle(
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight(700),
-                )
-            )
         }
     }
 }
