@@ -10,7 +10,7 @@ sealed interface ReservacionesUiEvent {
     data class EstadoChange(val estado: String) : ReservacionesUiEvent
     data object RestablecerCampos : ReservacionesUiEvent
     data class NumeroMesaChange(val numeroMesa: Int) : ReservacionesUiEvent
-    data class HoraReservacionChange(val horaReservacion: String) : ReservacionesUiEvent
+    data class HoraReservacionChange(val horaReservacion: Date) : ReservacionesUiEvent
 
     object Save : ReservacionesUiEvent
     object Delete : ReservacionesUiEvent
