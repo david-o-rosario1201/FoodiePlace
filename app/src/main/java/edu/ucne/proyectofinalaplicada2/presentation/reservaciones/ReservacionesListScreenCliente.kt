@@ -234,7 +234,7 @@ fun ReservacionesListScreenPreview() {
             estado = "Activo",
             fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(), // Conversión a Date
             numeroPersonas = 4,
-            horaReservacion = " " ,// Conversión a Date
+            horaReservacion = timeFormat.parse("18:00") ?: Date() ,// Conversión a Date
             numeroMesa = 3
         ),
 
@@ -244,7 +244,7 @@ fun ReservacionesListScreenPreview() {
             estado = "Cancelado",
             fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
             numeroPersonas = 2,
-            horaReservacion = " ",
+            horaReservacion = timeFormat.parse("19:00") ?: Date(),
             numeroMesa = 4// Conversión a Date
         ),
         ReservacionesEntity(
@@ -253,7 +253,7 @@ fun ReservacionesListScreenPreview() {
             estado = "Cancelado",
             fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
             numeroPersonas = 2,
-            horaReservacion = " ",
+            horaReservacion = timeFormat.parse("20:00") ?: Date(),
             numeroMesa = 9
 
         )
