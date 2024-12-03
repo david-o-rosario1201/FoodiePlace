@@ -92,7 +92,7 @@ class ReservacionesViewModel @Inject constructor(
                 _uiState.update { it.copy(numeroMesa = event.numeroMesa) }
                 }
             is ReservacionesUiEvent.HoraReservacionChange -> {
-                _uiState.update { it.copy(horaReservacion = event.horaReservacion.toString()) }
+                _uiState.update { it.copy(horaReservacion = event.horaReservacion) }
             }
             is ReservacionesUiEvent.RestablecerCampos -> {
                 _uiState.value = ReservacionesUiState()
@@ -152,6 +152,6 @@ class ReservacionesViewModel @Inject constructor(
         numeroPersonas = numeroPersonas,
         estado = estado ,
         numeroMesa = numeroMesa ,
-        horaReservacion = horaReservacion
+        horaReservacion = (horaReservacion )
     )
 }
