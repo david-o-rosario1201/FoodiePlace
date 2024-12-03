@@ -61,6 +61,10 @@ class CarritoRepository @Inject constructor(
         }
     }
 
+    suspend fun getCarritoNoPagadoPorUsuario(usuarioId: Int): CarritoEntity? {
+        return carritoDao.getCarritoNoPagadoPorUsuario(usuarioId)
+    }
+
     fun getCarritoDetallesPorCarritoId(carritoId: Int): Flow<List<CarritoDetalleEntity>> {
         return carritoDao.getCarritoDetallesPorCarritoId(carritoId)
     }
