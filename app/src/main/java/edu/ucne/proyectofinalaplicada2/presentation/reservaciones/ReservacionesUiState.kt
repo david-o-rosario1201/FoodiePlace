@@ -11,7 +11,7 @@ data class ReservacionesUiState(
     val estado: String = "Pendiente",
     val reservaciones: List<ReservacionesEntity> = emptyList(),
     val numeroMesa: Int = 1,
-    val horaReservacion: Date? = Date(),
+    val horaReservacion: String? ="",
     val isLoading: Boolean = false,
     val success: Boolean = false,
     val errorMensaje: String? = null,
