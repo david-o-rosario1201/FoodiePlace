@@ -144,7 +144,8 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val usuarioNombre: String = "",
-    val usuarioRol: String? = ""
+    val usuarioRol: String? = "",
+    val fotoPerfil: String? = ""
 )
 
 @Composable
