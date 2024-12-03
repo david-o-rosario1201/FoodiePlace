@@ -13,6 +13,7 @@ data class PedidoUiState(
     val total: BigDecimal? = BigDecimal.valueOf(0.0),
     val paraLlevar: Boolean? = false,
     val estado: String? = "",
+    val tiempo: String? = "",
     val pedidoDetalle: List<PedidoDetalleEntity> = emptyList(),
     val pedidos: List<PedidoEntity> = emptyList(),
     val errorUsuarioId: String? = "",

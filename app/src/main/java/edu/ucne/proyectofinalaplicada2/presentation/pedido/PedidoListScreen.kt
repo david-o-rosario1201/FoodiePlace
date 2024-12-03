@@ -211,7 +211,7 @@ private fun PedidoRow(
                         color = Color.Black
                     )
                     Text(
-                        text = "20",
+                        text = it.tiempo,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
@@ -234,6 +234,7 @@ private val sampleUiState = PedidoUiState(
             total = BigDecimal.valueOf(100),
             paraLlevar = true,
             estado = "Pendiente",
+            tiempo = "",
             pedidoDetalle = emptyList()
         ),
         PedidoEntity(
@@ -243,6 +244,7 @@ private val sampleUiState = PedidoUiState(
             total = BigDecimal.valueOf(150),
             paraLlevar = false,
             estado = "Entregado",
+            tiempo = "",
             pedidoDetalle = emptyList()
         )
     )

@@ -26,5 +26,6 @@ data class PedidoEntity(
     val total: BigDecimal,
     val paraLlevar: Boolean,
     val estado: String,
+    val tiempo: String,
     val pedidoDetalle: List<PedidoDetalleEntity>
 )
