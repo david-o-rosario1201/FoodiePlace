@@ -37,6 +37,8 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosPorCategoriaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreenAdmin
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenAdmin
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenCliente
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.tarjeta.TarjetaScreen
@@ -62,7 +64,7 @@ fun ProyectoFinalAplicada2NavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.WelcomeScreen
+            startDestination = Screen.ReservacionesListScreenAdmin
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
@@ -378,6 +380,31 @@ fun ProyectoFinalAplicada2NavHost(
                 TarjetaScreen(
                     onNavigateToList = {
                         navHostController.navigate(Screen.TarjetaScreen)
+                    }
+                )
+            }
+
+            composable<Screen.ReservacionesListScreenAdmin> {
+                ReservacionesListScreenAdmin(
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    },
+                    goToReservacion = {
+                        navHostController.navigate(Screen.ReservacionesScreenAdmin)
+                    }
+                )
+
+            }
+
+            composable<Screen.ReservacionesScreenAdmin> {
+                ReservacionesScreenAdmin(
+                    onNavigateToList = {
+                        navHostController.navigate(Screen.ReservacionesListScreenAdmin)
                     }
                 )
             }
