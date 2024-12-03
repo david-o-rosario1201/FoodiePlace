@@ -63,6 +63,9 @@ interface CarritoDao {
     )
     fun getLastCarritoByEmail(email: String): Flow<CarritoEntity>
 
+    @Query("SELECT * FROM carrito WHERE usuarioId = :usuarioId AND pagado = 0 LIMIT 1")
+    suspend fun getCarritoNoPagadoPorUsuario(usuarioId: Int): CarritoEntity?
+
     @Query("SELECT * FROM CarritoDetalle WHERE carritoId = :carritoId")
     fun getCarritoDetallesPorCarritoId(carritoId: Int): Flow<List<CarritoDetalleEntity>>
 
