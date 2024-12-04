@@ -223,7 +223,6 @@ private fun TimePickers(
 ) {
     TimePickerField(
         onEvent = onEvent,
-        selectedTime = uiState.horaReservacion,
         event = ReservacionesUiEvent.HoraReservacionChange(uiState.horaReservacion)
     )
 }

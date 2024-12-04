@@ -23,7 +23,7 @@ import java.util.*
 
 @Composable
 fun TimePickerField(
-    selectedTime: Date?,
+
     onEvent: (ReservacionesUiEvent) -> Unit,
     event: ReservacionesUiEvent
 ) {
@@ -37,7 +37,7 @@ fun TimePickerField(
             calendar.set(Calendar.MINUTE, minute)
             val time = calendar.time
             timeText = TextFieldValue(time.toString())
-            onEvent(event)  // Trigger event to save the selected time
+            onEvent(event)
         }, 0, 0, true)
     }
 
@@ -62,7 +62,7 @@ fun TimePickerField(
 @Composable
 fun TimePickerFieldPreview() {
     TimePickerField(
-        selectedTime = null,
+
         onEvent = {},
         event = ReservacionesUiEvent.HoraReservacionChange(Date())
     )
