@@ -190,7 +190,6 @@ private fun OfertaRow(
                 .padding(20.dp)
                 .fillMaxSize()
         ) {
-            // Imagen del producto
             Card(
                 modifier = Modifier
                     .size(50.dp)
