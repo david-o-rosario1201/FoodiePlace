@@ -14,9 +14,6 @@ class TarjetaRepository @Inject constructor(
     private val tarjetaRemoteDataSource: TarjetaRemoteDataSource,
     private val tarjetaDao: TarjetaDao
 ) {
-    init {
-        getTarjetas()
-    }
     suspend fun addTarjeta(tarjetaDto: TarjetaDto) = tarjetaRemoteDataSource.addTarjeta(tarjetaDto)
 
     fun getTarjeta(usuarioId: Int) : Flow<List<TarjetaEntity>> {
