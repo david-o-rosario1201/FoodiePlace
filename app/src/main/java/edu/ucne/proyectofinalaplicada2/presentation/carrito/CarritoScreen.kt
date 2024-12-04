@@ -50,8 +50,10 @@ import java.math.BigDecimal
 
 @Composable
 fun CarritoScreen(
-    viewModel: CarritoViewModel = hiltViewModel(),
     navController: NavHostController,
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit,
+    viewModel: CarritoViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
@@ -59,6 +61,8 @@ fun CarritoScreen(
     CarritoBodyScreen(
         uiState = uiState,
         navController = navController,
+        onDrawer = onDrawer,
+        onClickNotifications = onClickNotifications,
         onCarritoEvent = { event ->
             coroutineScope.launch {
                 viewModel.onUiEvent(event)
@@ -72,6 +76,8 @@ fun CarritoScreen(
 private fun CarritoBodyScreen(
     uiState: CarritoUiState,
     navController: NavHostController,
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit,
     onCarritoEvent: (CarritoUiEvent) -> Unit
 ) {
     var isModalVisible by remember { mutableStateOf(false) }
@@ -80,8 +86,8 @@ private fun CarritoBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Carrito",
-                onClickMenu = {},
-                onClickNotifications = {},
+                onClickMenu = onDrawer,
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },
@@ -338,6 +344,8 @@ fun CarritoScreenPreview() {
     CarritoBodyScreen(
         uiState = uiState,
         navController = NavHostController(LocalContext.current),
+        onDrawer = {},
+        onClickNotifications = {},
         onCarritoEvent = {}
     )
 }
