@@ -119,11 +119,11 @@ class ProductoViewModel @Inject constructor(
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
             }
             is ProductoUiEvent.RestablecerCampos -> {
-                _uiState.value = ProductoUiState()
+                _uiState.value = ProductoUiState() // Restablece los campos a sus valores iniciales
             }
             ProductoUiEvent.Refresh -> {
                 getProductos()
-                getCategorias()
+                getCategorias()  // Actualiza también las categorías al refrescar
             }
             is ProductoUiEvent.SelectedProducto -> {
                 viewModelScope.launch {
