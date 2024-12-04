@@ -7,7 +7,7 @@ import edu.ucne.proyectofinalaplicada2.data.remote.dto.CarritoDetalleDto
 @Entity(tableName = "Carrito")
 data class CarritoEntity(
     @PrimaryKey
-    val carritoId: Int,
+    val carritoId: Int? = null,
     val usuarioId: Int,
     val fechaCreacion: String,
     val pagado: Boolean,

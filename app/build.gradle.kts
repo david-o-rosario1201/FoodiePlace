@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.volley)
     implementation(libs.material)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -109,4 +111,19 @@ dependencies {
     implementation ("androidx.compose.material3:material3:1.0.1")  // Asegúrate de tener la versión correcta
     implementation ("androidx.compose.foundation:foundation:1.5.0") // Para swipe-to-refresh
 
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth")
+
+    // Also add the dependency for the Google Play services library and specify its version
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    //splash api
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    //icon api
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
 }

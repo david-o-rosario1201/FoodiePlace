@@ -6,12 +6,14 @@ import java.math.BigDecimal
 import java.util.Date
 
 data class PedidoUiState(
+    val usuarioRol: String? = "",
     val pedidoId: Int? = null,
     val usuarioId: Int? = 0,
     val fechaPedido: Date? = Date(),
     val total: BigDecimal? = BigDecimal.valueOf(0.0),
     val paraLlevar: Boolean? = false,
     val estado: String? = "",
+    val tiempo: String? = "",
     val pedidoDetalle: List<PedidoDetalleEntity> = emptyList(),
     val pedidos: List<PedidoEntity> = emptyList(),
     val errorUsuarioId: String? = "",

@@ -9,5 +9,6 @@ data class TarjetaDto(
     val tipoTarjeta: String,
     val numeroTarjeta: String,
     val fechaExpiracion: String,
-    val cvv: String
+    val cvv: String,
+    val nombreTitular: String
 )

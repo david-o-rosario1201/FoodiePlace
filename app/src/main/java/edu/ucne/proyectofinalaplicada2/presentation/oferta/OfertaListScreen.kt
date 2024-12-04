@@ -43,6 +43,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.OfertaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
+import edu.ucne.proyectofinalaplicada2.presentation.components.UnAuthorizedUser
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import kotlinx.coroutines.delay
@@ -58,16 +59,27 @@ fun OfertaListScreen(
     viewModel: OfertaViewModel = hiltViewModel(),
     onAddOferta: () -> Unit,
     onClickOferta: (Int) -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ){
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    OfertaListBodyScreen(
-        uiState = uiState,
-        onAddOferta = onAddOferta,
-        onClickOferta = onClickOferta,
-        onEvent = viewModel::onEvent,
-        onClickNotifications = onClickNotifications
-    )
+
+    if(uiState.usuarioRol == "Admin"){
+        OfertaListBodyScreen(
+            uiState = uiState,
+            onAddOferta = onAddOferta,
+            onClickOferta = onClickOferta,
+            onEvent = viewModel::onEvent,
+            onClickNotifications = onClickNotifications,
+            onDrawer = onDrawer
+        )
+    } else {
+        UnAuthorizedUser(
+            onDrawer = onDrawer,
+            onClickNotifications = onClickNotifications
+        )
+    }
 }
 
 @Composable
@@ -76,7 +88,8 @@ private fun OfertaListBodyScreen(
     onEvent: (OfertaUiEvent) -> Unit,
     onAddOferta: () -> Unit,
     onClickOferta: (Int) -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onDrawer: () -> Unit
 ){
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -85,7 +98,7 @@ private fun OfertaListBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Ofertas",
-                onClickMenu = {},
+                onClickMenu = onDrawer,
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -111,43 +124,42 @@ private fun OfertaListBodyScreen(
                 .padding(it)
         ){
             PullToRefreshLazyColumn(
-                items = uiState.ofertas,
-                content = {
-                    OfertaRow(
-                        it = it,
-                        productos = uiState.productos,
-                        onClickOferta = onClickOferta
-                    )
-                },
                 isRefreshing = isRefreshing,
-                onRefresh = { event ->
+                onRefresh = {
                     scope.launch {
                         isRefreshing = true
-                        onEvent(event)
+                        onEvent(OfertaUiEvent.Refresh)
                         delay(3000L)
                         isRefreshing = false
                     }
-                },
-                event = OfertaUiEvent.Refresh
-            )
-        }
-
-        if(uiState.ofertas.isEmpty()){
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                }
             ){
-                Image(
-                    painter = painterResource(R.drawable.empty_icon),
-                    contentDescription = "Lista vacía"
-                )
-                Text(
-                    text = "Lista vacía",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                if (uiState.ofertas.isEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    uiState.ofertas.forEach { oferta ->
+                        OfertaRow(
+                            it = oferta,
+                            productos = uiState.productos,
+                            onClickOferta = onClickOferta
+                        )
+                    }
+                }
             }
         }
     }
@@ -178,7 +190,6 @@ private fun OfertaRow(
                 .padding(20.dp)
                 .fillMaxSize()
         ) {
-            // Imagen del producto
             Card(
                 modifier = Modifier
                     .size(50.dp)
@@ -214,8 +225,7 @@ private fun OfertaRow(
                     text = "$.${it.precioOferta}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Green,
-                    fontSize = 20.sp,
-                    //fontWeight = FontWeight.Bold
+                    fontSize = 20.sp
                 )
                 Text(
                     text = "$.${it.precio}",
@@ -262,7 +272,8 @@ fun OfertaListScreenPreview(){
             onAddOferta = {},
             onClickOferta = {},
             onClickNotifications = {},
-            onEvent = {}
+            onEvent = {},
+            onDrawer = {}
         )
     }
 }

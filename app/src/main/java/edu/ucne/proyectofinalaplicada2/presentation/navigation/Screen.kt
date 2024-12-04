@@ -41,6 +41,9 @@ sealed class Screen {
     data object CategoriaListScreen: Screen()
 
     @Serializable
+    data object ProductosPorCategoriaScreen: Screen()
+
+    @Serializable
     data object CategoriaCreateScreen: Screen()
 
     @Serializable
@@ -59,5 +62,22 @@ sealed class Screen {
     data object AboutUsScreen: Screen()
 
     @Serializable
+    data object ReservacionesScreenCliente: Screen()
+
+    @Serializable
     data object NotificacionScreen: Screen()
-}
+
+    @Serializable
+    data object ReservacionListScreen: Screen()
+
+    @Serializable
+    data object ProfileScreen: Screen()
+
+    @Serializable
+    data object ProductoAddCarritoScreen: Screen()
+
+    @Serializable
+    data object TarjetaScreen: Screen()
+
+    }
+

@@ -1,5 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.data.repository
 
+import androidx.lifecycle.viewModelScope
 import edu.ucne.proyectofinalaplicada2.data.local.dao.ProductoDao
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.dataSource.ProductoRemoteDataSource
@@ -18,9 +19,14 @@ class ProductoRepository @Inject constructor(
 
     suspend fun addProducto(productoDto: ProductoDto) = productoRemoteDataSource.addProducto(productoDto)
 
-    suspend fun getProducto(productoId: Int) = productoRemoteDataSource.getProductoById(productoId)
+    suspend fun getProducto(productoId: Int) = productoDao.getProductoById(productoId)
 
     suspend fun deleteProducto(productoId: Int) = productoRemoteDataSource.deleteProducto(productoId)
+
+    fun getProductosByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>> {
+        return productoDao.getProductoByCategoriaId(categoriaId)
+    }
+
 
     suspend fun updateProducto(productoId: Int, productoDto: ProductoDto) = productoRemoteDataSource.updateProducto(productoId, productoDto)
 
@@ -50,6 +56,7 @@ class ProductoRepository @Inject constructor(
         }
     }
 
+
     fun searchProductos(query: String): List<ProductoEntity> {
         return productosCargados.filter { producto ->
             producto.nombre?.contains(query, ignoreCase = true) == true
@@ -67,6 +74,8 @@ fun ProductoDto.toProductoEntity(): ProductoEntity {
         descripcion = this.descripcion,
         precio = this.precio,
         disponibilidad = this.disponibilidad,
-        imagen = this.imagen
+        imagen = this.imagen,
+        tiempo = this.tiempo
+
     )
 }

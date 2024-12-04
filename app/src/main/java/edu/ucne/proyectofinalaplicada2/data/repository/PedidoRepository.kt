@@ -55,6 +55,7 @@ class PedidoRepository @Inject constructor(
 
 private fun PedidoDto.toEntity() = PedidoEntity(
     pedidoId = pedidoId,
+    tiempo = tiempo,
     usuarioId = usuarioId,
     fechaPedido = fechaPedido,
     total = total,

@@ -9,8 +9,10 @@ data class TarjetaUiState(
     val numeroTarjeta: String? = "",
     val fechaExpiracion: String? = "",
     val cvv: String? = "",
+    val nombreTitular: String? = "",
     val tarjetas: List<TarjetaDto> = emptyList(),
     val isLoading: Boolean = false,
     val success: Boolean = false,
+    val errorMessge: String = "",
     val isRefreshing: Boolean = false
 )

@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.PedidoDto
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.PedidoRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -17,13 +19,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PedidoViewModel @Inject constructor(
-    private val pedidoRepository: PedidoRepository
+    private val pedidoRepository: PedidoRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ): ViewModel(){
     private val _uiState = MutableStateFlow(PedidoUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
         getPedidos()
+    }
+
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.update {
+                it.copy(
+                    usuarioRol = usuarioActual?.rol,
+                )
+            }
+        }
     }
 
     private fun getPedidos(){
@@ -166,6 +183,7 @@ class PedidoViewModel @Inject constructor(
 
     private fun PedidoUiState.toDto() = PedidoDto(
         pedidoId = pedidoId,
+        tiempo = tiempo ?: "",
         usuarioId = usuarioId ?: 0,
         fechaPedido = fechaPedido ?: Date(),
         total = total ?: BigDecimal.valueOf(0.0),
