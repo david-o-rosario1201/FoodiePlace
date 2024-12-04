@@ -6,6 +6,7 @@ import java.util.Date
 data class ReservacionesUiState(
     val reservacionId: Int? = null,
     val usuarioId: Int? = null,
+    val usuarioRol: String = "",
     val fechaReservacion: Date = Date(),
     val numeroPersonas: Int = 0,
     val estado: String = "Pendiente",
