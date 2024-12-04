@@ -123,7 +123,6 @@ class ReservacionesViewModel @Inject constructor(
             }
             ReservacionesUiEvent.Save -> {
                 viewModelScope.launch {
-                    getCurrentUser()
                     if (_uiState.value.reservacionId == null)
                         reservacionesRepository.addReservacion(_uiState.value.toEntity())
                     else
