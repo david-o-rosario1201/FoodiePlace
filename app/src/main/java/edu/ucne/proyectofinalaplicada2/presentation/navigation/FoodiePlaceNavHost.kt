@@ -38,8 +38,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosPorCategoriaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreenAdmin
-import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenAdmin
-import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenCliente
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreen
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.tarjeta.TarjetaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.ProfileScreen
@@ -64,7 +63,7 @@ fun FoodiePlaceNavHost(
     ) {
         NavHost(
             navController = navHostController,
-            startDestination = Screen.ReservacionesListScreenAdmin
+            startDestination = Screen.WelcomeScreen
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
@@ -317,7 +316,7 @@ fun FoodiePlaceNavHost(
             composable<Screen.ReservacionListScreen> {
                 ReservacionesListScreen(
                     goToReservacion = {
-                        navHostController.navigate(Screen.ReservacionesScreenCliente)  // Navegar a la pantalla de crear reservación
+                        navHostController.navigate(Screen.ReservacionesScreen)  // Navegar a la pantalla de crear reservación
                     },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
@@ -330,8 +329,8 @@ fun FoodiePlaceNavHost(
                 )
             }
 
-            composable<Screen.ReservacionesScreenCliente> {
-                ReservacionesScreenCliente(
+            composable<Screen.ReservacionesScreen> {
+                ReservacionesScreen(
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReservacionListScreen)
                     },
@@ -411,13 +410,6 @@ fun FoodiePlaceNavHost(
 
             }
 
-            composable<Screen.ReservacionesScreenAdmin> {
-                ReservacionesScreenAdmin(
-                    onNavigateToList = {
-                        navHostController.navigate(Screen.ReservacionesListScreenAdmin)
-                    }
-                )
-            }
 
         }
     }
