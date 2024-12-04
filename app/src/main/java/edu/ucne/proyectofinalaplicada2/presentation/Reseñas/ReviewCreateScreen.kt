@@ -36,6 +36,7 @@ fun ReviewCreateScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
     onNavigateToList: () -> Unit,
 ) {
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewCreateBodyScreen(
         uiState = uiState,
