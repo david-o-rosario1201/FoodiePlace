@@ -8,7 +8,7 @@ import java.util.Date
 
 @Entity(
     tableName = "Reservaciones",
-            foreignKeys  = [
+    foreignKeys  = [
         androidx.room.ForeignKey(
             entity = UsuarioEntity::class,
             parentColumns = ["usuarioId"],
@@ -25,6 +25,6 @@ data class ReservacionesEntity(
     val numeroPersonas: Int,
     val estado: String,
     val numeroMesa: Int,
-    val horaReservacion: Date?
+    val horaReservacion: Date
 
 )
