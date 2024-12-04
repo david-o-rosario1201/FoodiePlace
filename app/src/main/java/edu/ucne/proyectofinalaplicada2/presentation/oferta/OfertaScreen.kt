@@ -34,7 +34,6 @@ import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
 import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionUiEvent
-import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionUiState
 import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionViewModel
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
@@ -47,12 +46,10 @@ fun OfertaScreen(
     viewModelOferta: OfertaViewModel = hiltViewModel(),
     viewModelNotificacion: NotificacionViewModel = hiltViewModel()
 ){
-    val uiStateOferta by viewModelOferta.uiState.collectAsStateWithLifecycle()
-    val uiStateNotificacion by viewModelNotificacion.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModelOferta.uiState.collectAsStateWithLifecycle()
 
     OfertaBodyScreen(
-        uiStateOferta = uiStateOferta,
-        uiStateNotificacion = uiStateNotificacion,
+        uiStateOferta = uiState,
         onEventOferta = viewModelOferta::onEvent,
         onEventNotificacion = viewModelNotificacion::onEvent,
         goToOfertaList = goToOfertaList,
@@ -63,7 +60,6 @@ fun OfertaScreen(
 @Composable
 private fun OfertaBodyScreen(
     uiStateOferta: OfertaUiState,
-    uiStateNotificacion: NotificacionUiState,
     onEventOferta: (OfertaUiEvent) -> Unit,
     onEventNotificacion: (NotificacionUiEvent) -> Unit,
     goToOfertaList: () -> Unit,
@@ -265,7 +261,6 @@ fun OfertaScreenPreview() {
     ProyectoFinalAplicada2Theme {
         OfertaBodyScreen(
             uiStateOferta = sampleUiState,
-            uiStateNotificacion = NotificacionUiState(),
             onEventOferta = {},
             onEventNotificacion = {},
             goToOfertaList = {},
