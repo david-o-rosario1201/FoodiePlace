@@ -50,15 +50,31 @@ class ReservacionesRepository @Inject constructor(
             }
         }
     }
+    fun getReservacionesByUserId(usuarioId: Int): Flow<Resource<List<ReservacionesEntity>>> = flow {
+        try {
+            emit(Resource.Loading())
 
-    fun searchReservaciones(query: String): List<ReservacionesEntity> {
-        val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-        return reservacionesCargadas.filter { reservaciones ->
-            reservaciones.fechaReservacion?.let { date ->
-                dateFormat.format(date).contains(query, ignoreCase = true)
-            } == true
+            val reservacionesRemotas = reservacionesRemoteDataSource.getReservaciones()
+            reservacionesRemotas.forEach {
+                reservacionesDao.save(it.toReservacionesEntity())
+            }
+
+            reservacionesDao.getReservacionesByUserId(usuarioId).collect { reservacionesLocales ->
+                emit(Resource.Success(reservacionesLocales))
+            }
+        } catch (e: HttpException) {
+            emit(Resource.Error("Error de internet ${e.message}"))
+        } catch (e: Exception) {
+            emit(Resource.Error("Error desconocido ${e.message}"))
+
+
+            reservacionesDao.getReservacionesByUserId(usuarioId).collect { reservacionesLocales ->
+                emit(Resource.Success(reservacionesLocales))
+            }
         }
     }
+
+
 
 }
 
