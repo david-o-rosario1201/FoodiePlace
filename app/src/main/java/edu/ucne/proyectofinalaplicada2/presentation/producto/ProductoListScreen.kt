@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.ListaVaciaComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
@@ -116,32 +119,21 @@ fun ProductosListBodyScreen(
                         isRefreshing = false
                     }
                 }
-            ){
+            ) {
+                LazyColumn {
                 if (uiState.productos.isEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        Image(
-                            painter = painterResource(R.drawable.empty_icon),
-                            contentDescription = "Lista vacía"
-                        )
-                        Text(
-                            text = "Lista vacía",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                    item {
+                        ListaVaciaComponent()
                     }
                 } else {
-                    uiState.productos.forEach { producto ->
+                    items(uiState.productos){ producto ->
                         ProductoItem(
                             item = producto,
                             goToProducto = goToProducto
                         )
                     }
                 }
+            }
             }
         }
     }
