@@ -1,6 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.data.remote.dataSource
 
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
+import edu.ucne.proyectofinalaplicada2.data.local.dto.ReservacionesDto
 import edu.ucne.proyectofinalaplicada2.data.remote.API.ReservacionesAPI
 
 import javax.inject.Inject

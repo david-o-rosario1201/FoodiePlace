@@ -1,10 +1,5 @@
 package edu.ucne.proyectofinalaplicada2.presentation.notificacion
 
-import android.app.NotificationManager
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,8 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
@@ -44,7 +37,6 @@ fun NotificacionScreen(
     viewModel: NotificacionViewModel = hiltViewModel(),
     goToHome: () -> Unit
 ){
-    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     NotificacionBodyScreen(
         uiState = uiState,
@@ -120,31 +112,6 @@ fun NotificacionBodyScreen(
                 }
             }
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun showNotification(
-    context: Context,
-    text: String,
-    title: String,
-    hasNotificationPermission: Boolean =
-        ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
-) {
-    if (hasNotificationPermission) {
-        val notificationManager = context
-            .getSystemService(Context.NOTIFICATION_SERVICE) as
-                NotificationManager
-
-        val notification = NotificationCompat.Builder(context, "channel_id")
-            .setContentText(text)
-            .setContentTitle(title)
-            .setSmallIcon(R.drawable.logo)
-            .build()
-        notificationManager.notify(1, notification)
     }
 }
 

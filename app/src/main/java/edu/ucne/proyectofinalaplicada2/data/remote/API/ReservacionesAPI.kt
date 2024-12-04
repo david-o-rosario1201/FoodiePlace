@@ -1,6 +1,6 @@
 package edu.ucne.proyectofinalaplicada2.data.remote.API
 
-import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
+import edu.ucne.proyectofinalaplicada2.data.local.dto.ReservacionesDto
 
 import retrofit2.http.Body
 import retrofit2.http.DELETE

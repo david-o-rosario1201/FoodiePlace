@@ -6,7 +6,6 @@ import java.util.Date
 
 data class NotificacionUiState(
     val notificacionId: Int? = null,
-    val usuarioRol: String? = "",
     val usuarioId: Int? = 0,
     val descripcion: String? = "",
     val fecha: Date? = Date.from(Instant.now()),

@@ -4,12 +4,10 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 
 data class UsuarioUiState(
     val usuarioId: Int? = null,
-    val rol: String? = "Client",
     val nombre: String? = "",
     val telefono: String? = "",
     val correo: String? = "",
     val contrasena: String? = "",
-    val fotoPerfil: String? = "",
     val confirmarContrasena: String? = "",
     val usuarios: List<UsuarioEntity> = emptyList(),
     val errorNombre: String? = "",
@@ -20,7 +18,5 @@ data class UsuarioUiState(
     val errorCargar: String? = "",
     val isSuccess: Boolean = false,
     val isLoading: Boolean = false,
-    val isRefreshing: Boolean = false,
-    val isSignInSuccessful: Boolean = false,
-    val signInError: String? = null
+    val isRefreshing: Boolean = false
 )

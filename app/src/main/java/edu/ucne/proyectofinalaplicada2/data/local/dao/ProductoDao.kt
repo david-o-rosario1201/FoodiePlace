@@ -20,15 +20,7 @@ interface ProductoDao {
         
     """
     )
-    suspend fun getProductoById(id: Int): ProductoEntity
-
-    @Query("""
-        SELECT * 
-        FROM Productos
-        WHERE categoriaId=:categoriaId        
-    """
-    )
-    fun getProductoByCategoriaId(categoriaId: Int): Flow<List<ProductoEntity>>
+    suspend fun getProductoById(id: Int): ProductoEntity?
 
     @Delete
     suspend fun deleteProducto(producto: ProductoEntity)

@@ -1,90 +1,61 @@
 package edu.ucne.proyectofinalaplicada2.presentation.Reseñas
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
-import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun ReviewListScreen(
     viewModel: ReviewViewModel = hiltViewModel(),
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit,
-    onDrawer: () -> Unit
+    onClickNotifications: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewListBodyScreen(
         uiState = uiState,
-        onUiEvent = viewModel::onUiEvent,
         goToAddReview = goToAddReview,
         modifier = modifier,
-        onClickNotifications = onClickNotifications,
-        onDrawer = onDrawer
+        onClickNotifications = onClickNotifications
     )
 }
 
 @Composable
 fun ReviewListBodyScreen(
     uiState: ReviewUiState,
-    onUiEvent: (ReviewUiEvent) -> Unit,
     goToAddReview: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickNotifications: () -> Unit,
-    onDrawer: () -> Unit
+    onClickNotifications: () -> Unit
 ) {
-    var isRefreshing by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopBarComponent(
                 title = "Reseñas",
-                onClickMenu = onDrawer,
+                onClickMenu = {},
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -100,50 +71,26 @@ fun ReviewListBodyScreen(
                 )
             }
         }
-    ) {
-        Box(
-            modifier = Modifier
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
                 .fillMaxSize()
-                .padding(it)
-        ){
-            PullToRefreshLazyColumn(
-                isRefreshing = isRefreshing,
-                onRefresh = {
-                    scope.launch {
-                        isRefreshing = true
-                        onUiEvent(ReviewUiEvent.Refresh)
-                        delay(3000L)
-                        isRefreshing = false
-                    }
-                }
-            ){
-                if (uiState.reseñas.isEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        Image(
-                            painter = painterResource(R.drawable.empty_icon),
-                            contentDescription = "Lista vacía"
-                        )
-                        Text(
-                            text = "Lista vacía",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                } else {
-                    uiState.reseñas.forEach { review ->
-                        ReviewItem(
-                            item = review,
-                            usuario = uiState.usuario
-                        )
-                    }
+                .padding(innerPadding)
+                .background(Color.White)
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                items(uiState.reseñas) { review ->
+                    ReviewItem(
+                        item = review,
+                        usuario = uiState.usuario
+                    )
                 }
             }
         }
+
     }
 }
 
@@ -201,6 +148,10 @@ fun StarRating(rating: Int, maxRating: Int = 5) {
     }
 }
 
+
+//__________------------------------------------
+
+// Simulación de `ReviewUiState` para el Preview
 private val sampleUiState = ReviewUiState(
     reseñas = listOf(
         ReviewEntity(resenaId = 1, usuarioId = 1,
@@ -217,9 +168,7 @@ private val sampleUiState = ReviewUiState(
 fun ReviewListScreenPreview() {
     ReviewListBodyScreen(
         uiState = sampleUiState,
-        onUiEvent = {},
         goToAddReview = {},
-        onClickNotifications = {},
-        onDrawer = {}
+        onClickNotifications = {}
     )
 }

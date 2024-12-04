@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.NotificacionDto
-import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.NotificacionRepository
-import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -18,9 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificacionViewModel @Inject constructor(
-    private val notificacionRepository: NotificacionRepository,
-    private val authRepository: AuthRepository,
-    private val usuarioRepository: UsuarioRepository
+    private val notificacionRepository: NotificacionRepository
 ): ViewModel(){
     private val _uiState = MutableStateFlow(NotificacionUiState())
     val uiState = _uiState.asStateFlow()
@@ -37,17 +33,9 @@ class NotificacionViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
-                        val notificaciones = result.data?.filter { notificacion ->
-                            if (_uiState.value.usuarioRol == "Admin") {
-                                !notificacion.descripcion.contains("Nueva Oferta", ignoreCase = true)
-                            } else {
-                                true
-                            }
-                        } ?: emptyList()
-
                         _uiState.update {
                             it.copy(
-                                notificaciones = notificaciones,
+                                notificaciones = result.data ?: emptyList(),
                                 isLoading = false
                             )
                         }
@@ -75,19 +63,6 @@ class NotificacionViewModel @Inject constructor(
                 viewModelScope.launch {
                     notificacionRepository.deleteNotificacion(_uiState.value.notificacionId ?: 0)
                 }
-            }
-        }
-    }
-
-    fun getCurrentUser(){
-        viewModelScope.launch {
-            val currentUser = authRepository.getUser()
-            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
-
-            _uiState.update {
-                it.copy(
-                    usuarioRol = usuarioActual?.rol,
-                )
             }
         }
     }

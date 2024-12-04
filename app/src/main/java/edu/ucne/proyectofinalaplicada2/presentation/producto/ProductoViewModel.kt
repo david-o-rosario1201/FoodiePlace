@@ -37,18 +37,12 @@ class ProductoViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         _uiState.update {
-                            it.copy(
-                                productos = result.data ?: emptyList(),
-                                isLoading = false
-                            )
+                            it.copy(productos = result.data ?: emptyList(), isLoading = false)
                         }
                     }
                     is Resource.Error -> {
                         _uiState.update {
-                            it.copy(
-                                productos = result.data ?: emptyList(),
-                                isLoading = false
-                            )
+                            it.copy(productos = result.data ?: emptyList(), isLoading = false)
                         }
                     }
                 }
@@ -78,17 +72,6 @@ class ProductoViewModel @Inject constructor(
         }
     }
 
-    fun getProductosByCategoriaId(categoriaId: Int) {
-        viewModelScope.launch {
-            productoRepository.getProductosByCategoriaId(categoriaId).collect { productos ->
-                _uiState.value = _uiState.value.copy(
-                    productos = productos,
-                    isLoading = false
-                )
-            }
-        }
-    }
-
     fun onEvent(event: ProductoUiEvent) {
         when (event) {
             is ProductoUiEvent.ProductoIdChange -> {
@@ -111,9 +94,6 @@ class ProductoViewModel @Inject constructor(
             }
             is ProductoUiEvent.ImagenChange -> {
                 _uiState.update { it.copy(imagen = event.imagen) }
-            }
-            is ProductoUiEvent.TiempoChange -> {
-                _uiState.update { it.copy(tiempo = event.tiempo) }
             }
             is ProductoUiEvent.IsRefreshingChanged -> {
                 _uiState.update { it.copy(isRefreshing = event.isRefreshing) }
@@ -192,7 +172,6 @@ class ProductoViewModel @Inject constructor(
         descripcion = descripcion ?: "",
         precio = precio ?: BigDecimal.ZERO,
         disponibilidad = disponibilidad ?: false,
-        imagen = imagen ?: "",
-        tiempo = tiempo ?:""
+        imagen = imagen ?: ""
     )
 }

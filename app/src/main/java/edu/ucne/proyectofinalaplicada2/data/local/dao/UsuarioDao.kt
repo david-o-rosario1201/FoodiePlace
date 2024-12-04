@@ -19,13 +19,6 @@ interface UsuarioDao {
     """)
     suspend fun getUsuario(usuarioId: Int): UsuarioEntity?
 
-    @Query("""
-        SELECT * FROM Usuarios
-        WHERE correo = :correo
-        LIMIT 1 
-    """)
-    suspend fun getUsuarioByCorreo(correo: String): UsuarioEntity?
-
     @Delete
     suspend fun deleteUsuario(usuario: UsuarioEntity)
 

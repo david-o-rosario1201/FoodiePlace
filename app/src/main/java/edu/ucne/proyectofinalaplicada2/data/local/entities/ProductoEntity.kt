@@ -25,8 +25,7 @@ data class ProductoEntity(
     val descripcion: String,
     val precio: BigDecimal,
     val disponibilidad: Boolean,
-    val imagen: String,
-    val tiempo: String
+    val imagen: String
 
 
 )
