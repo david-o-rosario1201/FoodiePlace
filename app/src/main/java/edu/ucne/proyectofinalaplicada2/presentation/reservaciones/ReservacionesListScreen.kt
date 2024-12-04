@@ -1,8 +1,7 @@
-
-
 package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.ListaVaciaComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
@@ -54,23 +56,29 @@ import java.util.Locale
 fun ReservacionesListScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
     goToReservacion: () -> Unit,
+    onEdit: (Int) -> Unit,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     ReservacionesListBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         goToReservacion = goToReservacion,
+        onEdit = onEdit,
         onClickNotifications = onClickNotifications,
         onDrawer = onDrawer
     )
 }
+
 @Composable
 fun ReservacionesListBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
     goToReservacion: () -> Unit,
+    onEdit: (Int) -> Unit,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
@@ -87,14 +95,16 @@ fun ReservacionesListBodyScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = goToReservacion,
-                containerColor = color_oro,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Agregar nuevas Reservacion"
-                )
+            if (uiState.usuarioRol == "Admin") {
+                FloatingActionButton(
+                    onClick = goToReservacion,
+                    containerColor = color_oro,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Agregar nueva reservación"
+                    )
+                }
             }
         }
     ) {
@@ -102,7 +112,7 @@ fun ReservacionesListBodyScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-        ){
+        ) {
             PullToRefreshLazyColumn(
                 isRefreshing = isRefreshing,
                 onRefresh = {
@@ -113,30 +123,20 @@ fun ReservacionesListBodyScreen(
                         isRefreshing = false
                     }
                 }
-            ){
-                if (uiState.reservaciones.isEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        Image(
-                            painter = painterResource(R.drawable.empty_icon),
-                            contentDescription = "Lista vacía"
-                        )
-                        Text(
-                            text = "Lista vacía",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                } else {
-                    uiState.reservaciones.forEach { reservacion ->
-                        ReservacionItem(
-                            item = reservacion,
-                            goToReservacion = goToReservacion
-                        )
+            ) {
+                LazyColumn {
+                    if (uiState.reservaciones.isEmpty()) {
+                        item {
+                            ListaVaciaComponent()
+                        }
+                    } else {
+                        items(uiState.reservaciones) { reservacion ->
+                            ReservacionItem(
+                                item = reservacion,
+                                isAdmin = uiState.usuarioRol == "Admin",
+                                onEdit = onEdit
+                            )
+                        }
                     }
                 }
             }
@@ -145,23 +145,31 @@ fun ReservacionesListBodyScreen(
 }
 
 
+
+
 @Composable
 fun ReservacionItem(
     item: ReservacionesEntity,
-    goToReservacion: () -> Unit
+    isAdmin: Boolean,
+    onEdit: (Int) -> Unit
 ) {
-    // Crear el formato para fecha y hora
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-    // Formatear fecha y hora
     val formattedDate = dateFormat.format(item.fechaReservacion)
     val formattedTime = timeFormat.format(item.horaReservacion)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .let { modifier ->
+                if (isAdmin) {
+                    modifier.clickable { onEdit(item.reservacionId!!) }
+                } else {
+                    modifier
+                }
+            },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -203,28 +211,16 @@ fun ReservacionItem(
                     color = Color.Gray
                 )
             }
-
-            IconButton(
-                onClick = { goToReservacion() },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = "Ver detalles de reservación",
-                    tint = Color.Gray
-                )
-            }
         }
     }
 }
 
 
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ReservacionesListScreenPreview() {
-    // Crear el formato para fecha
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    // Crear el formato para hora si es necesario
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     val sampleReservaciones = listOf(
@@ -232,9 +228,9 @@ fun ReservacionesListScreenPreview() {
             reservacionId = 1,
             usuarioId = 1,
             estado = "Activo",
-            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(), // Conversión a Date
+            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(),
             numeroPersonas = 4,
-            horaReservacion = timeFormat.parse("18:00") ?: Date() ,// Conversión a Date
+            horaReservacion = timeFormat.parse("18:00") ?: Date() ,
             numeroMesa = 3
         ),
 
@@ -242,16 +238,16 @@ fun ReservacionesListScreenPreview() {
             reservacionId = 2,
             usuarioId = 2,
             estado = "Cancelado",
-            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
             numeroPersonas = 2,
             horaReservacion = timeFormat.parse("19:00") ?: Date(),
-            numeroMesa = 4// Conversión a Date
+            numeroMesa = 4
         ),
         ReservacionesEntity(
             reservacionId = 3,
             usuarioId = 6,
             estado = "Cancelado",
-            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
             numeroPersonas = 2,
             horaReservacion = timeFormat.parse("20:00") ?: Date(),
             numeroMesa = 9
@@ -264,6 +260,7 @@ fun ReservacionesListScreenPreview() {
         onEvent = {},
         goToReservacion = {},
         onClickNotifications = {},
-        onDrawer = {}
+        onDrawer = {},
+        onEdit = {}
     )
 }
