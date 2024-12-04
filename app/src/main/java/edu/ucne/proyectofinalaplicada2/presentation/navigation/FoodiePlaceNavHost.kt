@@ -37,7 +37,6 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosPorCategoriaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
-import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreenAdmin
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreen
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.tarjeta.TarjetaScreen
@@ -325,12 +324,17 @@ fun FoodiePlaceNavHost(
                         scope.launch {
                             drawerState.open()
                         }
+                    },
+                    onEdit = {
+                        navHostController.navigate(Screen.ReservacionesScreen)
                     }
                 )
             }
 
-            composable<Screen.ReservacionesScreen> {
+            composable<Screen.ReservacionesScreen> { backStackEntry ->
+                val reservacionId = backStackEntry.arguments?.getString("reservacionId")?.toIntOrNull() ?: 0
                 ReservacionesScreen(
+                    reservacionId = reservacionId,
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReservacionListScreen)
                     },
@@ -344,6 +348,7 @@ fun FoodiePlaceNavHost(
                     }
                 )
             }
+
 
             composable<Screen.ProfileScreen> {
                 ProfileScreen(
@@ -393,22 +398,7 @@ fun FoodiePlaceNavHost(
                 )
             }
 
-            composable<Screen.ReservacionesListScreenAdmin> {
-                ReservacionesListScreenAdmin(
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    goToReservacion = {
-                        navHostController.navigate(Screen.ReservacionesScreenAdmin)
-                    }
-                )
 
-            }
 
 
         }
