@@ -98,6 +98,10 @@ class UsuarioViewModel @Inject constructor(
         }
     }
 
+    fun isAuthenticated(): Boolean {
+        return authRepository.getUser() != null
+    }
+
     fun onEvent(event: UsuarioUiEvent) {
         when (event) {
             is UsuarioUiEvent.UsuarioIdChanged -> updateUiState { it.copy(usuarioId = event.usuarioId) }
