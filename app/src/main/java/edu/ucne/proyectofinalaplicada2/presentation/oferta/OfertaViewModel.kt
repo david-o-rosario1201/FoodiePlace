@@ -5,10 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.OfertaDto
-import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.OfertaRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
-import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -21,9 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OfertaViewModel @Inject constructor(
     private val ofertaRepository: OfertaRepository,
-    private val productoRepository: ProductoRepository,
-    private val authRepository: AuthRepository,
-    private val usuarioRepository: UsuarioRepository
+    private val productoRepository: ProductoRepository
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(OfertaUiState())
@@ -32,19 +28,6 @@ class OfertaViewModel @Inject constructor(
     init {
         getOfertas()
         getProductos()
-    }
-
-    fun getCurrentUser(){
-        viewModelScope.launch {
-            val currentUser = authRepository.getUser()
-            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
-
-            _uiState.update {
-                it.copy(
-                    usuarioRol = usuarioActual?.rol
-                )
-            }
-        }
     }
 
     private fun getOfertas(){

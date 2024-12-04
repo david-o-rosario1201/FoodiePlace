@@ -20,10 +20,6 @@ interface TarjetaDao {
     """)
     suspend fun getTarjetaById(id: Int): TarjetaEntity?
 
-    @Query("SELECT * FROM Tarjetas WHERE usuarioId = :usuarioId")
-    fun getTarjetasPorUsuario(usuarioId: Int): Flow<List<TarjetaEntity>>
-
-
     @Delete
     suspend fun deleteTarjeta(tarjeta: TarjetaEntity)
 

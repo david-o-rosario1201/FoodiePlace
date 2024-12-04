@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -25,27 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import edu.ucne.proyectofinalaplicada2.R
-import edu.ucne.proyectofinalaplicada2.presentation.navigation.Screen
-import edu.ucne.proyectofinalaplicada2.presentation.usuario.UsuarioViewModel
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomeScreen(
-    navHostController: NavHostController,
-    viewModel: UsuarioViewModel = hiltViewModel()
+    onNavigateToLogin: () -> Unit,
 ) {
-    val usuario = viewModel.isAuthenticated()
-    LaunchedEffect(key1 = Unit) {
-        if (usuario) {
-            navHostController.navigate(Screen.HomeScreen){
-                popUpTo(Screen.WelcomeScreen){ inclusive = true }
-            }
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -76,7 +62,7 @@ fun WelcomeScreen(
                 .padding(top = 90.dp)
                 .background(color = Color(0xFFFFFFFF),
                     shape = RoundedCornerShape(size = 20.dp)),
-            onClick = { navHostController.navigate(Screen.UsuarioLoginScreen) },
+            onClick = onNavigateToLogin,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White
             )
@@ -97,6 +83,6 @@ fun WelcomeScreen(
 @Composable
 fun WelcomeScreenPreview() {
     WelcomeScreen(
-        navHostController = NavHostController(LocalContext.current)
+        onNavigateToLogin = {}
     )
 }

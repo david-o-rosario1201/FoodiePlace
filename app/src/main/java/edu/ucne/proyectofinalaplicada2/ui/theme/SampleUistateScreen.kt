@@ -17,8 +17,7 @@ val sampleProducto = listOf(
         descripcion = "Bebida",
         categoriaId = 1,
         disponibilidad = true,
-        imagen = "",
-        tiempo = "10 minutos"
+        imagen = ""
     ),
     ProductoEntity(
         productoId = 2,
@@ -27,8 +26,7 @@ val sampleProducto = listOf(
         descripcion = "Bebida",
         categoriaId = 1,
         disponibilidad = true,
-        imagen = "",
-        tiempo = "20 minutos"
+        imagen = ""
     ),
 )
 

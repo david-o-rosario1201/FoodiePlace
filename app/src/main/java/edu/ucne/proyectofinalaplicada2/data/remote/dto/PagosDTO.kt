@@ -7,5 +7,5 @@ data class PagosDTO (
     val pedidoId: Int,
     val tarjetaId : Int,
     val fechaPago: String,
-    val monto: BigDecimal?
+    val monto: BigDecimal
 )

@@ -33,25 +33,20 @@ import edu.ucne.proyectofinalaplicada2.presentation.components.CustomTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
 import edu.ucne.proyectofinalaplicada2.presentation.components.OpcionTextField
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
-import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionUiEvent
-import edu.ucne.proyectofinalaplicada2.presentation.notificacion.NotificacionViewModel
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
 import java.util.Date
 
 @Composable
 fun OfertaScreen(
+    viewModel: OfertaViewModel = hiltViewModel(),
     goToOfertaList: () -> Unit,
-    ofertaId: Int,
-    viewModelOferta: OfertaViewModel = hiltViewModel(),
-    viewModelNotificacion: NotificacionViewModel = hiltViewModel()
+    ofertaId: Int
 ){
-    val uiState by viewModelOferta.uiState.collectAsStateWithLifecycle()
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     OfertaBodyScreen(
-        uiStateOferta = uiState,
-        onEventOferta = viewModelOferta::onEvent,
-        onEventNotificacion = viewModelNotificacion::onEvent,
+        uiState = uiState,
+        onEvent = viewModel::onEvent,
         goToOfertaList = goToOfertaList,
         ofertaId = ofertaId
     )
@@ -59,9 +54,8 @@ fun OfertaScreen(
 
 @Composable
 private fun OfertaBodyScreen(
-    uiStateOferta: OfertaUiState,
-    onEventOferta: (OfertaUiEvent) -> Unit,
-    onEventNotificacion: (NotificacionUiEvent) -> Unit,
+    uiState: OfertaUiState,
+    onEvent: (OfertaUiEvent) -> Unit,
     goToOfertaList: () -> Unit,
     ofertaId: Int
 ) {
@@ -70,10 +64,10 @@ private fun OfertaBodyScreen(
     val buttonText = if (ofertaId == 0) "Guardar" else "Actualizar"
     val buttonContentDescription = if (ofertaId == 0) "Guardar" else "Actualizar"
 
-    LaunchedEffect(key1 = true, key2 = uiStateOferta.isSuccess){
-        onEventOferta(OfertaUiEvent.SelectedOferta(ofertaId))
+    LaunchedEffect(key1 = true, key2 = uiState.isSuccess){
+        onEvent(OfertaUiEvent.SelectedOferta(ofertaId))
 
-        if(uiStateOferta.isSuccess){
+        if(uiState.isSuccess){
             goToOfertaList()
         }
     }
@@ -92,23 +86,22 @@ private fun OfertaBodyScreen(
                 .fillMaxSize()
         ) {
             ProductoDropDown(
-                uiState = uiStateOferta,
-                onEvent = onEventOferta
+                uiState = uiState,
+                onEvent = onEvent
             )
             PrecioInputFields(
-                uiState = uiStateOferta,
-                onEvent = onEventOferta
+                uiState = uiState,
+                onEvent = onEvent
             )
             DatePickers(
-                uiState = uiStateOferta,
-                onEvent = onEventOferta
+                uiState = uiState,
+                onEvent = onEvent
             )
             SaveButton(
                 buttonIcon = buttonIcon,
                 buttonText = buttonText,
                 buttonContentDescription = buttonContentDescription,
-                onEventOferta = onEventOferta,
-                onEventNotificacion = onEventNotificacion
+                onEvent = onEvent
             )
         }
     }
@@ -188,18 +181,14 @@ private fun SaveButton(
     buttonIcon: ImageVector,
     buttonText: String,
     buttonContentDescription: String,
-    onEventOferta: (OfertaUiEvent) -> Unit,
-    onEventNotificacion: (NotificacionUiEvent) -> Unit
+    onEvent: (OfertaUiEvent) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         Button(
-            onClick = {
-                onEventOferta(OfertaUiEvent.Save)
-                onEventNotificacion(NotificacionUiEvent.Save)
-            },
+            onClick = { onEvent(OfertaUiEvent.Save) },
             colors = ButtonColors(
                 containerColor = color_oro,
                 contentColor = color_oro,
@@ -240,7 +229,6 @@ private val sampleUiState = OfertaUiState(
             disponibilidad = true,
             imagen = "",
             descripcion = "Producto 1",
-            tiempo = "10 minutos"
         ),
         ProductoEntity(
             productoId = 2,
@@ -249,8 +237,7 @@ private val sampleUiState = OfertaUiState(
             nombre = "Pepsi",
             categoriaId = 1,
             disponibilidad = true,
-            imagen = "",
-            tiempo = "20 minutos"
+            imagen = ""
         )
     )
 )
@@ -260,9 +247,8 @@ private val sampleUiState = OfertaUiState(
 fun OfertaScreenPreview() {
     ProyectoFinalAplicada2Theme {
         OfertaBodyScreen(
-            uiStateOferta = sampleUiState,
-            onEventOferta = {},
-            onEventNotificacion = {},
+            uiState = sampleUiState,
+            onEvent = {},
             goToOfertaList = {},
             ofertaId = 0
         )
