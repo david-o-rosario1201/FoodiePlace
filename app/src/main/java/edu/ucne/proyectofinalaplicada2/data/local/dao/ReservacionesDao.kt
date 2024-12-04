@@ -34,6 +34,10 @@ interface ReservacionesDao {
     )
     suspend fun findUsuario(usuarioId: Int): ReservacionesEntity?
 
+    @Query("SELECT * FROM Reservaciones WHERE usuarioId = :usuarioId")
+    fun getReservacionesByUserId(usuarioId: Int): Flow<List<ReservacionesEntity>>
+
+
     @Query("SELECT * FROM Reservaciones")
     fun getAll(): Flow<List<ReservacionesEntity>>
 }
