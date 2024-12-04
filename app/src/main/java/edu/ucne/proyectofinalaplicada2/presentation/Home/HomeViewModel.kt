@@ -26,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.ucne.proyectofinalaplicada2.data.local.entities.NotificacionEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.CategoriaRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.NotificacionRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
@@ -47,7 +49,8 @@ class HomeViewModel @Inject constructor(
     private val productoRepository: ProductoRepository,
     private val categoriaRepository: CategoriaRepository,
     private val usuarioRepository: UsuarioRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val notificacionRepository: NotificacionRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> get() = _uiState
@@ -55,6 +58,7 @@ class HomeViewModel @Inject constructor(
     init {
         loadCategorias()
         getProductos()
+        getNotificaciones()
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -112,6 +116,44 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getNotificaciones() {
+        viewModelScope.launch {
+            notificacionRepository.getNotificaciones().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+                    is Resource.Success -> {
+                        val filteredNotificaciones = result.data?.filter { notificacion ->
+                            if (_uiState.value.usuarioRol == "Admin") {
+                                !notificacion.descripcion.contains("Nueva Oferta", ignoreCase = true)
+                            } else {
+                                true
+                            }
+                        } ?: emptyList()
+
+                        _uiState.update {
+                            it.copy(
+                                notificaciones = filteredNotificaciones,
+                                totalNotificaciones = filteredNotificaciones.size,
+                                isLoading = false
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = result.message ?: ""
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     fun getCurrentUser(){
         viewModelScope.launch {
             val currentUser = authRepository.getUser()
@@ -145,7 +187,9 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val usuarioNombre: String = "",
     val usuarioRol: String? = "",
-    val fotoPerfil: String? = ""
+    val fotoPerfil: String? = "",
+    val totalNotificaciones: Int = 0,
+    val notificaciones: List<NotificacionEntity> = emptyList()
 )
 
 @Composable

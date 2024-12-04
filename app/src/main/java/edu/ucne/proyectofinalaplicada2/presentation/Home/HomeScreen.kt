@@ -77,6 +77,8 @@ fun HomeScreen(
             goCategoria = {},
             onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
             navController = navController,
+            onDrawer = onDrawer,
+            onClickNotifications = onClickNotifications,
             onCarritoEvent = { event ->
                 coroutineScope.launch {
                     carritoViewModel.onUiEvent(event)
@@ -92,6 +94,8 @@ fun HomeBodyScreen(
     uiState: HomeUiState,
     goCategoria: () -> Unit,
     navController: NavHostController,
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit,
     onSearchQueryChanged: (String) -> Unit,
     onCarritoEvent: (CarritoUiEvent) -> Unit,
 ) {
@@ -102,9 +106,9 @@ fun HomeBodyScreen(
         topBar = {
             TopBarComponent(
                 title = " ",
-                onClickMenu = {},
-                onClickNotifications = {},
-                notificationCount = 0
+                onClickMenu = onDrawer,
+                onClickNotifications = onClickNotifications,
+                notificationCount = uiState.totalNotificaciones
             )
         },
         bottomBar = {
@@ -262,6 +266,8 @@ fun HomeBodyScreenPreview() {
         goCategoria = {},
         onSearchQueryChanged = {},
         navController = NavHostController(LocalContext.current),
+        onDrawer = {},
+        onClickNotifications = {},
         onCarritoEvent = {},
     )
 }
