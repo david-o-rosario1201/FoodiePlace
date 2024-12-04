@@ -37,6 +37,7 @@ fun NotificacionScreen(
     viewModel: NotificacionViewModel = hiltViewModel(),
     goToHome: () -> Unit
 ){
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     NotificacionBodyScreen(
         uiState = uiState,
