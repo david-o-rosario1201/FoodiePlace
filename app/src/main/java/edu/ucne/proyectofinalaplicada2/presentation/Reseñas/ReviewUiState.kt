@@ -7,6 +7,7 @@ import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
 data class ReviewUiState(
     val id: Int? = null,
     val usuarioId: Int = 0,
+    val nombreUsuario: String = "",
     val comentario: String = "",
     val fechaResena: String = "",
     val calificacion: Int = 0,
@@ -15,5 +16,5 @@ data class ReviewUiState(
     val isLoading: Boolean = false,
     val reseñas: List<ReviewEntity> = emptyList(),
     val isRefreshing: Boolean =false,
-    val usuario: List<UsuarioEntity> = emptyList()
+    val usuarios: List<UsuarioEntity> = emptyList()
 )
