@@ -6,7 +6,6 @@ import java.math.BigDecimal
 import java.util.Date
 
 data class OfertaUiState(
-    val usuarioRol: String? = "",
     val ofertasId: Int? = null,
     val productoId: Int? = 0,
     val precio: BigDecimal? = BigDecimal.valueOf(0.0),

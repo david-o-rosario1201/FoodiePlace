@@ -3,9 +3,10 @@ package edu.ucne.proyectofinalaplicada2.data.local.entities
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.Date
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 @Entity(
     tableName = "Reservaciones",
             foreignKeys  = [
@@ -18,13 +19,10 @@ import java.util.Date
     indices = [Index("usuarioId")]
 )
 data class ReservacionesEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val reservacionId: Int? = 0,
-    val usuarioId: Int?,
-    val fechaReservacion: Date,
+    val usuarioId: Int,
+    val fechaReservacion: String,
     val numeroPersonas: Int,
-    val estado: String,
-    val numeroMesa: Int,
-    val horaReservacion: Date?
-
+    val estado: String
 )

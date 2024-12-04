@@ -7,9 +7,8 @@ sealed interface TarjetaUiEvent {
     data class FechaExpiracionChanged(val fechaExpiracion: String): TarjetaUiEvent
     data class CvvChanged(val cvv: String): TarjetaUiEvent
     data class IsRefreshingChanged(val isRefreshing: Boolean): TarjetaUiEvent
-    data class NombreTitularChanged(val nombreTitular: String): TarjetaUiEvent
-
     object Save: TarjetaUiEvent
     object Delete: TarjetaUiEvent
     object Refresh: TarjetaUiEvent
+    data class SelectedTarjeta(val tarjetaId: Int): TarjetaUiEvent // Evento para seleccionar una tarjeta
 }

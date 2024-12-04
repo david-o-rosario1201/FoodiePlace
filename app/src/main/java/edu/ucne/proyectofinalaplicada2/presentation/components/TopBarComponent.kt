@@ -2,7 +2,6 @@ package edu.ucne.proyectofinalaplicada2.presentation.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Badge
@@ -102,7 +101,7 @@ fun SimpleTopBarComponent(
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBackIosNew,
+                    imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Volver",
                     tint = Color.Black
                 )

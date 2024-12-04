@@ -6,14 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookOnline
-import androidx.compose.material.icons.filled.Discount
-import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Reviews
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -76,15 +71,23 @@ fun DrawerMenu(
                         }
                         DrawerItem(
                             title = stringResource(R.string.drawer_pedidos),
-                            icon = Icons.Filled.ShoppingCart,
+                            icon = Icons.Filled.Info,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_pedidos)
                         ) {
                             handleItemClick(Screen.PedidoListScreen, it)
                         }
 
                         DrawerItem(
+                            title = stringResource(R.string.drawer_aboutus),
+                            icon = Icons.Filled.Info,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_aboutus)
+                        ) {
+                            handleItemClick(Screen.AboutUsScreen, it)
+                        }
+
+                        DrawerItem(
                             title = stringResource(R.string.drawer_productos),
-                            icon = Icons.Filled.Fastfood,
+                            icon = Icons.Filled.Info,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_productos)
                         ) {
                             handleItemClick(Screen.ProductoListScreen, it)
@@ -92,38 +95,10 @@ fun DrawerMenu(
                         }
                         DrawerItem(
                             title = stringResource(R.string.drawer_Reviews),
-                            icon = Icons.Filled.Reviews,
+                            icon = Icons.Filled.Favorite,
                             isSelected = selectedItem.value == stringResource(R.string.drawer_Reviews)
                         ) {
                             handleItemClick(Screen.ReviewListScreen, it)
-                        }
-                        DrawerItem(
-                            title = stringResource(R.string.drawer_Reservaciones),
-                            icon = Icons.Filled.BookOnline,
-                            isSelected = selectedItem.value == stringResource(R.string.drawer_Reservaciones)
-                        ) {
-                            handleItemClick(Screen.ReservacionListScreen, it)
-                        }
-                        DrawerItem(
-                            title = stringResource(R.string.drawer_Ofertas),
-                            icon = Icons.Filled.Discount,
-                            isSelected = selectedItem.value == stringResource(R.string.drawer_Ofertas)
-                        ) {
-                            handleItemClick(Screen.OfertaListScreen, it)
-                        }
-                        DrawerItem(
-                            title = stringResource(R.string.drawer_Profile),
-                            icon = Icons.Filled.Person,
-                            isSelected = selectedItem.value == stringResource(R.string.drawer_Profile)
-                        ) {
-                            handleItemClick(Screen.ProfileScreen, it)
-                        }
-                        DrawerItem(
-                            title = stringResource(R.string.drawer_aboutus),
-                            icon = Icons.Filled.Info,
-                            isSelected = selectedItem.value == stringResource(R.string.drawer_aboutus)
-                        ) {
-                            handleItemClick(Screen.AboutUsScreen, it)
                         }
                     }
                 }

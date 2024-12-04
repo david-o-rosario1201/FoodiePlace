@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -26,11 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.ucne.proyectofinalaplicada2.data.local.entities.NotificacionEntity
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
-import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.CategoriaRepository
-import edu.ucne.proyectofinalaplicada2.data.repository.NotificacionRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
@@ -48,9 +46,7 @@ import kotlin.math.absoluteValue
 class HomeViewModel @Inject constructor(
     private val productoRepository: ProductoRepository,
     private val categoriaRepository: CategoriaRepository,
-    private val usuarioRepository: UsuarioRepository,
-    private val authRepository: AuthRepository,
-    private val notificacionRepository: NotificacionRepository
+    private val usuarioRepository: UsuarioRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> get() = _uiState
@@ -58,7 +54,6 @@ class HomeViewModel @Inject constructor(
     init {
         loadCategorias()
         getProductos()
-        getNotificaciones()
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -116,57 +111,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getNotificaciones() {
-        viewModelScope.launch {
-            notificacionRepository.getNotificaciones().collectLatest { result ->
-                when (result) {
-                    is Resource.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-                    is Resource.Success -> {
-                        val filteredNotificaciones = result.data?.filter { notificacion ->
-                            if (_uiState.value.usuarioRol == "Admin") {
-                                !notificacion.descripcion.contains("Nueva Oferta", ignoreCase = true)
-                            } else {
-                                true
-                            }
-                        } ?: emptyList()
 
-                        _uiState.update {
-                            it.copy(
-                                notificaciones = filteredNotificaciones,
-                                totalNotificaciones = filteredNotificaciones.size,
-                                isLoading = false
-                            )
-                        }
-                    }
-                    is Resource.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = result.message ?: ""
-                            )
-                        }
-                    }
-                }
-            }
+    fun loadUsuario(usuarioId: Int) {
+        viewModelScope.launch {
+            val usuario = usuarioRepository.getUsuario(
+                usuarioId = usuarioId
+            )
+            _uiState.value = _uiState.value.copy(
+                usuarioNombre = usuario.nombre ?: "Usuario no encontrado"
+            )
         }
     }
 
-
-    fun getCurrentUser(){
-        viewModelScope.launch {
-            val currentUser = authRepository.getUser()
-            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
-
-            _uiState.update {
-                it.copy(
-                    usuarioNombre = usuarioActual?.nombre ?: "",
-                    usuarioRol = usuarioActual?.rol,
-                )
-            }
-        }
-    }
 
     private fun searchProductos(query: String) {
         viewModelScope.launch {
@@ -186,10 +142,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val usuarioNombre: String = "",
-    val usuarioRol: String? = "",
-    val fotoPerfil: String? = "",
-    val totalNotificaciones: Int = 0,
-    val notificaciones: List<NotificacionEntity> = emptyList()
+
 )
 
 @Composable
@@ -200,9 +153,11 @@ fun CardItem(
     color: Color = MaterialTheme.colorScheme.primary,
     showButton: Boolean = false,
     buttonText: String = "Add",
-    onButtonClick: (() -> Unit)? = null,
+    onButtonClick: (() -> Unit)? = null
 ) {
     Card(
+        modifier = Modifier
+            .width(150.dp),
         colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

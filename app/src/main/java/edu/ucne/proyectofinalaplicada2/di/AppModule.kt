@@ -2,7 +2,6 @@ package edu.ucne.proyectofinalaplicada2.di
 
 import android.content.Context
 import androidx.room.Room
-import com.google.firebase.auth.FirebaseAuth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -30,7 +29,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object AppModule {
-    const val BASE_URL = "https://foodieplaceapinew-gdg6f4avfmbxctf0.eastus2-01.azurewebsites.net/"
+    const val BASE_URL = "https://foodieplaceapi.azurewebsites.net/"
 
     //Moshi
     @Provides
@@ -40,11 +39,6 @@ object AppModule {
             .add(KotlinJsonAdapterFactory())
             .add(Adapter())
             .build()
-
-    //Firebase
-    @Provides
-    @Singleton
-    fun providesFirebaseAuth() = FirebaseAuth.getInstance()
 
     //FoodiPlaceDb
     @Provides

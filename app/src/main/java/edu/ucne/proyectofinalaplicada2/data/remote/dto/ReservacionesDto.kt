@@ -1,14 +1,12 @@
-package edu.ucne.proyectofinalaplicada2.data.remote.dto
+package edu.ucne.proyectofinalaplicada2.data.local.dto
 
 import kotlinx.serialization.Serializable
-import java.util.Date
 
+@Serializable
 data class ReservacionesDto(
     val reservacionId: Int? = 0,
-    val usuarioId: Int?,
-    val fechaReservacion: Date,
+    val usuarioId: Int,
+    val fechaReservacion: String,
     val numeroPersonas: Int,
-    val estado: String,
-    val numeroMesa: Int,
-    val horaReservacion: Date?
+    val estado: String
 )

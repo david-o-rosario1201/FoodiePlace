@@ -5,12 +5,11 @@ import java.math.BigDecimal
 import java.util.Date
 
 data class PedidoDto(
-    val pedidoId: Int? = null,
-    val usuarioId: Int,
-    val fechaPedido: Date,
-    val total: BigDecimal,
-    val paraLlevar: Boolean,
-    val estado: String,
-    val tiempo: String,
-    val pedidoDetalle: List<PedidoDetalleEntity>
+        val pedidoId: Int? = null,
+        val usuarioId: Int,
+        val fechaPedido: Date,
+        val total: BigDecimal,
+        val paraLlevar: Boolean,
+        val estado: String,
+        val pedidoDetalle: List<PedidoDetalleEntity>
 )

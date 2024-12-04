@@ -14,21 +14,13 @@ class UsuarioRepository @Inject constructor(
     private val remoteDataSource: UsuarioRemoteDataSource,
     private val usuarioDao: UsuarioDao
 ){
-    suspend fun addUsuario(usuarioDto: UsuarioDto){
-        remoteDataSource.addUsuario(usuarioDto)
-        addUsuarioLocal(usuarioDto)
-    }
+    suspend fun addUsuario(usuarioDto: UsuarioDto) = remoteDataSource.addUsuario(usuarioDto)
 
     suspend fun getUsuario(usuarioId: Int) = remoteDataSource.getUsuario(usuarioId)
 
     suspend fun deleteUsuario(usuarioId: Int) = remoteDataSource.deleteUsuario(usuarioId)
 
-    suspend fun updateUsuario(usuarioId: Int, usuario: UsuarioDto){
-        remoteDataSource.updateUsuario(usuarioId, usuario)
-        addUsuarioLocal(usuario)
-    }
-
-    suspend fun getUsuarioByCorreo(correo: String) = usuarioDao.getUsuarioByCorreo(correo)
+    suspend fun updateUsuario(usuarioId: Int, usuario: UsuarioDto) = remoteDataSource.updateUsuario(usuarioId,usuario)
 
     fun getUsuarios(): Flow<Resource<List<UsuarioEntity>>> = flow {
         try{
@@ -59,16 +51,12 @@ class UsuarioRepository @Inject constructor(
             emit(Resource.Error("Error desconocido ${e.message}"))
         }
     }
-
-    suspend fun addUsuarioLocal(usuarioDto: UsuarioDto) = usuarioDao.addUsuario(usuarioDto.toEntity())
 }
 
 private fun UsuarioDto.toEntity() = UsuarioEntity(
     usuarioId = usuarioId,
-    rol = rol,
     nombre = nombre,
     telefono = telefono,
     correo = correo,
-    contrasena = contrasena,
-    fotoPerfil = fotoPerfil
+    contrasena = contrasena
 )

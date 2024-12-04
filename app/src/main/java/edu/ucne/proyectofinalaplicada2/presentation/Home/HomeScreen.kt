@@ -19,12 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,66 +36,43 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
-import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiEvent
-import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
-    onDrawer: () -> Unit,
-    onClickNotifications: () -> Unit,
+    usuarioId: Int,
+    goProducto: () -> Unit,
+    goCategoria: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
-    carritoViewModel: CarritoViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
-    homeViewModel.getCurrentUser()
-    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val coroutineScope = rememberCoroutineScope()
 
-    if (uiState.usuarioRol == "Admin") {
-        HomeAdminBodyScreen(
-            uiState = uiState,
-            navController = navController,
-            onDrawer = onDrawer,
-            onClickNotifications = onClickNotifications
-        )
-    } else {
-        // Vista del cliente
-        HomeBodyScreen(
-            uiState = uiState,
-            goCategoria = {},
-            onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
-            navController = navController,
-            onDrawer = onDrawer,
-            onClickNotifications = onClickNotifications,
-            onCarritoEvent = { event ->
-                coroutineScope.launch {
-                    carritoViewModel.onUiEvent(event)
-                }
-            },
-        )
-    }
+    homeViewModel.loadUsuario(usuarioId)
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    HomeBodyScreen(
+        uiState = uiState,
+        goProducto = goProducto,
+        goCategoria = goCategoria,
+        onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
+        navController = navController
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeBodyScreen(
     uiState: HomeUiState,
+    goProducto: () -> Unit,
     goCategoria: () -> Unit,
     navController: NavHostController,
-    onDrawer: () -> Unit,
-    onClickNotifications: () -> Unit,
-    onSearchQueryChanged: (String) -> Unit,
-    onCarritoEvent: (CarritoUiEvent) -> Unit,
+    onSearchQueryChanged: (String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
 
@@ -106,17 +81,18 @@ fun HomeBodyScreen(
         topBar = {
             TopBarComponent(
                 title = " ",
-                onClickMenu = onDrawer,
-                onClickNotifications = onClickNotifications,
-                notificationCount = uiState.totalNotificaciones
+                onClickMenu = {},
+                onClickNotifications = {},
+                notificationCount = 0
             )
         },
+
         bottomBar = {
             BottomBarNavigation(
                 navController = navController
             )
         }
-    ) {
+    ){
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -141,7 +117,7 @@ fun HomeBodyScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
+            // Actualizar el SearchBar con el query
             TextField(
                 value = searchQuery,
                 onValueChange = { query ->
@@ -157,7 +133,7 @@ fun HomeBodyScreen(
                         modifier = Modifier.size(30.dp)
                     )
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.Gray.copy(alpha = 0.2f),
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.Gray,
@@ -204,20 +180,8 @@ fun HomeBodyScreen(
                         descripcion = "Precio: ${producto.precio}",
                         imagen = producto.imagen,
                         showButton = true,
-                        onButtonClick = {
-                            val carritoDetalle = CarritoDetalleEntity(
-                                carritoDetalleId = 0,
-                                carritoId = 0,
-                                productoId = producto.productoId,
-                                cantidad = 1,
-                                precioUnitario = producto.precio,
-                                impuesto = BigDecimal.ZERO,
-                                subTotal = producto.precio,
-                                propina = BigDecimal.ZERO
-                            )
-                            onCarritoEvent(CarritoUiEvent.AgregarProducto(carritoDetalle, 1))
-                        },
-                        color = Color.White,
+                        onButtonClick = { goProducto() },
+                        color = Color.White
                     )
                 }
             }
@@ -236,17 +200,15 @@ fun HomeBodyScreenPreview() {
             )
         ),
         productoUiState = ProductoUiState(
-            productos = listOf(
-                ProductoEntity(
-                    productoId = 1,
-                    nombre = "Producto 1",
-                    categoriaId = 1,
-                    descripcion = "Descripción del Producto 1",
-                    precio = BigDecimal(100),
-                    disponibilidad = true,
-                    imagen = "https://via.placeholder.com/150",
-                    tiempo = "14"
-                ),
+            productos = listOf(ProductoEntity(
+                productoId = 1,
+                nombre = "Producto 1",
+                categoriaId = 1,
+                descripcion = "Descripción del Producto 1",
+                precio = BigDecimal(100),
+                disponibilidad = true,
+                imagen = "https://via.placeholder.com/150"
+            ),
                 ProductoEntity(
                     productoId = 2,
                     nombre = "Producto 2",
@@ -254,8 +216,7 @@ fun HomeBodyScreenPreview() {
                     descripcion = "Descripción del Producto 2",
                     precio = BigDecimal(200),
                     disponibilidad = true,
-                    imagen = "https://via.placeholder.com/150",
-                    tiempo = "25"
+                    imagen = "https://via.placeholder.com/150"
                 )
             )
         )
@@ -263,12 +224,9 @@ fun HomeBodyScreenPreview() {
 
     HomeBodyScreen(
         uiState = uiState,
+        goProducto = {},
         goCategoria = {},
         onSearchQueryChanged = {},
-        navController = NavHostController(LocalContext.current),
-        onDrawer = {},
-        onClickNotifications = {},
-        onCarritoEvent = {},
+        navController = NavHostController(LocalContext.current)
     )
 }
-

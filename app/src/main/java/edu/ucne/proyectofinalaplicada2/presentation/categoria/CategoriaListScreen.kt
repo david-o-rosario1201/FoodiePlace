@@ -1,7 +1,7 @@
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,10 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,33 +37,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
-import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiEvent
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaViewModel
-import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun CategoriaListScreen(
     viewModel: CategoriaViewModel = hiltViewModel(),
     goToAddCategoria: () -> Unit,
-    onClickNotifications: () -> Unit,
-    onDrawer: () -> Unit
+    onClickNotifications: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CategoriaListBodyScreen(
         uiState = uiState,
-        onUiEvent = viewModel::onUiEvent,
         goToAddCategoria = goToAddCategoria,
-        onClickNotifications = onClickNotifications,
-        onDrawer = onDrawer
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -75,16 +67,11 @@ fun CategoriaListScreen(
 @Composable
 fun CategoriaListBodyScreen(
     uiState: CategoriaUiState,
-    onUiEvent: (CategoriaUiEvent) -> Unit,
     goToAddCategoria: () -> Unit,
-    onClickNotifications: () -> Unit,
-    onDrawer: () -> Unit
+    onClickNotifications: () -> Unit
 ) {
     val categorias =
         remember { mutableStateListOf<CategoriaEntity>(*uiState.categorias.toTypedArray()) }
-
-    var isRefreshing by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.categorias) {
         categorias.clear()
@@ -96,7 +83,7 @@ fun CategoriaListBodyScreen(
         topBar = {
             TopBarComponent(
                 title = "Categorías",
-                onClickMenu = onDrawer,
+                onClickMenu = {},
                 onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
@@ -112,67 +99,58 @@ fun CategoriaListBodyScreen(
                 )
             }
         }
-    ) {
-        Box(
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-        ){
-            PullToRefreshLazyColumn(
-                isRefreshing = isRefreshing,
-                onRefresh = {
-                    scope.launch {
-                        isRefreshing = true
-                        onUiEvent(CategoriaUiEvent.Refresh)
-                        delay(3000L)
-                        isRefreshing = false
-                    }
+                .padding(innerPadding)
+                .background(Color.White)
+        ) {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 20.dp),
+                        color = color_oro,
+
+                        )
                 }
-            ){
-                when {
-                    uiState.isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(top = 20.dp),
-                            color = color_oro
+
+                uiState.categorias.isEmpty() -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.empty_icon),
+                            contentDescription = "Lista vacía"
+                        )
+                        Text(
+                            text = "Lista vacía",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
                         )
                     }
-                    uiState.categorias.isEmpty() -> {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.empty_icon),
-                                contentDescription = "Lista vacía"
+                }else -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.categorias) { categoria ->
+                            CategoriaItem(
+                                item = categoria,
+                                modifier = Modifier
+                                    .height(120.dp)
+                                    .fillMaxWidth()
                             )
-                                Text(
-                                    text = "Lista vacía",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        } else -> {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            contentPadding = PaddingValues(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(categorias) { categoria ->
-                                CategoriaItem(
-                                    item = categoria,
-                                    modifier = Modifier
-                                        .height(120.dp)
-                                        .fillMaxWidth()
-                                )
-                            }
                         }
                     }
                 }
@@ -180,6 +158,7 @@ fun CategoriaListBodyScreen(
         }
     }
 }
+
 
 @Composable
 fun CategoriaItem(
