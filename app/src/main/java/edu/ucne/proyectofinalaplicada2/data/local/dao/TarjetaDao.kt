@@ -23,6 +23,9 @@ interface TarjetaDao {
     @Query("SELECT * FROM Tarjetas WHERE usuarioId = :usuarioId")
     fun getTarjetasPorUsuario(usuarioId: Int): Flow<List<TarjetaEntity>>
 
+    @Query("SELECT * FROM Tarjetas WHERE usuarioId = :usuarioId")
+    fun getTarjetasPorUsuario1(usuarioId: Int): List<TarjetaEntity>
+
 
     @Delete
     suspend fun deleteTarjeta(tarjeta: TarjetaEntity)

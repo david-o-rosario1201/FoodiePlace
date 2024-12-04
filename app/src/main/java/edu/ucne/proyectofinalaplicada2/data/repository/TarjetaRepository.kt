@@ -30,15 +30,12 @@ class TarjetaRepository @Inject constructor(
     fun getTarjetas(): Flow<Resource<List<TarjetaEntity>>> = flow {
         try {
             emit(Resource.Loading())
-            // Obtener tarjetas desde el servidor
             val tarjetas = tarjetaRemoteDataSource.getTarjetas()
 
-            // Guardar las tarjetas en la base de datos local
             tarjetas.forEach {
                 tarjetaDao.addTarjeta(it.toTarjetaEntity())
             }
 
-            // Emitir las tarjetas locales como un flujo continuo
             tarjetaDao.getTarjetas().collect { tarjetasLocal ->
                 emit(Resource.Success(tarjetasLocal))
             }
@@ -57,7 +54,7 @@ class TarjetaRepository @Inject constructor(
 
     fun getTarjetasPorUsuario(usuarioId: Int): Flow<Resource<List<TarjetaEntity>>> = flow {
         try {
-            emit(Resource.Loading()) // Emite un estado de carga
+            emit(Resource.Loading())
 
             tarjetaDao.getTarjetasPorUsuario(usuarioId).collect { tarjetasLocal ->
                 emit(Resource.Success(tarjetasLocal))
@@ -67,6 +64,9 @@ class TarjetaRepository @Inject constructor(
             emit(Resource.Error("Error al obtener tarjetas: ${e.message}")) // Emite error en caso de excepción
         }
     }
+
+    fun getTarjetasPorUsuario1(usuarioId: Int) =
+        tarjetaDao.getTarjetasPorUsuario(usuarioId)
 
 
 }

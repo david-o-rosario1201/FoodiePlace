@@ -38,17 +38,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.CategoriaEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
-import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiEvent
-import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.categoria.CategoriaUiState
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.BottomBarNavigation
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoUiState
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @Composable
@@ -57,11 +53,11 @@ fun HomeScreen(
     onDrawer: () -> Unit,
     onClickNotifications: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
-    carritoViewModel: CarritoViewModel = hiltViewModel(),
+    goProducto: (Int) -> Unit,
+    goCategoria: () -> Unit
 ) {
     homeViewModel.getCurrentUser()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val coroutineScope = rememberCoroutineScope()
 
     if (uiState.usuarioRol == "Admin") {
         HomeAdminBodyScreen(
@@ -74,16 +70,12 @@ fun HomeScreen(
         // Vista del cliente
         HomeBodyScreen(
             uiState = uiState,
-            goCategoria = {},
+            goCategoria = goCategoria,
             onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
             navController = navController,
             onDrawer = onDrawer,
             onClickNotifications = onClickNotifications,
-            onCarritoEvent = { event ->
-                coroutineScope.launch {
-                    carritoViewModel.onUiEvent(event)
-                }
-            },
+            goProducto = goProducto
         )
     }
 }
@@ -93,11 +85,11 @@ fun HomeScreen(
 fun HomeBodyScreen(
     uiState: HomeUiState,
     goCategoria: () -> Unit,
+    goProducto: (Int) -> Unit,
     navController: NavHostController,
     onDrawer: () -> Unit,
     onClickNotifications: () -> Unit,
     onSearchQueryChanged: (String) -> Unit,
-    onCarritoEvent: (CarritoUiEvent) -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf(uiState.searchQuery) }
 
@@ -204,19 +196,7 @@ fun HomeBodyScreen(
                         descripcion = "Precio: ${producto.precio}",
                         imagen = producto.imagen,
                         showButton = true,
-                        onButtonClick = {
-                            val carritoDetalle = CarritoDetalleEntity(
-                                carritoDetalleId = 0,
-                                carritoId = 0,
-                                productoId = producto.productoId,
-                                cantidad = 1,
-                                precioUnitario = producto.precio,
-                                impuesto = BigDecimal.ZERO,
-                                subTotal = producto.precio,
-                                propina = BigDecimal.ZERO
-                            )
-                            onCarritoEvent(CarritoUiEvent.AgregarProducto(carritoDetalle, 1))
-                        },
+                        onButtonClick = { goProducto(producto.productoId) },
                         color = Color.White,
                     )
                 }
@@ -268,7 +248,7 @@ fun HomeBodyScreenPreview() {
         navController = NavHostController(LocalContext.current),
         onDrawer = {},
         onClickNotifications = {},
-        onCarritoEvent = {},
+        goProducto = {},
     )
 }
 

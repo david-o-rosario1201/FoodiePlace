@@ -53,6 +53,7 @@ fun CarritoScreen(
     navController: NavHostController,
     onDrawer: () -> Unit,
     onClickNotifications: () -> Unit,
+    onTarjetaGo: () -> Unit,
     viewModel: CarritoViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +68,8 @@ fun CarritoScreen(
             coroutineScope.launch {
                 viewModel.onUiEvent(event)
             }
-        }
+        },
+        onTarjetaGo = onTarjetaGo
     )
 }
 
@@ -78,7 +80,8 @@ private fun CarritoBodyScreen(
     navController: NavHostController,
     onDrawer: () -> Unit,
     onClickNotifications: () -> Unit,
-    onCarritoEvent: (CarritoUiEvent) -> Unit
+    onCarritoEvent: (CarritoUiEvent) -> Unit,
+    onTarjetaGo: () -> Unit
 ) {
     var isModalVisible by remember { mutableStateOf(false) }
 
@@ -125,7 +128,7 @@ private fun CarritoBodyScreen(
                     },
                     onAgregarTarjetaClick = {
                         isModalVisible = false
-                        navController.navigate("tarjeta_screen")
+                        onTarjetaGo()
                     }
                 )
             }
@@ -152,7 +155,6 @@ fun CarritoResumen(uiState: CarritoUiState, onPagarClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            TotalRow("Tiempo:", "$${uiState.tiempo}")
             TotalRow("Subtotal:", "$${uiState.subTotal}")
             TotalRow("Propina:", "$${uiState.propina}")
             TotalRow("ITBS:", "$${uiState.impuesto}")
@@ -184,7 +186,7 @@ fun CarritoResumen(uiState: CarritoUiState, onPagarClick: () -> Unit) {
 fun CardSelectionContent(
     uiState: CarritoUiState,
     onCardSelected: (Int) -> Unit,
-    onAgregarTarjetaClick: () -> Unit // Nueva función para manejar el clic en "Agregar Tarjeta"
+    onAgregarTarjetaClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -199,13 +201,11 @@ fun CardSelectionContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar las tarjetas si existen, y el botón de agregar tarjeta al final en una fila
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Tarjeta para agregar una nueva tarjeta estará siempre visible
             Card(
                 modifier = Modifier
                     .width(200.dp)
@@ -255,21 +255,13 @@ fun CardSelectionContent(
     }
 }
 
-
-
-
-
-
 @Composable
 fun CarritoRow(carrito: CarritoDetalleEntity) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
         Row(
@@ -278,36 +270,13 @@ fun CarritoRow(carrito: CarritoDetalleEntity) {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = carrito.productoId.toString(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Cantidad: ${carrito.cantidad}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+            Column {
+                Text("Producto ID: ${carrito.productoId}", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                Text("Cantidad: ${carrito.cantidad}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "$${carrito.precioUnitario}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "$${carrito.subTotal}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            Column(horizontalAlignment = Alignment.End) {
+                Text("$${carrito.precioUnitario}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                Text("Subtotal: $${carrito.subTotal}", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -346,6 +315,7 @@ fun CarritoScreenPreview() {
         navController = NavHostController(LocalContext.current),
         onDrawer = {},
         onClickNotifications = {},
-        onCarritoEvent = {}
+        onCarritoEvent = {},
+        onTarjetaGo = {}
     )
 }
