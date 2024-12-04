@@ -20,15 +20,19 @@ import java.util.*
 
 @Composable
 fun ReservacionesScreenCliente(
-    viewModel: ReservacionesViewModel = hiltViewModel(),
-    onNavigateToList: () -> Unit
+    onNavigateToList: () -> Unit,
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit,
+    viewModel: ReservacionesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ReservacionesBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
-        onNavigateToList = onNavigateToList
+        onNavigateToList = onNavigateToList,
+        onDrawer = onDrawer,
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -36,6 +40,8 @@ fun ReservacionesScreenCliente(
 private fun ReservacionesBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit,
     onNavigateToList: () -> Unit
 ) {
     val title = if (uiState.reservacionId == 0) "Nueva Reservación" else "Editar Reservación"
@@ -51,8 +57,8 @@ private fun ReservacionesBodyScreen(
         topBar = {
             TopBarComponent(
                 title = title,
-                onClickMenu = {},
-                onClickNotifications = {},
+                onClickMenu = onDrawer,
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         }
