@@ -16,36 +16,55 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
+import edu.ucne.proyectofinalaplicada2.presentation.components.TimePickerField
 import java.util.*
 
 @Composable
-fun ReservacionesScreenCliente(
+fun ReservacionesScreen(
+    viewModel: ReservacionesViewModel = hiltViewModel(),
     onNavigateToList: () -> Unit,
-    onDrawer: () -> Unit,
-    onClickNotifications: () -> Unit,
-    viewModel: ReservacionesViewModel = hiltViewModel()
+    reservacionId: Int
 ) {
+    viewModel.getCurrentUser()
+
+    LaunchedEffect(reservacionId) {
+        if (reservacionId != 0) {
+            viewModel.onEvent(ReservacionesUiEvent.SelectedReservacion(reservacionId))
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = uiState.success) {
+        if (uiState.success) {
+            onNavigateToList()
+        }
+    }
 
     ReservacionesBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         onNavigateToList = onNavigateToList,
-        onDrawer = onDrawer,
-        onClickNotifications = onClickNotifications
+        reservacionId = reservacionId
     )
 }
+
 
 @Composable
 private fun ReservacionesBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
-    onDrawer: () -> Unit,
-    onClickNotifications: () -> Unit,
-    onNavigateToList: () -> Unit
+    onNavigateToList: () -> Unit,
+    reservacionId: Int
 ) {
     val title = if (uiState.reservacionId == 0) "Nueva Reservación" else "Editar Reservación"
     val buttonText = if (uiState.reservacionId == 0) "Guardar" else "Actualizar"
+
+    LaunchedEffect(key1 = uiState.reservacionId) {
+        if (uiState.reservacionId != 0) {
+            onEvent(ReservacionesUiEvent.SelectedReservacion(uiState.reservacionId ?: 0))
+        }
+    }
 
     LaunchedEffect(key1 = uiState.success) {
         if (uiState.success) {
@@ -57,8 +76,8 @@ private fun ReservacionesBodyScreen(
         topBar = {
             TopBarComponent(
                 title = title,
-                onClickMenu = onDrawer,
-                onClickNotifications = onClickNotifications,
+                onClickMenu = {},
+                onClickNotifications = {},
                 notificationCount = 0
             )
         }
@@ -102,12 +121,46 @@ private fun ReservacionFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        if (uiState.usuarioRol == "Admin") {
+            OutlinedTextField(
+                value = uiState.numeroMesa?.toString() ?: "",
+                onValueChange = {
+                    val numero = it.toIntOrNull()
+                    onEvent(ReservacionesUiEvent.NumeroMesaChange(numero ?: 0))
+                },
+                label = { Text("Número de Mesa") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.estado,
+                onValueChange = { estado ->
+                    onEvent(ReservacionesUiEvent.EstadoChange(estado))
+                },
+                label = { Text("Estado") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            TimePickers(
+                uiState = uiState,
+                onEvent = onEvent
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         DatePickers(
             uiState = uiState,
             onEvent = onEvent
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+
 
         OutlinedTextField(
             value = uiState.numeroPersonas?.toString() ?: "",
@@ -160,6 +213,17 @@ private fun DatePickers(
         onEvent = onEvent,
         selectedDate = uiState.fechaReservacion,
         event = ReservacionesUiEvent.FechaReservacionChange(uiState.fechaReservacion ?: Date())
+    )
+}
+
+@Composable
+private fun TimePickers(
+    uiState: ReservacionesUiState,
+    onEvent: (ReservacionesUiEvent) -> Unit
+) {
+    TimePickerField(
+        onEvent = onEvent,
+        event = ReservacionesUiEvent.HoraReservacionChange(uiState.horaReservacion)
     )
 }
 
