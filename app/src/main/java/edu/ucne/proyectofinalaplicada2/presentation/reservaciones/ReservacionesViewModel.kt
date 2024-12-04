@@ -141,17 +141,19 @@ class ReservacionesViewModel @Inject constructor(
             ReservacionesUiEvent.Save -> {
                 viewModelScope.launch {
                     getCurrentUser()
-                    if (_uiState.value.reservacionId == null)
+                    if (_uiState.value.reservacionId == 0) {
                         reservacionesRepository.addReservacion(_uiState.value.toEntity())
-                    else
+                    } else {
                         reservacionesRepository.updateReservacion(
                             _uiState.value.reservacionId ?: 0,
                             _uiState.value.toEntity()
                         )
+                    }
 
                     _uiState.update { it.copy(success = true) }
                 }
             }
+
             ReservacionesUiEvent.Delete -> {
                 viewModelScope.launch {
                     reservacionesRepository.deleteReservacion(_uiState.value.reservacionId ?: 0)

@@ -3,6 +3,7 @@
 package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,24 +58,29 @@ import java.util.Locale
 fun ReservacionesListScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
     goToReservacion: () -> Unit,
+    onEdit: (Int) -> Unit, // Nuevo parámetro
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
     viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     ReservacionesListBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         goToReservacion = goToReservacion,
+        onEdit = onEdit, // Pasar la lógica de edición
         onClickNotifications = onClickNotifications,
         onDrawer = onDrawer
     )
 }
+
 @Composable
 fun ReservacionesListBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
     goToReservacion: () -> Unit,
+    onEdit: (Int) -> Unit,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
@@ -91,14 +97,16 @@ fun ReservacionesListBodyScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = goToReservacion,
-                containerColor = color_oro,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Agregar nuevas Reservacion"
-                )
+            if (uiState.usuarioRol == "Admin") { // Solo mostrar el botón para administradores
+                FloatingActionButton(
+                    onClick = goToReservacion,
+                    containerColor = color_oro,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Agregar nueva reservación"
+                    )
+                }
             }
         }
     ) {
@@ -106,7 +114,7 @@ fun ReservacionesListBodyScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-        ){
+        ) {
             PullToRefreshLazyColumn(
                 isRefreshing = isRefreshing,
                 onRefresh = {
@@ -117,7 +125,7 @@ fun ReservacionesListBodyScreen(
                         isRefreshing = false
                     }
                 }
-            ){
+            ) {
                 LazyColumn {
                     if (uiState.reservaciones.isEmpty()) {
                         item {
@@ -127,7 +135,8 @@ fun ReservacionesListBodyScreen(
                         items(uiState.reservaciones) { reservacion ->
                             ReservacionItem(
                                 item = reservacion,
-                                goToReservacion = goToReservacion
+                                isAdmin = uiState.usuarioRol == "Admin", // Verificar si es admin
+                                onEdit = onEdit
                             )
                         }
                     }
@@ -138,23 +147,31 @@ fun ReservacionesListBodyScreen(
 }
 
 
+
+
 @Composable
 fun ReservacionItem(
     item: ReservacionesEntity,
-    goToReservacion: () -> Unit
+    isAdmin: Boolean, // Recibimos el valor de si el usuario es admin
+    onEdit: (Int) -> Unit
 ) {
-    // Crear el formato para fecha y hora
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-    // Formatear fecha y hora
     val formattedDate = dateFormat.format(item.fechaReservacion)
     val formattedTime = timeFormat.format(item.horaReservacion)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .let { modifier ->
+                if (isAdmin) {
+                    modifier.clickable { onEdit(item.reservacionId!!) } // Solo editable para admin
+                } else {
+                    modifier
+                }
+            },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -196,20 +213,10 @@ fun ReservacionItem(
                     color = Color.Gray
                 )
             }
-
-            IconButton(
-                onClick = { goToReservacion() },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = "Ver detalles de reservación",
-                    tint = Color.Gray
-                )
-            }
         }
     }
 }
+
 
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -257,6 +264,7 @@ fun ReservacionesListScreenPreview() {
         onEvent = {},
         goToReservacion = {},
         onClickNotifications = {},
-        onDrawer = {}
+        onDrawer = {},
+        onEdit = {}
     )
 }

@@ -22,26 +22,52 @@ import java.util.*
 @Composable
 fun ReservacionesScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
-    onNavigateToList: () -> Unit
+    onNavigateToList: () -> Unit,
+    reservacionId: Int
 ) {
     viewModel.getCurrentUser()
+
+    // Llamar para cargar los datos de la reservación cuando se recibe un ID distinto de 0
+    LaunchedEffect(reservacionId) {
+        if (reservacionId != 0) {
+            viewModel.onEvent(ReservacionesUiEvent.SelectedReservacion(reservacionId))
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Llamada para navegar a la lista si la operación de guardar es exitosa
+    LaunchedEffect(key1 = uiState.success) {
+        if (uiState.success) {
+            onNavigateToList()
+        }
+    }
 
     ReservacionesBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
-        onNavigateToList = onNavigateToList
+        onNavigateToList = onNavigateToList,
+        reservacionId = reservacionId
     )
 }
+
 
 @Composable
 private fun ReservacionesBodyScreen(
     uiState: ReservacionesUiState,
     onEvent: (ReservacionesUiEvent) -> Unit,
-    onNavigateToList: () -> Unit
+    onNavigateToList: () -> Unit,
+    reservacionId: Int
 ) {
     val title = if (uiState.reservacionId == 0) "Nueva Reservación" else "Editar Reservación"
     val buttonText = if (uiState.reservacionId == 0) "Guardar" else "Actualizar"
+
+    // Cargar los datos de la reservación seleccionada
+    LaunchedEffect(key1 = uiState.reservacionId) {
+        if (uiState.reservacionId != 0) {
+            onEvent(ReservacionesUiEvent.SelectedReservacion(uiState.reservacionId ?: 0))
+        }
+    }
 
     LaunchedEffect(key1 = uiState.success) {
         if (uiState.success) {
