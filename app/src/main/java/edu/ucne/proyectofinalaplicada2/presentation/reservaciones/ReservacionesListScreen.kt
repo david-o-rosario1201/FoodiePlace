@@ -97,7 +97,7 @@ fun ReservacionesListBodyScreen(
             )
         },
         floatingActionButton = {
-            if (uiState.usuarioRol == "Admin") {
+
                 FloatingActionButton(
                     onClick = goToReservacion,
                     containerColor = color_oro,
@@ -107,7 +107,7 @@ fun ReservacionesListBodyScreen(
                         contentDescription = "Agregar nueva reservación"
                     )
                 }
-            }
+
         }
     ) {
         Box(

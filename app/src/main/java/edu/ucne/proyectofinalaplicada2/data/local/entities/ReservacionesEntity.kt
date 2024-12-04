@@ -25,6 +25,6 @@ data class ReservacionesEntity(
     val numeroPersonas: Int,
     val estado: String,
     val numeroMesa: Int,
-    val horaReservacion: Date
+    val horaReservacion: Date?
 
 )

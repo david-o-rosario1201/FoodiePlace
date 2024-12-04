@@ -337,15 +337,8 @@ fun FoodiePlaceNavHost(
                     reservacionId = reservacionId,
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReservacionListScreen)
-                    },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
                     }
+
                 )
             }
 
