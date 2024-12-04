@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -55,8 +54,8 @@ fun ProductosListScreen(
     viewModel: ProductoViewModel = hiltViewModel(),
     goToProducto: (Int) -> Unit,
     onAddProducto: () -> Unit,
-    modifier: Modifier = Modifier,
-    onDrawer: () -> Unit
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -65,8 +64,8 @@ fun ProductosListScreen(
         onEvent = viewModel::onEvent,
         goToProducto = goToProducto,
         onAddProducto = onAddProducto,
-        modifier = modifier,
-        onDrawer = onDrawer
+        onDrawer = onDrawer,
+        onClickNotifications = onClickNotifications
     )
 }
 
@@ -77,8 +76,8 @@ fun ProductosListBodyScreen(
     onEvent: (ProductoUiEvent) -> Unit,
     goToProducto: (Int) -> Unit,
     onAddProducto: () -> Unit,
-    modifier: Modifier = Modifier,
-    onDrawer: () -> Unit
+    onDrawer: () -> Unit,
+    onClickNotifications: () -> Unit
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -88,7 +87,7 @@ fun ProductosListBodyScreen(
             TopBarComponent(
                 title = "Productos",
                 onClickMenu = onDrawer,
-                onClickNotifications = {},
+                onClickNotifications = onClickNotifications,
                 notificationCount = 0
             )
         },
@@ -227,6 +226,7 @@ fun ProductosListScreenPreview() {
         goToProducto = {},
         onAddProducto = {},
         onEvent = {},
-        onDrawer = {}
+        onDrawer = {},
+        onClickNotifications = {}
     )
 }
