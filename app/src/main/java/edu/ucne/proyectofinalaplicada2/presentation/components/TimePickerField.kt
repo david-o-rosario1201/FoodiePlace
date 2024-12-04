@@ -33,13 +33,14 @@ fun TimePickerField(
     val timePickerDialog = remember {
         TimePickerDialog(context, { _, hourOfDay, minute ->
             val calendar = Calendar.getInstance()
-            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            calendar.set(Calendar.MINUTE, minute)
+            calendar[Calendar.HOUR_OF_DAY] = hourOfDay
+            calendar[Calendar.MINUTE] = minute
             val time = calendar.time
             timeText = TextFieldValue(time.toString())
             onEvent(event)
         }, 0, 0, true)
     }
+
 
     OutlinedTextField(
         value = timeText,
