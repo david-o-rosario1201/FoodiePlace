@@ -29,7 +29,7 @@ import java.math.BigDecimal
 fun ProductoAddCarritoScreen(
     viewModel: ProductoViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onAddToCart: (Int, Int) -> Unit // Producto ID y cantidad
+    onAddToCart: (Int, Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -66,17 +66,15 @@ fun ProductoAddBodyScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Contenido de los productos en la parte superior
                 uiState.productos.forEach { producto ->
                     ProductoAddItem(
                         item = producto,
 
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f)) // Empuja los botones hacia el final
+                Spacer(modifier = Modifier.weight(1f))
 
-                // Botones en la parte inferior
-                Row(
+               Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -146,7 +144,6 @@ fun ProductoAddItem(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Nombre y precio
         Text(
             text = item.nombre,
             fontSize = 24.sp,
@@ -160,7 +157,6 @@ fun ProductoAddItem(
             color = Color(0xFFFF9800)
         )
 
-        // Imagen
         item.imagen?.let { imagenBase64 ->
             val imagenByteArray = android.util.Base64.decode(imagenBase64, android.util.Base64.DEFAULT)
             val imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.size)
@@ -176,7 +172,6 @@ fun ProductoAddItem(
             }
         }
 
-        // Descripción
         Text(
             text = item.descripcion,
             fontSize = 14.sp,

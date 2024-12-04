@@ -90,15 +90,15 @@ fun ProductoScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(Color.White),
-            verticalArrangement = Arrangement.Top // Asegura que los elementos se apilen desde el principio
+            verticalArrangement = Arrangement.Top
         ) {
-            // Contenedor de campos de entrada con espacio flexible
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                // Título de la pantalla
+
                 Text(
                     text = "Nuevo Producto",
                     color = Color(0xFFFFA500),
@@ -109,7 +109,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Nombre del producto
+
                 OutlinedTextField(
                     value = uiState.nombre ?: "",
                     onValueChange = { viewModel.onEvent(ProductoUiEvent.NombreChange(it)) },
@@ -128,7 +128,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Descripción del producto
+
                 OutlinedTextField(
                     value = uiState.descripcion ?: "",
                     onValueChange = { viewModel.onEvent(ProductoUiEvent.DescripcionChange(it)) },
@@ -140,11 +140,10 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Precio del producto
                 OutlinedTextField(
-                    value = uiState.precio?.toString() ?: "", // Convertir BigDecimal a String para mostrarlo en el TextField
+                    value = uiState.precio?.toString() ?: "",
                     onValueChange = {
-                        val precio = it.toBigDecimalOrNull() ?: BigDecimal.ZERO // Convertir String a BigDecimal o usar BigDecimal.ZERO si es nulo
+                        val precio = it.toBigDecimalOrNull() ?: BigDecimal.ZERO
                         viewModel.onEvent(ProductoUiEvent.PrecioChange(precio))
                     },
                     label = { Text("Precio") },
@@ -193,7 +192,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Disponibilidad
+
                 Row(
                     modifier = Modifier
                         .padding(1.dp)
@@ -210,7 +209,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Botón para seleccionar imagen
+
                 Button(
                     onClick = {
                         Toast.makeText(context, "Seleccionar imagen", Toast.LENGTH_SHORT).show()
@@ -226,7 +225,7 @@ fun ProductoScreen(
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
-            // Botón para guardar el producto
+
             Button(
                 onClick = {
                     viewModel.onEvent(ProductoUiEvent.Save)
@@ -242,7 +241,6 @@ fun ProductoScreen(
                             tiempo = uiState.tiempo ?: ""
                         )
                         onProductoCreado(nuevoProducto)
-                        // Restablecer los valores de los campos
                         viewModel.onEvent(ProductoUiEvent.RestablecerCampos)
 
 
