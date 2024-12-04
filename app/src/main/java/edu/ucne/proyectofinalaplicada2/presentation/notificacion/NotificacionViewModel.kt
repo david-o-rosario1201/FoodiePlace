@@ -37,7 +37,7 @@ class NotificacionViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
-                        val filteredNotificaciones = result.data?.filter { notificacion ->
+                        val notificaciones = result.data?.filter { notificacion ->
                             if (_uiState.value.usuarioRol == "Admin") {
                                 !notificacion.descripcion.contains("Nueva Oferta", ignoreCase = true)
                             } else {
@@ -47,7 +47,7 @@ class NotificacionViewModel @Inject constructor(
 
                         _uiState.update {
                             it.copy(
-                                notificaciones = filteredNotificaciones,
+                                notificaciones = notificaciones,
                                 isLoading = false
                             )
                         }
