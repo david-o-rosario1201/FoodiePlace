@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReviewDTO
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ReviewRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -18,7 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReviewViewModel @Inject constructor(
-    private val repository: ReviewRepository
+    private val repository: ReviewRepository,
+    private val authRepository: AuthRepository,
+    private val usuarioRepository: UsuarioRepository
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(ReviewUiState())
@@ -26,6 +31,7 @@ class ReviewViewModel @Inject constructor(
 
     init {
         GetReseñas()
+        getUsuarios()
     }
 
     private fun GetReseñas(){
@@ -51,6 +57,36 @@ class ReviewViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 errorMessge = result.message ?: "Error desconocido",
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getUsuarios(){
+        viewModelScope.launch {
+            usuarioRepository.getUsuarios().collectLatest { result ->
+                when(result){
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                usuarios = result.data ?: emptyList(),
+                                isLoading = false
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                usuarios = result.data ?: emptyList(),
                                 isLoading = false
                             )
                         }
@@ -117,6 +153,20 @@ class ReviewViewModel @Inject constructor(
         }
 
         return null
+    }
+
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.update {
+                it.copy(
+                    usuarioId = usuarioActual?.usuarioId ?: 0,
+                    nombreUsuario = usuarioActual?.nombre ?: ""
+                )
+            }
+        }
     }
 
 
