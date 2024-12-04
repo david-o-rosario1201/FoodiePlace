@@ -152,7 +152,7 @@ fun ReservacionesListBodyScreen(
 @Composable
 fun ReservacionItem(
     item: ReservacionesEntity,
-    isAdmin: Boolean, // Recibimos el valor de si el usuario es admin
+    isAdmin: Boolean,
     onEdit: (Int) -> Unit
 ) {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -167,7 +167,7 @@ fun ReservacionItem(
             .padding(8.dp)
             .let { modifier ->
                 if (isAdmin) {
-                    modifier.clickable { onEdit(item.reservacionId!!) } // Solo editable para admin
+                    modifier.clickable { onEdit(item.reservacionId!!) }
                 } else {
                     modifier
                 }
@@ -222,9 +222,7 @@ fun ReservacionItem(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ReservacionesListScreenPreview() {
-    // Crear el formato para fecha
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    // Crear el formato para hora si es necesario
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     val sampleReservaciones = listOf(
@@ -232,9 +230,9 @@ fun ReservacionesListScreenPreview() {
             reservacionId = 1,
             usuarioId = 1,
             estado = "Activo",
-            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(), // Conversión a Date
+            fechaReservacion = dateFormat.parse("2024-11-12") ?: Date(),
             numeroPersonas = 4,
-            horaReservacion = timeFormat.parse("18:00") ?: Date() ,// Conversión a Date
+            horaReservacion = timeFormat.parse("18:00") ?: Date() ,
             numeroMesa = 3
         ),
 
@@ -242,7 +240,7 @@ fun ReservacionesListScreenPreview() {
             reservacionId = 2,
             usuarioId = 2,
             estado = "Cancelado",
-            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
             numeroPersonas = 2,
             horaReservacion = timeFormat.parse("19:00") ?: Date(),
             numeroMesa = 4// Conversión a Date
@@ -251,7 +249,7 @@ fun ReservacionesListScreenPreview() {
             reservacionId = 3,
             usuarioId = 6,
             estado = "Cancelado",
-            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(), // Conversión a Date
+            fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
             numeroPersonas = 2,
             horaReservacion = timeFormat.parse("20:00") ?: Date(),
             numeroMesa = 9
