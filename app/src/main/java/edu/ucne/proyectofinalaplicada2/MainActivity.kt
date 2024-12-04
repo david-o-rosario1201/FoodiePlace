@@ -10,7 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import edu.ucne.proyectofinalaplicada2.presentation.navigation.FoodiePlaceNavHost
 import edu.ucne.proyectofinalaplicada2.presentation.permission.RequestPermissionsScreen
-import edu.ucne.proyectofinalaplicada2.presentation.navigation.FoodiePlaceNavHost
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 
@@ -28,13 +27,12 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        installSplashScreen()
         setContent {
             ProyectoFinalAplicada2Theme {
                 val navHost = rememberNavController()
 
                 RequestPermissionsScreen()
-                
+
                 FoodiePlaceNavHost(
                     navHostController = navHost,
                     googleAuthUiClient = googleAuthUiClient
