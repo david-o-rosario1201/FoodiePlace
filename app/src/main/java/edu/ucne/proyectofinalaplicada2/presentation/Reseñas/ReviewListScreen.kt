@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,16 +33,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReviewEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.UsuarioEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.ListaVaciaComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
@@ -56,6 +56,7 @@ fun ReviewListScreen(
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReviewListBodyScreen(
         uiState = uiState,
@@ -117,29 +118,18 @@ fun ReviewListBodyScreen(
                     }
                 }
             ){
-                if (uiState.reseñas.isEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        Image(
-                            painter = painterResource(R.drawable.empty_icon),
-                            contentDescription = "Lista vacía"
-                        )
-                        Text(
-                            text = "Lista vacía",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                } else {
-                    uiState.reseñas.forEach { review ->
-                        ReviewItem(
-                            item = review,
-                            usuario = uiState.usuario
-                        )
+                LazyColumn {
+                    if (uiState.reseñas.isEmpty()) {
+                        item {
+                            ListaVaciaComponent()
+                        }
+                    } else {
+                        items(uiState.reseñas){ review ->
+                            ReviewItem(
+                                item = review,
+                                usuario = uiState.usuarios
+                            )
+                        }
                     }
                 }
             }
