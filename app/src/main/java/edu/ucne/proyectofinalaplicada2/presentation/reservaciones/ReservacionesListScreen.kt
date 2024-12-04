@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -41,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.R
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ReservacionesEntity
+import edu.ucne.proyectofinalaplicada2.presentation.components.ListaVaciaComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.PullToRefreshLazyColumn
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
@@ -57,6 +60,7 @@ fun ReservacionesListScreen(
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ReservacionesListBodyScreen(
         uiState = uiState,
@@ -114,29 +118,18 @@ fun ReservacionesListBodyScreen(
                     }
                 }
             ){
-                if (uiState.reservaciones.isEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        Image(
-                            painter = painterResource(R.drawable.empty_icon),
-                            contentDescription = "Lista vacía"
-                        )
-                        Text(
-                            text = "Lista vacía",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                } else {
-                    uiState.reservaciones.forEach { reservacion ->
-                        ReservacionItem(
-                            item = reservacion,
-                            goToReservacion = goToReservacion
-                        )
+                LazyColumn {
+                    if (uiState.reservaciones.isEmpty()) {
+                        item {
+                            ListaVaciaComponent()
+                        }
+                    } else {
+                        items(uiState.reservaciones) { reservacion ->
+                            ReservacionItem(
+                                item = reservacion,
+                                goToReservacion = goToReservacion
+                            )
+                        }
                     }
                 }
             }
