@@ -2,13 +2,26 @@ package edu.ucne.proyectofinalaplicada2.presentation.producto
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,120 +33,155 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import edu.ucne.proyectofinalaplicada2.data.local.entities.CarritoDetalleEntity
 import edu.ucne.proyectofinalaplicada2.data.local.entities.ProductoEntity
+import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoUiEvent
+import edu.ucne.proyectofinalaplicada2.presentation.carrito.CarritoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.components.SimpleTopBarComponent
 import edu.ucne.proyectofinalaplicada2.ui.theme.color_oro
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @Composable
 fun ProductoAddCarritoScreen(
-    viewModel: ProductoViewModel = hiltViewModel(),
-    onBackClick: () -> Unit,
-    onAddToCart: (Int, Int) -> Unit // Producto ID y cantidad
+    productoId: Int,
+    productoViewModel: ProductoViewModel = hiltViewModel(),
+    carritoViewModel: CarritoViewModel = hiltViewModel(),
+    onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    productoViewModel.getCurrentUser()
+    val uiState by productoViewModel.productoState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+
+    productoViewModel.getProductoById(productoId)
 
     ProductoAddBodyScreen(
         uiState = uiState,
         onBackClick = onBackClick,
-        onAddToCart = onAddToCart
+        onAddToCart = {event ->
+            coroutineScope.launch {
+                carritoViewModel.onUiEvent(event)
+            }
+        }
     )
 }
+
+
+
 
 @Composable
 fun ProductoAddBodyScreen(
     uiState: ProductoUiState,
     onBackClick: () -> Unit,
-    onAddToCart: (Int, Int) -> Unit
+    onAddToCart: (CarritoUiEvent) -> Unit,
 ) {
     var count by remember { mutableStateOf(1) }
+    val producto = uiState.productos.firstOrNull()
 
-    Scaffold(
-        topBar = {
-            SimpleTopBarComponent(
-                title = uiState.nombre.toString(),
-                onBackClick = onBackClick
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(
+    if (producto != null) {
+        Scaffold(
+            topBar = {
+                SimpleTopBarComponent(
+                    title = producto.nombre,
+                    onBackClick = onBackClick
+                )
+            }
+        ) { paddingValues ->
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(paddingValues)
             ) {
-                // Contenido de los productos en la parte superior
-                uiState.productos.forEach { producto ->
-                    ProductoAddItem(
-                        item = producto,
-
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f)) // Empuja los botones hacia el final
-
-                // Botones en la parte inferior
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize()
+                        .padding(16.dp)
                 ) {
-                    Button(
-                        onClick = { if (count > 1) count-- },
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = color_oro,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.size(50.dp)
-                    ) {
-                        Text(text = "-", color = Color.White, fontSize = 18.sp)
-                    }
-
-                    Text(
-                        text = count.toString(),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        textAlign = TextAlign.Center
+                    ProductoAddItem(
+                        item = producto
                     )
+                    Spacer(modifier = Modifier.weight(1f))
 
-                    Button(
-                        onClick = { count++ },
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = color_oro,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.size(50.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "+", color = Color.White, fontSize = 18.sp)
-                    }
+                        Button(
+                            onClick = { if (count > 1) count-- },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = color_oro,
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier.size(50.dp)
+                        ) {
+                            Text(text = "-", color = Color.White, fontSize = 18.sp)
+                        }
 
-                    Button(
-                        onClick = { onAddToCart(uiState.productoId!!, count) },
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = color_oro,
-                            contentColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
                         Text(
-                            text = "Agregar",
-                            fontSize = 14.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
+                            text = count.toString(),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp),
+                            textAlign = TextAlign.Center
                         )
+
+                        Button(
+                            onClick = { count++ },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = color_oro,
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier.size(50.dp)
+                        ) {
+                            Text(text = "+", color = Color.White, fontSize = 18.sp)
+                        }
+
+                        Button(
+                            onClick = {
+                                val carritoDetalle = CarritoDetalleEntity(
+                                    carritoDetalleId = 0,
+                                    carritoId = 0,
+                                    productoId = producto.productoId,
+                                    cantidad = count,
+                                    precioUnitario = producto.precio,
+                                    impuesto = BigDecimal.ZERO,
+                                    subTotal = producto.precio,
+                                    propina = BigDecimal.ZERO
+                                )
+                                onAddToCart(CarritoUiEvent.AgregarProducto(carritoDetalle, count))
+                                onBackClick
+                            },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = color_oro,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = "Agregar",
+                                fontSize = 14.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
         }
+    } else {
+        Text(
+            text = "Producto no encontrado.",
+            fontSize = 18.sp,
+            color = Color.Red
+        )
     }
 }
+
 
 @Composable
 fun ProductoAddItem(
@@ -205,6 +253,6 @@ fun ProductoAddCarritoScreenPreview() {
     ProductoAddBodyScreen(
         uiState = ProductoUiState(productos = sampleProducto),
         onBackClick = {},
-        onAddToCart = { _, _ -> }
+        onAddToCart = {}
     )
 }

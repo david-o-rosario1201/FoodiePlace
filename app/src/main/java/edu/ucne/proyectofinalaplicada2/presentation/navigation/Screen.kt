@@ -74,7 +74,7 @@ sealed class Screen {
     data object ProfileScreen: Screen()
 
     @Serializable
-    data object ProductoAddCarritoScreen: Screen()
+    data class ProductoAddCarrito(val productoId: Int): Screen()
 
     @Serializable
     data object TarjetaScreen: Screen()

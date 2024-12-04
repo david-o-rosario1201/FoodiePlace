@@ -242,8 +242,12 @@ fun FoodiePlaceNavHost(
                             drawerState.open()
                         }
                     },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
+                    onClickNotifications = {},
+                    goProducto = {
+                        navHostController.navigate(Screen.ProductoAddCarrito(it))
+                    },
+                    goCategoria = {
+                        navHostController.navigate(Screen.ProductosPorCategoriaScreen)
                     }
                 )
             }
@@ -382,20 +386,20 @@ fun FoodiePlaceNavHost(
                 )
             }
 
-            composable<Screen.ProductoAddCarritoScreen>
-            {
+            composable<Screen.ProductoAddCarrito> {
+                val productoId = it.toRoute<Screen.ProductoAddCarrito>().productoId
                 ProductoAddCarritoScreen(
+                    productoId = productoId,
                     onBackClick = {
-                        navHostController.navigate(Screen.ProductoListScreen)
-                    },
-                    onAddToCart = { _, _ -> }
+                        navHostController.navigate(Screen.HomeScreen)
+                    }
                 )
             }
 
             composable<Screen.TarjetaScreen> {
                 TarjetaScreen(
                     onNavigateToList = {
-                        navHostController.navigate(Screen.TarjetaScreen)
+                        navHostController.navigate(Screen.CarritoListScreen)
                     }
                 )
             }

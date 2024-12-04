@@ -3,6 +3,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.Home
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -200,11 +201,12 @@ fun CardItem(
     color: Color = MaterialTheme.colorScheme.primary,
     showButton: Boolean = false,
     buttonText: String = "Add",
-    onButtonClick: (() -> Unit)? = null,
+    onButtonClick: (() -> Unit),
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = color),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier.clickable{ onButtonClick?.invoke() }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

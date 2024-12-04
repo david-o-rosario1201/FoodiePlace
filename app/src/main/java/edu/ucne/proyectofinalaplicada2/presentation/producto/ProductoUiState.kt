@@ -20,5 +20,7 @@ data class ProductoUiState(
     val errorImagen: String? = "",
     val success: Boolean = false,
     val isLoading: Boolean = false,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val usuarioNombre: String = "",
+    val usuarioRol: String? = "",
 )

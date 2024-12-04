@@ -27,6 +27,19 @@ class TarjetaViewModel @Inject constructor(
 
     init {
         getTarjetas()
+        obtenerUsuarioActual()
+    }
+
+    private fun obtenerUsuarioActual() {
+        viewModelScope.launch {
+            val currentUserEmail = authRepository.getUser()
+            val usuario = usuarioRepository.getUsuarioByCorreo(currentUserEmail ?: "")
+            if (usuario != null) {
+                _uiState.update { it.copy(usuarioId = usuario.usuarioId ?: 0) }
+            } else {
+                _uiState.update { it.copy(errorMessge = "Usuario no encontrado") }
+            }
+        }
     }
 
     private fun getTarjetas() {
@@ -123,8 +136,11 @@ class TarjetaViewModel @Inject constructor(
                 viewModelScope.launch {
                     getCurrentUser()
                     if (_uiState.value.tarjetaId == null) {
-                        tarjetaRepository.addTarjeta(_uiState.value.toEntity())
-
+                        tarjetaRepository.addTarjeta(
+                            _uiState.value.copy(
+                                usuarioId = _uiState.value.usuarioId
+                            ).toEntity()
+                        )
                     } else {
                         tarjetaRepository.updateTarjeta(
                             _uiState.value.tarjetaId ?: 0,

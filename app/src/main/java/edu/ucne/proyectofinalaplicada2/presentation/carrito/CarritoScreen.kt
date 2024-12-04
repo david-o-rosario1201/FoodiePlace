@@ -128,7 +128,7 @@ private fun CarritoBodyScreen(
                     },
                     onAgregarTarjetaClick = {
                         isModalVisible = false
-                        onTarjetaGo
+                        onTarjetaGo()
                     }
                 )
             }
@@ -155,7 +155,6 @@ fun CarritoResumen(uiState: CarritoUiState, onPagarClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            TotalRow("Tiempo:", "$${uiState.tiempo}")
             TotalRow("Subtotal:", "$${uiState.subTotal}")
             TotalRow("Propina:", "$${uiState.propina}")
             TotalRow("ITBS:", "$${uiState.impuesto}")
@@ -202,13 +201,11 @@ fun CardSelectionContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar las tarjetas si existen, y el botón de agregar tarjeta al final en una fila
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Tarjeta para agregar una nueva tarjeta estará siempre visible
             Card(
                 modifier = Modifier
                     .width(200.dp)

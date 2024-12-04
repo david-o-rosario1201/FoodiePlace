@@ -58,6 +58,8 @@ fun HomeScreen(
     onClickNotifications: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
     carritoViewModel: CarritoViewModel = hiltViewModel(),
+    goProducto: (Int) -> Unit,
+    goCategoria: () -> Unit
 ) {
     homeViewModel.getCurrentUser()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -74,7 +76,7 @@ fun HomeScreen(
         // Vista del cliente
         HomeBodyScreen(
             uiState = uiState,
-            goCategoria = {},
+            goCategoria = goCategoria,
             onSearchQueryChanged = { homeViewModel.onSearchQueryChanged(it) },
             navController = navController,
             onDrawer = onDrawer,
@@ -84,6 +86,7 @@ fun HomeScreen(
                     carritoViewModel.onUiEvent(event)
                 }
             },
+            goProducto = goProducto
         )
     }
 }
@@ -93,6 +96,7 @@ fun HomeScreen(
 fun HomeBodyScreen(
     uiState: HomeUiState,
     goCategoria: () -> Unit,
+    goProducto: (Int) -> Unit,
     navController: NavHostController,
     onDrawer: () -> Unit,
     onClickNotifications: () -> Unit,
@@ -204,19 +208,7 @@ fun HomeBodyScreen(
                         descripcion = "Precio: ${producto.precio}",
                         imagen = producto.imagen,
                         showButton = true,
-                        onButtonClick = {
-                            val carritoDetalle = CarritoDetalleEntity(
-                                carritoDetalleId = 0,
-                                carritoId = 0,
-                                productoId = producto.productoId,
-                                cantidad = 1,
-                                precioUnitario = producto.precio,
-                                impuesto = BigDecimal.ZERO,
-                                subTotal = producto.precio,
-                                propina = BigDecimal.ZERO
-                            )
-                            onCarritoEvent(CarritoUiEvent.AgregarProducto(carritoDetalle, 1))
-                        },
+                        onButtonClick = { goProducto(producto.productoId) },
                         color = Color.White,
                     )
                 }
@@ -269,6 +261,7 @@ fun HomeBodyScreenPreview() {
         onDrawer = {},
         onClickNotifications = {},
         onCarritoEvent = {},
+        goProducto = {},
     )
 }
 

@@ -5,11 +5,18 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ProductoDto
+import edu.ucne.proyectofinalaplicada2.data.repository.AuthRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.CategoriaRepository
 import edu.ucne.proyectofinalaplicada2.data.repository.ProductoRepository
+import edu.ucne.proyectofinalaplicada2.data.repository.UsuarioRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -17,16 +24,59 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductoViewModel @Inject constructor(
     private val productoRepository: ProductoRepository,
-    private val categoRepository: CategoriaRepository
+    private val categoRepository: CategoriaRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductoUiState())
+    val productoState: StateFlow<ProductoUiState> = _uiState
     val uiState = _uiState.asStateFlow()
 
     init {
         getProductos()
         getCategorias()
     }
+
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            val currentUser = authRepository.getUser()
+            val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
+
+            _uiState.update {
+                it.copy(
+                    usuarioNombre = usuarioActual?.nombre ?: "",
+                    usuarioRol = usuarioActual?.rol,
+                )
+            }
+        }
+    }
+
+    fun getProductoById(productoId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val producto = productoRepository.getProducto(productoId)
+            _uiState.value = ProductoUiState(productos = listOf(producto))
+        }
+    }
+    fun getProductoById12(productoId: Int) {
+        viewModelScope.launch {
+            val producto = productoRepository.getProducto(productoId)
+            _uiState.update {
+                it.copy(productos = listOf(producto)) // Asegúrate de usar una lista con un solo producto
+            }
+        }
+    }
+
+    fun getProductoById1(productoId: Int) = flow {
+        val producto = productoRepository.getProducto(productoId)
+        emit(ProductoUiState(
+            productoId = producto.productoId,
+            nombre = producto.nombre,
+            descripcion = producto.descripcion,
+            precio = producto.precio,
+            imagen = producto.imagen
+        ))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProductoUiState())
 
     private fun getProductos() {
         viewModelScope.launch {
@@ -193,6 +243,7 @@ class ProductoViewModel @Inject constructor(
         precio = precio ?: BigDecimal.ZERO,
         disponibilidad = disponibilidad ?: false,
         imagen = imagen ?: "",
-        tiempo = tiempo ?:""
+        tiempo = tiempo ?:"",
+
     )
 }

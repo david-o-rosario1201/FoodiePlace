@@ -22,6 +22,7 @@ data class CarritoUiState (
     val impuesto : BigDecimal? = BigDecimal.ZERO,
     val subTotal : BigDecimal? = BigDecimal.ZERO,
     val propina : BigDecimal? = BigDecimal.ZERO,
-    val tiempo : Int? = null,
+    val tiempo : String = "",
     val totalNotificaciones : Int = 0
-)
+
+    )
