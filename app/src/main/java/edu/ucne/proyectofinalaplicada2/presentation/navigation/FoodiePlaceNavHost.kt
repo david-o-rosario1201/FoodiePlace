@@ -239,7 +239,9 @@ fun FoodiePlaceNavHost(
                             drawerState.open()
                         }
                     },
-                    onClickNotifications = {}
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
+                    }
                 )
             }
             composable<Screen.CategoriaListScreen>{
