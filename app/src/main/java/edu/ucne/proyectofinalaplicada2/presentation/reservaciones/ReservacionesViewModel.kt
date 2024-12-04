@@ -66,7 +66,9 @@ class ReservacionesViewModel @Inject constructor(
             val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
 
             _uiState.value = _uiState.value.copy(
-                usuarioId = usuarioActual?.usuarioId ?: 0
+                usuarioId = usuarioActual?.usuarioId ?: 0,
+                usuarioRol = usuarioActual?.rol ?: ""
+
             )
         }
     }
