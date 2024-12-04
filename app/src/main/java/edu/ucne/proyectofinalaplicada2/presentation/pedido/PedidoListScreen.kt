@@ -89,9 +89,9 @@ private fun PedidoListBodyScreen(
                 notificationCount = 0
             )
         },
-        bottomBar = {
-            BottomBarNavigation(navController = navHostController)
-        }
+        bottomBar = if(uiState.usuarioRol == "Client"){
+            { BottomBarNavigation(navController = navHostController) }
+        } else { {} }
     ){
         Box(
             modifier = Modifier
