@@ -41,13 +41,15 @@ class ReservacionesRepository @Inject constructor(
             }
 
         } catch (e: HttpException) {
-            emit(Resource.Error("Error de internet ${e.message}"))
-        } catch (e: Exception) {
-            emit(Resource.Error("Error desconocido ${e.message}"))
-
             reservacionesDao.getAll().collect { reservacionesLocal ->
                 emit(Resource.Success(reservacionesLocal))
             }
+            emit(Resource.Error("Error de internet ${e.message}"))
+        } catch (e: Exception) {
+            reservacionesDao.getAll().collect { reservacionesLocal ->
+                emit(Resource.Success(reservacionesLocal))
+            }
+            emit(Resource.Error("Error desconocido ${e.message}"))
         }
     }
 
