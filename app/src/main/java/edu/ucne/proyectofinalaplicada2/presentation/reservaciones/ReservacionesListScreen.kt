@@ -58,7 +58,7 @@ import java.util.Locale
 fun ReservacionesListScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
     goToReservacion: () -> Unit,
-    onEdit: (Int) -> Unit, // Nuevo parámetro
+    onEdit: (Int) -> Unit,
     onClickNotifications: () -> Unit,
     onDrawer: () -> Unit
 ) {
@@ -97,7 +97,7 @@ fun ReservacionesListBodyScreen(
             )
         },
         floatingActionButton = {
-            if (uiState.usuarioRol == "Admin") { // Solo mostrar el botón para administradores
+            if (uiState.usuarioRol == "Admin") {
                 FloatingActionButton(
                     onClick = goToReservacion,
                     containerColor = color_oro,
@@ -243,7 +243,7 @@ fun ReservacionesListScreenPreview() {
             fechaReservacion = dateFormat.parse("2024-11-13") ?: Date(),
             numeroPersonas = 2,
             horaReservacion = timeFormat.parse("19:00") ?: Date(),
-            numeroMesa = 4// Conversión a Date
+            numeroMesa = 4
         ),
         ReservacionesEntity(
             reservacionId = 3,
