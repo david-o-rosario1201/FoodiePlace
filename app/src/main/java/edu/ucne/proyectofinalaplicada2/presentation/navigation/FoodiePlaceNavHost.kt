@@ -37,7 +37,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductoViewModel
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosListScreen
 import edu.ucne.proyectofinalaplicada2.presentation.producto.ProductosPorCategoriaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesListScreen
-import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreenCliente
+import edu.ucne.proyectofinalaplicada2.presentation.reservaciones.ReservacionesScreen
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.presentation.tarjeta.TarjetaScreen
 import edu.ucne.proyectofinalaplicada2.presentation.usuario.ProfileScreen
@@ -315,7 +315,7 @@ fun FoodiePlaceNavHost(
             composable<Screen.ReservacionListScreen> {
                 ReservacionesListScreen(
                     goToReservacion = {
-                        navHostController.navigate(Screen.ReservacionesScreenCliente)  // Navegar a la pantalla de crear reservación
+                        navHostController.navigate(Screen.ReservacionesScreen)
                     },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
@@ -324,23 +324,21 @@ fun FoodiePlaceNavHost(
                         scope.launch {
                             drawerState.open()
                         }
+                    },
+                    onEdit = {
+                        navHostController.navigate(Screen.ReservacionesScreen)
                     }
                 )
             }
 
-            composable<Screen.ReservacionesScreenCliente> {
-                ReservacionesScreenCliente(
+            composable<Screen.ReservacionesScreen> { backStackEntry ->
+                val reservacionId = backStackEntry.arguments?.getString("reservacionId")?.toIntOrNull() ?: 0
+                ReservacionesScreen(
+                    reservacionId = reservacionId,
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReservacionListScreen)
                     },
-                    onDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onClickNotifications = {
-                        navHostController.navigate(Screen.NotificacionScreen)
-                    }
+
                 )
             }
 
