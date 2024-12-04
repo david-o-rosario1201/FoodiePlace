@@ -16,6 +16,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
+import edu.ucne.proyectofinalaplicada2.presentation.components.TimePickerField
+
 import java.util.*
 
 @Composable
@@ -44,8 +46,8 @@ private fun ReservacionesBodyScreen(
     onClickNotifications: () -> Unit,
     onNavigateToList: () -> Unit
 ) {
-    val title = if (uiState.reservacionId == 0) "Nueva Reservación" else "Editar Reservación"
-    val buttonText = if (uiState.reservacionId == 0) "Guardar" else "Actualizar"
+    val title = if (uiState.reservacionId == null) "Nueva Reservación" else "Editar Reservación"
+    val buttonText = if (uiState.reservacionId == null) "Guardar" else "Actualizar"
 
     LaunchedEffect(key1 = uiState.success) {
         if (uiState.success) {
@@ -101,7 +103,37 @@ private fun ReservacionFields(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+        if (uiState.usuarioRol == "Admin") {
+            OutlinedTextField(
+                value = uiState.numeroMesa?.toString() ?: "",
+                onValueChange = {
+                    val numero = it.toIntOrNull()
+                    onEvent(ReservacionesUiEvent.NumeroMesaChange(numero ?: 0))
+                },
+                label = { Text("Número de Mesa") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.estado,
+                onValueChange = { estado ->
+                    onEvent(ReservacionesUiEvent.EstadoChange(estado))
+                },
+                label = { Text("Estado") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            TimePickers(
+                uiState = uiState,
+                onEvent = onEvent
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         DatePickers(
             uiState = uiState,
             onEvent = onEvent
@@ -162,6 +194,18 @@ private fun DatePickers(
         event = ReservacionesUiEvent.FechaReservacionChange(uiState.fechaReservacion ?: Date())
     )
 }
+@Composable
+private fun TimePickers(
+    uiState: ReservacionesUiState,
+    onEvent: (ReservacionesUiEvent) -> Unit
+) {
+    TimePickerField(
+        onEvent = onEvent,
+        event = ReservacionesUiEvent.HoraReservacionChange(uiState.horaReservacion)
+    )
+}
+
+
 
 private fun validateFields(uiState: ReservacionesUiState): Boolean {
     if (uiState.fechaReservacion == null) {
