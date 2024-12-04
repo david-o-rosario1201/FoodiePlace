@@ -58,7 +58,6 @@ fun HomeScreen(
 ) {
     homeViewModel.getCurrentUser()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val coroutineScope = rememberCoroutineScope()
 
     if (uiState.usuarioRol == "Admin") {
         HomeAdminBodyScreen(
