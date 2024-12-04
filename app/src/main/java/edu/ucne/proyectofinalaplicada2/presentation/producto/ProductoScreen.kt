@@ -92,11 +92,13 @@ fun ProductoScreen(
                 .background(Color.White),
             verticalArrangement = Arrangement.Top
         ) {
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+
                 Text(
                     text = "Nuevo Producto",
                     color = Color(0xFFFFA500),
@@ -106,6 +108,7 @@ fun ProductoScreen(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
 
                 OutlinedTextField(
                     value = uiState.nombre ?: "",
@@ -124,6 +127,7 @@ fun ProductoScreen(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
 
                 OutlinedTextField(
                     value = uiState.descripcion ?: "",
@@ -188,6 +192,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+
                 Row(
                     modifier = Modifier
                         .padding(1.dp)
@@ -204,6 +209,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+
                 Button(
                     onClick = {
                         Toast.makeText(context, "Seleccionar imagen", Toast.LENGTH_SHORT).show()
@@ -218,6 +224,7 @@ fun ProductoScreen(
 
                 Spacer(modifier = Modifier.height(4.dp))
             }
+
 
             Button(
                 onClick = {
@@ -235,6 +242,9 @@ fun ProductoScreen(
                         )
                         onProductoCreado(nuevoProducto)
                         viewModel.onEvent(ProductoUiEvent.RestablecerCampos)
+
+
+
                     }
                     onBackClick()
                 },
@@ -245,6 +255,7 @@ fun ProductoScreen(
             ) {
                 Text(text = "Guardar Producto")
             }
+
         }
     }
 }
