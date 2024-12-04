@@ -25,8 +25,8 @@ fun ReservacionesScreenCliente(
     onClickNotifications: () -> Unit,
     viewModel: ReservacionesViewModel = hiltViewModel()
 ) {
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     ReservacionesBodyScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
