@@ -2,6 +2,7 @@ package edu.ucne.proyectofinalaplicada2.presentation.reservaciones
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.proyectofinalaplicada2.data.remote.dto.ReservacionesDto
 import edu.ucne.proyectofinalaplicada2.data.remote.Resource
@@ -32,15 +33,28 @@ class ReservacionesViewModel @Inject constructor(
 
     private fun getReservaciones() {
         viewModelScope.launch {
+            getCurrentUser()
+
+            val usuarioRol = _uiState.value.usuarioRol
+            val usuarioId = _uiState.value.usuarioId
+
             reservacionesRepository.getReservaciones().collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
+                        val reservaciones = if (usuarioRol == "Admin") {
+                            result.data ?: emptyList()
+                        } else if (usuarioRol == "Client") {
+                            result.data?.filter { it.usuarioId == usuarioId } ?: emptyList()
+                        } else {
+                            emptyList()
+                        }
+
                         _uiState.update {
                             it.copy(
-                                reservaciones = result.data ?: emptyList(),
+                                reservaciones = reservaciones,
                                 isLoading = false,
                                 errorMensaje = ""
                             )
@@ -49,7 +63,7 @@ class ReservacionesViewModel @Inject constructor(
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
-                                reservaciones = result.data ?: emptyList(),
+                                reservaciones = emptyList(),
                                 isLoading = false,
                                 errorMensaje = result.message
                             )
@@ -59,35 +73,7 @@ class ReservacionesViewModel @Inject constructor(
             }
         }
     }
-    private fun getReservacionesPorUsuario(usuarioId: Int) {
-        viewModelScope.launch {
-            reservacionesRepository.getReservaciones().collectLatest { result ->
-                when (result) {
-                    is Resource.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-                    is Resource.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                reservaciones = result.data?.filter { it.usuarioId == usuarioId } ?: emptyList(),
-                                isLoading = false,
-                                errorMensaje = ""
-                            )
-                        }
-                    }
-                    is Resource.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                reservaciones = result.data?.filter { it.usuarioId == usuarioId } ?: emptyList(),
-                                isLoading = false,
-                                errorMensaje = result.message
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 
 
     fun getCurrentUser(){
@@ -121,7 +107,7 @@ class ReservacionesViewModel @Inject constructor(
             }
             is ReservacionesUiEvent.NumeroMesaChange -> {
                 _uiState.update { it.copy(numeroMesa = event.numeroMesa) }
-                }
+            }
             is ReservacionesUiEvent.HoraReservacionChange -> {
                 _uiState.update { it.copy(horaReservacion = event.horaReservacion) }
             }
@@ -150,8 +136,6 @@ class ReservacionesViewModel @Inject constructor(
                             )
                         }
                     }
-
-
                 }
             }
             ReservacionesUiEvent.Save -> {
@@ -185,6 +169,6 @@ class ReservacionesViewModel @Inject constructor(
         numeroPersonas = numeroPersonas,
         estado = estado ,
         numeroMesa = numeroMesa ,
-        horaReservacion = (horaReservacion )
+        horaReservacion = (horaReservacion ?: Date())
     )
 }
