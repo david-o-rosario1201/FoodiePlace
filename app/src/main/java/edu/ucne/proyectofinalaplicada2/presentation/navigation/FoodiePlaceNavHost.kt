@@ -66,9 +66,7 @@ fun FoodiePlaceNavHost(
         ) {
             composable<Screen.WelcomeScreen>{
                 WelcomeScreen(
-                    onNavigateToLogin = {
-                        navHostController.navigate(Screen.UsuarioLoginScreen)
-                    }
+                    navHostController = navHostController
                 )
             }
             composable<Screen.UsuarioLoginScreen>{
@@ -109,7 +107,9 @@ fun FoodiePlaceNavHost(
                         navHostController.navigate(Screen.UsuarioRegisterScreen)
                     },
                     onSignClickNative = {
-                        navHostController.navigate(Screen.HomeScreen)
+                        navHostController.navigate(Screen.HomeScreen){
+                            popUpTo(Screen.UsuarioLoginScreen) { inclusive = true }
+                        }
                     },
                     onSignClickWithGoogle = {
                         scope.launch {
@@ -357,7 +357,10 @@ fun FoodiePlaceNavHost(
                             "Signed out",
                             Toast.LENGTH_LONG
                         ).show()
-                        navHostController.navigate(Screen.UsuarioLoginScreen)
+                        navHostController.navigate(Screen.UsuarioLoginScreen){
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
