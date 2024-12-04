@@ -32,15 +32,28 @@ class ReservacionesViewModel @Inject constructor(
 
     private fun getReservaciones() {
         viewModelScope.launch {
+            getCurrentUser()
+
+            val usuarioRol = _uiState.value.usuarioRol
+            val usuarioId = _uiState.value.usuarioId
+
             reservacionesRepository.getReservaciones().collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
                     is Resource.Success -> {
+                        val reservaciones = if (usuarioRol == "Admin") {
+                            result.data ?: emptyList()
+                        } else if (usuarioRol == "Client") {
+                            result.data?.filter { it.usuarioId == usuarioId } ?: emptyList()
+                        } else {
+                            emptyList()
+                        }
+
                         _uiState.update {
                             it.copy(
-                                reservaciones = result.data ?: emptyList(),
+                                reservaciones = reservaciones,
                                 isLoading = false,
                                 errorMensaje = ""
                             )
@@ -49,7 +62,7 @@ class ReservacionesViewModel @Inject constructor(
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
-                                reservaciones = result.data ?: emptyList(),
+                                reservaciones = emptyList(),
                                 isLoading = false,
                                 errorMensaje = result.message
                             )
@@ -60,13 +73,16 @@ class ReservacionesViewModel @Inject constructor(
         }
     }
 
+
+
     fun getCurrentUser(){
         viewModelScope.launch {
             val currentUser = authRepository.getUser()
             val usuarioActual = usuarioRepository.getUsuarioByCorreo(currentUser ?: "")
 
             _uiState.value = _uiState.value.copy(
-                usuarioId = usuarioActual?.usuarioId ?: 0
+                usuarioId = usuarioActual?.usuarioId ?: 0,
+                usuarioRol = usuarioActual?.rol ?: ""
             )
         }
     }
@@ -90,7 +106,7 @@ class ReservacionesViewModel @Inject constructor(
             }
             is ReservacionesUiEvent.NumeroMesaChange -> {
                 _uiState.update { it.copy(numeroMesa = event.numeroMesa) }
-                }
+            }
             is ReservacionesUiEvent.HoraReservacionChange -> {
                 _uiState.update { it.copy(horaReservacion = event.horaReservacion) }
             }
@@ -124,17 +140,19 @@ class ReservacionesViewModel @Inject constructor(
             ReservacionesUiEvent.Save -> {
                 viewModelScope.launch {
                     getCurrentUser()
-                    if (_uiState.value.reservacionId == null)
+                    if (_uiState.value.reservacionId == 0) {
                         reservacionesRepository.addReservacion(_uiState.value.toEntity())
-                    else
+                    } else {
                         reservacionesRepository.updateReservacion(
                             _uiState.value.reservacionId ?: 0,
                             _uiState.value.toEntity()
                         )
+                    }
 
                     _uiState.update { it.copy(success = true) }
                 }
             }
+
             ReservacionesUiEvent.Delete -> {
                 viewModelScope.launch {
                     reservacionesRepository.deleteReservacion(_uiState.value.reservacionId ?: 0)
