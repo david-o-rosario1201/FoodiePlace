@@ -173,6 +173,9 @@ fun FoodiePlaceNavHost(
                     },
                     onClickNotifications = {
                         navHostController.navigate(Screen.NotificacionScreen)
+                    },
+                    onTarjetaGo = {
+                        navHostController.navigate(Screen.TarjetaScreen)
                     }
                 )
             }
