@@ -48,7 +48,7 @@ import edu.ucne.proyectofinalaplicada2.presentation.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProyectoFinalAplicada2NavHost(
+fun FoodiePlaceNavHost(
     navHostController: NavHostController,
     googleAuthUiClient: GoogleAuthUiClient
 ) {
@@ -166,6 +166,14 @@ fun ProyectoFinalAplicada2NavHost(
             composable<Screen.CarritoListScreen>{
                 CarritoScreen(
                     navController = navHostController,
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
+                    }
                 )
             }
             composable<Screen.PedidoListScreen>{
@@ -256,15 +264,6 @@ fun ProyectoFinalAplicada2NavHost(
                     }
                 )
             }
-
-
-
-
-
-
-
-
-
             composable<Screen.AboutUsScreen> {
                 AboutUsScreen(
                     onDrawer = {
@@ -307,6 +306,9 @@ fun ProyectoFinalAplicada2NavHost(
                         scope.launch {
                             drawerState.open()
                         }
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
                     }
                 )
             }
@@ -330,6 +332,14 @@ fun ProyectoFinalAplicada2NavHost(
                 ReservacionesScreenCliente(
                     onNavigateToList = {
                         navHostController.navigate(Screen.ReservacionListScreen)
+                    },
+                    onDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    },
+                    onClickNotifications = {
+                        navHostController.navigate(Screen.NotificacionScreen)
                     }
                 )
             }

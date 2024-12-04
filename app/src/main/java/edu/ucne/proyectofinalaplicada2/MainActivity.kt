@@ -9,7 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import edu.ucne.proyectofinalaplicada2.presentation.navigation.ProyectoFinalAplicada2NavHost
+import edu.ucne.proyectofinalaplicada2.presentation.navigation.FoodiePlaceNavHost
 import edu.ucne.proyectofinalaplicada2.presentation.sign_in.GoogleAuthUiClient
 import edu.ucne.proyectofinalaplicada2.ui.theme.ProyectoFinalAplicada2Theme
 
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProyectoFinalAplicada2Theme {
                 val navHost = rememberNavController()
-                ProyectoFinalAplicada2NavHost(
+                FoodiePlaceNavHost(
                     navHostController = navHost,
                     googleAuthUiClient = googleAuthUiClient
                 )
