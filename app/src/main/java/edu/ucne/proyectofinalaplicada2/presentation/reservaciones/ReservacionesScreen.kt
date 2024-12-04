@@ -16,13 +16,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.proyectofinalaplicada2.presentation.components.TopBarComponent
 import edu.ucne.proyectofinalaplicada2.presentation.components.DatePickerField
+import edu.ucne.proyectofinalaplicada2.presentation.components.TimePickerField
 import java.util.*
 
 @Composable
-fun ReservacionesScreenCliente(
+fun ReservacionesScreen(
     viewModel: ReservacionesViewModel = hiltViewModel(),
     onNavigateToList: () -> Unit
 ) {
+    viewModel.getCurrentUser()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ReservacionesBodyScreen(
@@ -96,6 +98,41 @@ private fun ReservacionFields(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Mostrar este campo solo para el administrador
+        if (uiState.usuarioRol == "Admin") {
+            OutlinedTextField(
+                value = uiState.numeroMesa?.toString() ?: "",
+                onValueChange = {
+                    val numero = it.toIntOrNull()
+                    onEvent(ReservacionesUiEvent.NumeroMesaChange(numero ?: 0))
+                },
+                label = { Text("Número de Mesa") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = uiState.estado,
+                onValueChange = { estado ->
+                    onEvent(ReservacionesUiEvent.EstadoChange(estado))
+                },
+                label = { Text("Estado") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            // Time Picker para Hora (visible para todos)
+            TimePickers(
+                uiState = uiState,
+                onEvent = onEvent
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // Date Picker para Fecha (visible para todos)
         DatePickers(
             uiState = uiState,
             onEvent = onEvent
@@ -103,6 +140,9 @@ private fun ReservacionFields(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+
+
+        // Campo Número de Personas (visible para todos)
         OutlinedTextField(
             value = uiState.numeroPersonas?.toString() ?: "",
             onValueChange = {
@@ -154,6 +194,18 @@ private fun DatePickers(
         onEvent = onEvent,
         selectedDate = uiState.fechaReservacion,
         event = ReservacionesUiEvent.FechaReservacionChange(uiState.fechaReservacion ?: Date())
+    )
+}
+
+@Composable
+private fun TimePickers(
+    uiState: ReservacionesUiState,
+    onEvent: (ReservacionesUiEvent) -> Unit
+) {
+    TimePickerField(
+        onEvent = onEvent,
+        selectedTime = uiState.horaReservacion,
+        event = ReservacionesUiEvent.HoraReservacionChange(uiState.horaReservacion)
     )
 }
 
