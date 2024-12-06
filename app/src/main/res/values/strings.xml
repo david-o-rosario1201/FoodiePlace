@@ -9,5 +9,6 @@
     <string name="drawer_Profile">Profile</string>
     <string name="drawer_Reservaciones">Reservaciones</string>
     <string name="drawer_Ofertas">Ofertas</string>
+    <string name="drawer_categorias">Categorias</string>
     <string name="web_client_id">6042770831-9tltn4jvljm29st0oj3uggaheoatstc3.apps.googleusercontent.com</string>
 </resources>
