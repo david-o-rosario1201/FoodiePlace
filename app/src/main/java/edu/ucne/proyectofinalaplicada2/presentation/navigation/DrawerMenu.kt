@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookOnline
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Discount
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Home
@@ -80,6 +81,15 @@ fun DrawerMenu(
                             isSelected = selectedItem.value == stringResource(R.string.drawer_pedidos)
                         ) {
                             handleItemClick(Screen.PedidoListScreen, it)
+                        }
+
+                        DrawerItem(
+                            title = stringResource(R.string.drawer_categorias),
+                            icon = Icons.Filled.Category,
+                            isSelected = selectedItem.value == stringResource(R.string.drawer_categorias)
+                        ) {
+                            handleItemClick(Screen.CategoriaListScreen, it)
+
                         }
 
                         DrawerItem(
